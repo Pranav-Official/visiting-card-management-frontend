@@ -35,10 +35,12 @@ const styles = StyleSheet.create({
   mainButton: {
     alignItems: 'center',
     backgroundColor: colors['primary-accent'],
-    height: '6%',
-    padding: 10,
+    height: 50,
+    padding: 5,
+    paddingEnd: 10,
     borderRadius: 5,
-    fontWeight: 'bold',
+    fontWeight: '700',
+    justifyContent: 'center',
   },
   mainButtonTitle: {
     fontWeight: 'bold',

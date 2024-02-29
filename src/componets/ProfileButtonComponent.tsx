@@ -43,16 +43,17 @@ const styles = StyleSheet.create({
   },
   profileButton: {
     flexDirection: 'row',
-    borderWidth: 2,
+    borderWidth: 1,
     borderRadius: 10,
     borderBlockColor: colors['primary-text'],
-    height: '8%',
+    height: 50,
+    paddingEnd: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
   profileButtonTitle: {
-    fontSize: 25,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontWeight: '700',
     alignSelf: 'center',
   },
 });

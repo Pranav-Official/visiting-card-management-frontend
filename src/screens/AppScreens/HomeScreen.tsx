@@ -1,24 +1,11 @@
 import React from 'react';
 import colors from '../../utils/colorPallete';
 import { StyleSheet, Text, View } from 'react-native';
-import MainButtonComponent from '../../componets/MainButtoncomponent';
-import ProfileButtonComponent from '../../componets/ProfileButtonComponent';
-import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const HomeScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Home Screen</Text>
-      <MainButtonComponent title="PROFILE">
-        <MaterialIcons name="account" size={40} color={'black'} />
-      </MainButtonComponent>
-      <ProfileButtonComponent
-        proButtonBgColor={'#fff'}
-        proButtonTextColor="black"
-        title="LOGOUT"
-      >
-        <MaterialIcons name="account" size={40} color={'black'} />
-      </ProfileButtonComponent>
     </View>
   );
 };
@@ -28,12 +15,13 @@ const styles = StyleSheet.create({
     backgroundColor: colors['secondary-light'],
     color: colors['primary-text'],
     flex: 1,
-    // paddingLeft: 30,
-    // paddingRight: 30,
   },
   text: {
     color: colors['primary-text'],
     fontSize: 40,
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
   },
 });
 
