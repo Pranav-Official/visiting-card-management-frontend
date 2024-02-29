@@ -1,29 +1,46 @@
-import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import React, { ReactNode } from 'react';
+import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import colors from '../utils/colorPallete';
 
-const ProfileButtonComponent = (props: any) => {
-  const onPress = () => {
-    props.function();
+interface ProfileButtonProps {
+  children: ReactNode;
+  title: string;
+  proButtonBgColor: string;
+  proButtonTextColor: string;
+  onPressing: () => any;
+}
+
+const ProfileButtonComponent: React.FC<ProfileButtonProps> = ({
+  children,
+  title,
+  proButtonBgColor,
+  proButtonTextColor,
+  onPressing,
+}) => {
+  const handlePress = () => {
+    onPressing();
   };
   return (
     <TouchableOpacity
-      style={[
-        styles.profileButton,
-        { backgroundColor: props.proButtonBgColor },
-      ]}
-      onPress={onPress}
+      style={[styles.profileButton, { backgroundColor: proButtonBgColor }]}
+      onPress={handlePress}
     >
-      <Text
-        style={[styles.profileButtonTitle, { color: props.proButtonTextColor }]}
-      >
-        {props.title}
-      </Text>
+      <View style={styles.iconTextContainer}>
+        {children}
+        <Text
+          style={[styles.profileButtonTitle, { color: proButtonTextColor }]}
+        >
+          {title}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
+  iconTextContainer: {
+    flexDirection: 'row',
+  },
   profileButton: {
     flexDirection: 'row',
     borderWidth: 2,
@@ -32,11 +49,11 @@ const styles = StyleSheet.create({
     height: '8%',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10,
   },
   profileButtonTitle: {
     fontSize: 25,
     fontWeight: 'bold',
+    alignSelf: 'center',
   },
 });
 

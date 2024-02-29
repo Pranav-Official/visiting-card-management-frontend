@@ -3,13 +3,22 @@ import colors from '../../utils/colorPallete';
 import { StyleSheet, Text, View } from 'react-native';
 import MainButtonComponent from '../../componets/MainButtoncomponent';
 import ProfileButtonComponent from '../../componets/ProfileButtonComponent';
+import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const HomeScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Home Screen</Text>
-      <MainButtonComponent />
-      <ProfileButtonComponent />
+      <MainButtonComponent title="PROFILE">
+        <MaterialIcons name="account" size={40} color={'black'} />
+      </MainButtonComponent>
+      <ProfileButtonComponent
+        proButtonBgColor={'#fff'}
+        proButtonTextColor="black"
+        title="LOGOUT"
+      >
+        <MaterialIcons name="account" size={40} color={'black'} />
+      </ProfileButtonComponent>
     </View>
   );
 };
