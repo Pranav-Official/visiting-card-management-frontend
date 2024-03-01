@@ -20,9 +20,6 @@ const styles = StyleSheet.create({
     color: colors['primary-text'],
     fontSize: 40,
   },
-  buttonsContainer: {
-    flexDirection: 'row',
-  },
 });
 
 export default HomeScreen;
