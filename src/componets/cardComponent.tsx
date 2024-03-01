@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import PersonIcon from '../assets/images/person.svg'
 import PhoneIcon from '../assets/images/phone.svg'
 import MailIcon from '../assets/images/mail.svg'
 import CompanyIcon from'../assets/images/organisation.svg'
+import ArrowIcon from '../assets/images/Arrow.svg'
+import colors from '../utils/colorPallete';
 
 
 
@@ -12,7 +13,7 @@ const styles = StyleSheet.create({
     card_container:{
         height:154,
         paddingHorizontal:30,
-        backgroundColor: '#ddd',
+        backgroundColor:colors['secondary-light'],
         borderRadius:10,
         paddingTop:10,        
     },
@@ -77,6 +78,23 @@ const styles = StyleSheet.create({
         fontSize:12,
         fontFamily:'Roboto',
         marginLeft:10,
+    },
+    card_button:{
+        backgroundColor:colors['primary-accent'],
+        borderRadius:8,
+        height:25,
+        width: 81,
+        justifyContent:'center',
+        alignItems:'center',
+        alignContent:'center',
+        flexDirection:'row',
+    },
+    button_text:{
+        fontFamily:'Roboto',
+        fontSize:10,
+        color:colors['primary-text'],
+        fontWeight:'500',
+        marginRight:0,
     }
 })
 
@@ -89,8 +107,9 @@ const CardComponent: React.FC<Props> = ({ alignToSides }): JSX.Element =>{
             <View style = {[styles.first_row,alignToSides?{justifyContent:'space-between'}:{justifyContent:'center'}]}>
                 <Text style ={styles.card_name}>Makoto Shinkai</Text>
                 {alignToSides && (
-                    <TouchableOpacity>
-                        <Text>Button</Text>
+                    <TouchableOpacity style = {styles.card_button}>                       
+                        <Text style = {styles.button_text}>View Card</Text>
+                        <ArrowIcon width={10} height={10} fill={'black'}></ArrowIcon>
                     </TouchableOpacity>
                 )}
             </View>
