@@ -6,6 +6,7 @@ const colors = {
   'accent-white': '#F0F8FA', // whitish blue for accent
   'accent-grey': '#6D8B92', // grey for accent
   'primary-danger': '#E53F3F', // red for danger
+  'secondary-grey': '#E8EDF2', // light grey
 };
 
 export default colors;
