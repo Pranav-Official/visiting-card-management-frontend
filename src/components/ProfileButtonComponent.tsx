@@ -1,45 +1,61 @@
-//Buttons in profile screen
-import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import React, { ReactNode } from 'react';
+import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import colors from '../utils/colorPallete';
 
-type ProfileButton = {
+interface ProfileButtonProps {
+  children: ReactNode;
   title: string;
-  children?: any;
-  onPressing?: () => any;
-  danger?: any;
-};
-const ProfileButtonComponent = (props: ProfileButton) => {
-  const defaultStyles = StyleSheet.create({
-    button: {
-      alignItems: 'center',
-      backgroundColor: colors['secondary-light'],
-      padding: 5,
-      borderRadius: 8,
-      maxHeight: 50,
-      height: 50,
-      flex: 1,
-      borderWidth: 1,
-      textAlign: 'center',
-      textAlignVertical: 'center',
-      justifyContent: 'center',
-    },
-    login: {
-      fontFamily: 'Roboto',
-      fontSize: 20,
-      fontWeight: '700',
-      color:
-        props.danger === true
-          ? colors['primary-danger']
-          : colors['primary-text'],
-    },
-  });
+  proButtonBgColor: string;
+  proButtonTextColor: string;
+  onPressing: () => any;
+}
 
+const ProfileButtonComponent: React.FC<ProfileButtonProps> = ({
+  children,
+  title,
+  proButtonBgColor,
+  proButtonTextColor,
+  onPressing,
+}) => {
+  const handlePress = () => {
+    onPressing();
+  };
   return (
-    <TouchableOpacity style={defaultStyles.button} onPress={props.onPressing}>
-      <Text style={defaultStyles.login}>{props.title}</Text>
+    <TouchableOpacity
+      style={[styles.profileButton, { backgroundColor: proButtonBgColor }]}
+      onPress={handlePress}
+    >
+      <View style={styles.iconTextContainer}>
+        {children}
+        <Text
+          style={[styles.profileButtonTitle, { color: proButtonTextColor }]}
+        >
+          {title}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  iconTextContainer: {
+    flexDirection: 'row',
+  },
+  profileButton: {
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderRadius: 10,
+    borderBlockColor: colors['primary-text'],
+    height: 50,
+    paddingEnd: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  profileButtonTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    alignSelf: 'center',
+  },
+});
 
 export default ProfileButtonComponent;

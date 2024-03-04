@@ -4,46 +4,22 @@ import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import colors from '../utils/colorPallete';
 
 interface MainButtonProps {
-  children?: ReactNode;
+  children: ReactNode;
   title: string;
-  onPressing?: () => any;
-  highlighted?: boolean;
+  onPressing: () => any;
 }
 
 const MainButtonComponent: React.FC<MainButtonProps> = ({
   children,
   title,
   onPressing,
-  highlighted = false,
 }) => {
-  const styles = StyleSheet.create({
-    iconTextContainer: {
-      flexDirection: 'row',
-    },
-    mainButton: {
-      alignItems: 'center',
-      backgroundColor: colors['primary-accent'],
-      maxHeight: 50,
-      height: 50,
-      // width: '100%',
-      flex: 1,
-      padding: 5,
-      paddingEnd: 10,
-      borderRadius: 8,
-      fontWeight: '700',
-      justifyContent: 'center',
-      borderWidth: highlighted ? 1 : 0,
-    },
-    mainButtonTitle: {
-      fontWeight: 'bold',
-      color: colors['primary-text'],
-      alignSelf: 'center',
-      fontSize: 20,
-    },
-  });
+  const handlePress = () => {
+    onPressing();
+  };
 
   return (
-    <TouchableOpacity style={styles.mainButton} onPress={onPressing}>
+    <TouchableOpacity style={styles.mainButton} onPress={handlePress}>
       <View style={styles.iconTextContainer}>
         {children}
         <Text style={styles.mainButtonTitle}>{title}</Text>
@@ -51,5 +27,27 @@ const MainButtonComponent: React.FC<MainButtonProps> = ({
     </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  iconTextContainer: {
+    flexDirection: 'row',
+  },
+  mainButton: {
+    alignItems: 'center',
+    backgroundColor: colors['primary-accent'],
+    height: 50,
+    padding: 5,
+    paddingEnd: 10,
+    borderRadius: 5,
+    fontWeight: '700',
+    justifyContent: 'center',
+  },
+  mainButtonTitle: {
+    fontWeight: 'bold',
+    color: colors['primary-text'],
+    alignSelf: 'center',
+    fontSize: 20,
+  },
+});
 
 export default MainButtonComponent;
