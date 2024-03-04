@@ -16,8 +16,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors['secondary-light'],
     borderRadius: 10,
     paddingTop: 10,
-    shadowColor: '#000',
-    shadowOffset: {width: -1, height: 4},
+    shadowColor: colors['primary-text'],
+    shadowOffset: { width: -1, height: 4 },
     shadowOpacity: 0.4,
     shadowRadius: 4,
     elevation: 5,
@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
     height: 33,
     alignItems: 'center',
     paddingLeft: 10,
+
   },
   tr2: {
     flexDirection: 'row',
