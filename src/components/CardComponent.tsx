@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors['secondary-light'],
     borderRadius: 10,
     paddingTop: 10,
-    shadowColor: '#000',
+    shadowColor: colors['primary-text'],
     shadowOffset: { width: -1, height: 4 },
     shadowOpacity: 0.4,
     shadowRadius: 4,
