@@ -1,4 +1,4 @@
-import api from "./api";
+import api from './api';
 
 interface CardListProp {
   user_id: string;
@@ -17,7 +17,7 @@ type CardReturn = {
 
 interface CardListResponse {
   statusCode: string;
-  cardResp: CardReturn[];
+  cardResp: { data: CardReturn[] };
 }
 
 export async function listCards({
@@ -25,8 +25,8 @@ export async function listCards({
   card_id,
   jwt_token,
 }: CardListProp): Promise<CardListResponse> {
-  let statusCode ="";
-  let cardResp: CardReturn[]=[];
+  let statusCode = '';
+  let cardResp: CardReturn[] = [];
 
   const contactParams = {
     user_id: user_id,
@@ -34,18 +34,15 @@ export async function listCards({
   };
 
   try {
-    const cardListResponse = await api.get("api/v1/getCardList", {
+    const cardListResponse = await api.get('api/v1/getCardList', {
       params: contactParams,
       headers: { Authorization: `Bearer ${jwt_token}` },
     });
     statusCode = cardListResponse.status.toString();
     cardResp = cardListResponse.data;
     return { statusCode, cardResp };
-    
   } catch (error) {
-    console.log("error while fetching card list", error);
+    console.log('error while fetching card list', error);
     return { statusCode, cardResp };
   }
-
-  
 }

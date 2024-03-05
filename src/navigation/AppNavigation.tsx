@@ -7,6 +7,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useIsFocused } from '@react-navigation/native';
 import colors from '../utils/colorPallete';
 import ContactsPage from '../screens/AppScreens/Contacts';
+import CardListScreen from '../screens/AppScreens/CardListScreen';
 const StackNav = createNativeStackNavigator();
 const HomeStackNavigation = () => {
   return (
@@ -16,6 +17,7 @@ const HomeStackNavigation = () => {
       }}
     >
       <StackNav.Screen name="Home" component={HomeBottomBarNavigation} />
+      <StackNav.Screen name="CardStack" component={CardStackNavigation} />
     </StackNav.Navigator>
   );
 };
@@ -79,6 +81,20 @@ const HomeBottomBarNavigation = () => {
         }}
       />
     </BottomBarNavigation.Navigator>
+  );
+};
+
+const CardStackNav = createNativeStackNavigator();
+
+const CardStackNavigation = () => {
+  return (
+    <CardStackNav.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <StackNav.Screen name="CardListScreen" component={CardListScreen} />
+    </CardStackNav.Navigator>
   );
 };
 

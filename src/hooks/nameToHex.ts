@@ -1,20 +1,25 @@
 function nameToColor(name: string): string {
   const colors: string[] = [
-    '7B4B94',
-    '854D27',
-    '9D44B5',
-    'E71D36',
-    'FF1654',
-    '072AC8',
-    '1C7293',
-    '058C42',
+    '#7B4B94',
+    '#854D27',
+    '#9D44B5',
+    '#E71D36',
+    '#FF1654',
+    '#072AC8',
+    '#1C7293',
+    '#058C42',
+    '#12758B',
+    '#8B1D95',
+    '#648E20',
+    '#2C2C2C',
+    '#8E0808',
   ];
 
   // Convert name to a hash value
   const hashValue: number = hashString(name);
   // Map hash value to an index within the range of colors
   const index: number = Math.abs(hashValue) % colors.length;
-  return '#' + colors[index];
+  return colors[index];
 }
 
 // Simple string hash function

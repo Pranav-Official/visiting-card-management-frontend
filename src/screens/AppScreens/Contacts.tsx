@@ -32,6 +32,7 @@ const DATA = [
 ];
 
 const ContactsPage = () => {
+  const navigation = useNavigation<NavigationProp<any>>();
   const [contactList, setContactList] = useState(DATA);
   const [searchText, setSearchText] = useState('');
   const [searchResults, setSearchResults] = useState(DATA);
@@ -85,16 +86,17 @@ const ContactsPage = () => {
     }
   }, [searchText]);
 
-  const flatListRef = useRef(null);
-  const lastScrollPosition = useRef(0);
-
   useEffect(() => {
     get();
   }, []);
 
   const contactPage = (id: string, name: string) => {
-    const navigation = useNavigation<NavigationProp<any>>();
-    navigation.navigate('CardListStack', { name: name, id: id });
+    console.log('contactPage', id, name);
+
+    navigation.navigate('CardStack', {
+      screen: 'CardListScreen',
+      params: { card_id: id, name: name },
+    });
   };
 
   return (
@@ -107,12 +109,14 @@ const ContactsPage = () => {
         <ContactShimmer />
       ) : (
         <FlatList
-          ref={flatListRef}
           showsVerticalScrollIndicator={false}
           style={{ marginTop: 20 }}
           data={searchResults}
           renderItem={({ item }) => (
-            <ContactListComponent contactName={item.contact_name} />
+            <ContactListComponent
+              contactName={item.contact_name}
+              onPress={() => contactPage(item.card_id, item.contact_name)}
+            />
           )}
           keyExtractor={(item) => item.card_id}
           scrollEventThrottle={16}
