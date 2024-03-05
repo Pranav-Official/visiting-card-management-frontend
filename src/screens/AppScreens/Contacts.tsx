@@ -65,16 +65,16 @@ const ContactsPage = () => {
     });
   };
 
+  const goToSearchScreen = () => {
+    navigation.navigate('SearchScreen');
+  };
+
   return (
     <SafeAreaView style={styles.SafeAreaView}>
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Contacts</Text>
       </View>
-      <TouchableOpacity
-        onPress={() => {
-          console.log('search');
-        }}
-      >
+      <TouchableOpacity onPress={goToSearchScreen}>
         <SearchBarComponent editable={false} />
       </TouchableOpacity>
 

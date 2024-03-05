@@ -33,7 +33,7 @@ const TopBackButton = (props: any) => {
 
 const styles = StyleSheet.create({
   icon: {
-    color: colors['secondary-light'],
+    color: colors['primary-text'],
     alignSelf: 'center',
     marginLeft: 10,
   },

@@ -8,6 +8,7 @@ import { useIsFocused } from '@react-navigation/native';
 import colors from '../utils/colorPallete';
 import ContactsPage from '../screens/AppScreens/Contacts';
 import CardListScreen from '../screens/AppScreens/CardListScreen';
+import SearchScreen from '../screens/AppScreens/SearchScreen';
 const StackNav = createNativeStackNavigator();
 const HomeStackNavigation = () => {
   return (
@@ -17,6 +18,7 @@ const HomeStackNavigation = () => {
       }}
     >
       <StackNav.Screen name="Home" component={HomeBottomBarNavigation} />
+      <StackNav.Screen name="SearchScreen" component={SearchScreen} />
       <StackNav.Screen name="CardStack" component={CardStackNavigation} />
     </StackNav.Navigator>
   );

@@ -1,7 +1,4 @@
-import { combineSlices } from '@reduxjs/toolkit';
 import api from './api';
-
-import { useNavigation } from '@react-navigation/native';
 
 interface LogInUserProp {
   loginUsername: string;
@@ -44,31 +41,3 @@ export async function loginUser({
 
   return loginResp;
 }
-
-export const SignUpUser = async ({
-  signUpUsername,
-  signUpPassword,
-  signUpEmail,
-}: signUpUserProp): Promise<LoginUserResponse> => {
-  let success: boolean = false;
-  let errorMessage: string = '';
-  let statusCode: string = '';
-  let loginResp: any;
-
-  const signUpPayload = {
-    user_fullname: signUpUsername,
-    user_email: signUpEmail,
-    password: signUpPassword,
-  };
-  console.log('signUpPayload', signUpPayload);
-  try {
-    const logInResponse = await api.post('/userRegistration', signUpPayload);
-    loginResp = logInResponse.data;
-    // console.log(loginResp);
-  } catch (error: any) {
-    console.log('Error while logging in:', error, signUpPayload);
-    errorMessage = error.message;
-  }
-
-  return loginResp;
-};
