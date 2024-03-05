@@ -2,11 +2,16 @@ import React from 'react';
 import { TextInput, View, StyleSheet, TouchableOpacity } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import colors from '../utils/colorPallete';
- 
-const SearchBarComponent = () => {
+
+type Props = {
+  editable?: boolean;
+};
+
+const SearchBarComponent = (props: Props) => {
   return (
     <View style={styles.searchContainer}>
       <TextInput
+        editable={props.editable}
         placeholder="Search Contact"
         style={styles.searchBarView}
       ></TextInput>

@@ -34,10 +34,7 @@ const DATA = [
 const ContactsPage = () => {
   const navigation = useNavigation<NavigationProp<any>>();
   const [contactList, setContactList] = useState(DATA);
-  const [searchText, setSearchText] = useState('');
-  const [searchResults, setSearchResults] = useState(DATA);
   const [loading, setLoading] = useState(true);
-  const [showHeader, setShowHeader] = useState(true);
 
   const get = async () => {
     const user_id = (await getLocalItem(Constants.USER_ID)) || '';
@@ -51,40 +48,9 @@ const ContactsPage = () => {
           a.contact_name.localeCompare(b.contact_name),
         ),
       );
-      setSearchResults(
-        response.data.sort((a: any, b: any) =>
-          a.contact_name.localeCompare(b.contact_name),
-        ),
-      );
-      // console.log(' get', 'user_id ' + user_id, 'token ' + token);
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    // console.log('useEffect', searchText);
-    if (searchText === '') {
-      setSearchResults(contactList);
-    } else {
-      setSearchResults(
-        contactList
-          .filter((contact: any) =>
-            contact.contact_name
-              .toLowerCase()
-              .includes(searchText.toLowerCase()),
-          )
-          .sort((a, b) => {
-            const indexA = a.contact_name
-              .toLowerCase()
-              .indexOf(searchText.toLowerCase());
-            const indexB = b.contact_name
-              .toLowerCase()
-              .indexOf(searchText.toLowerCase());
-            return indexA - indexB;
-          }),
-      );
-    }
-  }, [searchText]);
 
   useEffect(() => {
     get();
@@ -104,14 +70,21 @@ const ContactsPage = () => {
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Contacts</Text>
       </View>
-      <SearchBarComponent />
+      <TouchableOpacity
+        onPress={() => {
+          console.log('search');
+        }}
+      >
+        <SearchBarComponent editable={false} />
+      </TouchableOpacity>
+
       {loading ? (
         <ContactShimmer />
       ) : (
         <FlatList
           showsVerticalScrollIndicator={false}
           style={{ marginTop: 20 }}
-          data={searchResults}
+          data={contactList}
           renderItem={({ item }) => (
             <ContactListComponent
               contactName={item.contact_name}
