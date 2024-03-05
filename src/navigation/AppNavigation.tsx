@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import HomeScreen from '../screens/AppScreens/HomeScreen';
+// import HomeScreen from '../screens/AppScreens/HomeScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -8,6 +8,7 @@ import { useIsFocused } from '@react-navigation/native';
 import colors from '../utils/colorPallete';
 import ContactsPage from '../screens/AppScreens/Contacts';
 import CardListScreen from '../screens/AppScreens/CardListScreen';
+import HomeScreen from '../screens/AppScreens/HomeScreen';
 const StackNav = createNativeStackNavigator();
 const HomeStackNavigation = () => {
   return (
