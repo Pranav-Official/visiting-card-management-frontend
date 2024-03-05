@@ -112,10 +112,7 @@ const ContactsPage = () => {
           style={{ marginTop: 20 }}
           data={searchResults}
           renderItem={({ item }) => (
-            <ContactListComponent
-              contactName={item.contact_name}
-              card_id={item.card_id}
-            />
+            <ContactListComponent contactName={item.contact_name} />
           )}
           keyExtractor={(item) => item.card_id}
           scrollEventThrottle={16}
