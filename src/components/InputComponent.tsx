@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderColor: colors['primary-text'],
-    borderWidth: 2,
+    borderWidth: 1,
     borderRadius: 5,
     paddingVertical: 2,
     paddingStart: 10,
