@@ -6,6 +6,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useIsFocused } from '@react-navigation/native';
 import colors from '../utils/colorPallete';
+import ContactsPage from '../screens/AppScreens/Contacts';
 const StackNav = createNativeStackNavigator();
 const HomeStackNavigation = () => {
   return (
@@ -45,7 +46,7 @@ const HomeBottomBarNavigation = () => {
     >
       <BottomBarNavigation.Screen
         name="Contacts"
-        component={HomeScreen}
+        component={ContactsPage}
         options={{
           tabBarIcon: () => (
             <MaterialCommunityIcons

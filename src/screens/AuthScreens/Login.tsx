@@ -86,6 +86,12 @@ const Login = () => {
       setLocalItem(Constants.USER_JWT, response.data.token);
       setLocalItem(Constants.USER_ID, response.data.user_id);
       dispatch(userLogin(true));
+      dispatch(
+        userDetails({
+          token: response.data.token,
+          user_id: response.data.user_id,
+        }),
+      );
     } else if (response.status === false) {
       const message = response.message;
       ToastAndroid.showWithGravity(

@@ -1,3 +1,4 @@
+import { combineSlices } from '@reduxjs/toolkit';
 import api from './api';
 
 import { useNavigation } from '@react-navigation/native';
@@ -31,19 +32,14 @@ export async function loginUser({
     user_email: loginUsername,
     password: loginPassword,
   };
+  console.log('logInPayload', logInPayload, process.env.BASE_URL);
   try {
     const logInResponse = await api.post('/userLogin', logInPayload);
     loginResp = logInResponse.data;
     console.log(loginResp);
   } catch (error: any) {
-    console.log('Error while logging in:', error, logInPayload);
-    loginResp = {
-      status: false,
-      message: error.message,
-      data: {
-        error: error.message,
-      },
-    };
+    console.log('Error while logging in:', error.response.data, logInPayload);
+    loginResp = error.response.data;
   }
 
   return loginResp;
