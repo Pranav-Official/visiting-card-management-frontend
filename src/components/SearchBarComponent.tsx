@@ -1,33 +1,40 @@
-import React from 'react'
-import { TextInput, View,StyleSheet, TouchableOpacity } from 'react-native'
+import React from 'react';
+import { TextInput, View, StyleSheet, TouchableOpacity } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-
+import colors from '../utils/colorPallete';
+ 
 const SearchBarComponent = () => {
   return (
-
     <View style={styles.searchContainer}>
-        <TextInput placeholder='Search Contact'style={styles.searchBarView}></TextInput>
-        <TouchableOpacity style={styles.icon}><MaterialIcons name='search' color={'grey'} size={20} /></TouchableOpacity>
+      <TextInput
+        placeholder="Search Contact"
+        style={styles.searchBarView}
+      ></TextInput>
+      <TouchableOpacity style={styles.icon}>
+        <MaterialIcons name="search" color={'grey'} size={30} />
+      </TouchableOpacity>
     </View>
-  )
-}
+  );
+};
 const styles = StyleSheet.create({
-    searchContainer:{
-    flexDirection:'row',
-    height:45,
-    backgroundColor: '#D9D9D9',
-    borderRadius:12,
-    },
-    searchBarView:{
-    backgroundColor: '#D9D9D9',
-    borderRadius:12,
-    flex:9
-    },
-    icon:{
-    flex:1,
-    alignSelf:'center',
-    marginLeft:5,
-    color:'#565656',
-   }
+  searchContainer: {
+    flexDirection: 'row',
+    height: 45,
+    backgroundColor: colors['secondary-grey'],
+    borderRadius: 12,
+  },
+  searchBarView: {
+    backgroundColor: colors['secondary-grey'],
+    borderRadius: 12,
+    flex: 9,
+    paddingLeft: 30,
+    fontSize: 18,
+  },
+  icon: {
+    flex: 1,
+    alignSelf: 'center',
+    marginRight: 10,
+    color: colors['accent-grey'],
+  },
 });
-export default SearchBarComponent
+export default SearchBarComponent;
