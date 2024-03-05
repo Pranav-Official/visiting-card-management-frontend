@@ -8,6 +8,7 @@ import { useIsFocused } from '@react-navigation/native';
 import colors from '../utils/colorPallete';
 import ContactsPage from '../screens/AppScreens/Contacts';
 import CardListScreen from '../screens/AppScreens/CardListScreen';
+import CardDetailsScreen from '../screens/AppScreens/CardDetailsScreen';
 const StackNav = createNativeStackNavigator();
 const HomeStackNavigation = () => {
   return (
@@ -94,6 +95,7 @@ const CardStackNavigation = () => {
       }}
     >
       <StackNav.Screen name="CardListScreen" component={CardListScreen} />
+      <StackNav.Screen name="CardDetailsScreen" component={CardDetailsScreen} />
     </CardStackNav.Navigator>
   );
 };
