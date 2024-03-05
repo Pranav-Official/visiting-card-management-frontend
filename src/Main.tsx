@@ -7,6 +7,7 @@ import { userLogin } from './context/userSlice';
 import Constants from './utils/Constants';
 import { getLocalItem } from './utils/Utils';
 import AuthNavigationStack from './navigation/AuthNavigation';
+import { RootSiblingParent } from 'react-native-root-siblings';
 
 const Main = () => {
   const isLoggedIn = useSelector((state: any) => state.userReducer.isLoggedIn);
@@ -27,7 +28,9 @@ const Main = () => {
 
   return (
     <NavigationContainer>
-      {isLoggedIn ? <HomeStackNavigation /> : <AuthNavigationStack />}
+      <RootSiblingParent>
+        {isLoggedIn ? <HomeStackNavigation /> : <AuthNavigationStack />}
+      </RootSiblingParent>
     </NavigationContainer>
   );
 };
