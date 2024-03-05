@@ -1,15 +1,24 @@
 import nameToColor from '../../hooks/nameToHex';
 import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 import LinearGradient from 'react-native-linear-gradient';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { useEffect, useState } from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import CardComponent from '../../components/CardComponent';
 import { listCards } from '../../hooks/CardListHook';
-import { getItem } from '../../utils/Utils';
+import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
+import colors from '../../utils/colorPallete';
+import TopBackButton from '../../components/BackButton';
+import TopMenuButton from '../../components/MenuButton';
 
-const CardListScreen = ({route}: any) => {
+const CardListScreen = ({ route }: any) => {
   const [isLoading, setIsLoading] = useState(true);
   const arr = [1, 2, 3, 4, 5];
   const ShimmerComponent = () => {
@@ -17,7 +26,8 @@ const CardListScreen = ({route}: any) => {
       <View>
         <ShimmerPlaceholder
           style={styles.cardcontainer}
-          LinearGradient={LinearGradient}></ShimmerPlaceholder>
+          LinearGradient={LinearGradient}
+        ></ShimmerPlaceholder>
       </View>
     );
   };
@@ -34,12 +44,16 @@ const CardListScreen = ({route}: any) => {
   useEffect(() => {
     const fetchCardList = async () => {
       try {
-        const userId = (await getItem(Constants.USER_ID)) ?? '';
-        const jwtToken = (await getItem(Constants.JWT_TOKEN)) ?? '';
+        const userId = (await getLocalItem(Constants.USER_ID)) ?? '';
+        const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
         const cardId = route.params.card_id ?? '';
         console.log('cardlist screen' + cardId);
 
-        const result = await listCards({user_id:userId, jwt_token:jwtToken, card_id:cardId});
+        const result = await listCards({
+          user_id: userId,
+          jwt_token: jwtToken,
+          card_id: cardId,
+        });
 
         setCardList(result.cardResp.data);
         setIsLoading(false);
@@ -54,32 +68,20 @@ const CardListScreen = ({route}: any) => {
     <View
       style={[
         styles.mainContainer,
-        {backgroundColor: nameToColor(contact_name)},
-      ]}>
+        { backgroundColor: nameToColor(contact_name) },
+      ]}
+    >
       <View style={styles.topIconContainer}>
-        <TouchableOpacity>
-          <MaterialIcons
-            name="arrow-back"
-            color={'black'}
-            size={34}
-            style={styles.icon}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <MaterialIcons
-            name="more-vert"
-            color={'black'}
-            size={34}
-            style={styles.icon}
-          />
-        </TouchableOpacity>
+        <TopBackButton />
+        <TopMenuButton />
       </View>
       <View style={styles.letterCardContainer}>
         <View
           style={[
             styles.letterCircle,
-            {backgroundColor: nameToColor(contact_name)},
-          ]}>
+            { backgroundColor: nameToColor(contact_name) },
+          ]}
+        >
           <Text style={styles.letter}>{contact_name[0]}</Text>
         </View>
         <View style={styles.cardContainer}>
@@ -92,26 +94,25 @@ const CardListScreen = ({route}: any) => {
               contentContainerStyle={styles.flatListStyle}
               showsVerticalScrollIndicator={false}
               data={cardList}
-              renderItem={({item}) => (
+              renderItem={({ item }) => (
                 <CardComponent
                   name={item.card_name}
                   job_position={item.job_title}
                   email={item.email}
-                  card_id={item.card_id}
                   phone_number={item.phone}
                   company_name={item.company_name}
                   alignToSides={true}
                 />
               )}
-              keyExtractor={item => item.card_id}
+              keyExtractor={(item) => item.card_id}
             />
           ) : (
             <FlatList
               contentContainerStyle={styles.flatListStyle}
               showsVerticalScrollIndicator={false}
               data={arr}
-              renderItem={({item}) => <ShimmerComponent />}
-              keyExtractor={item => item.toString()}
+              renderItem={({ item }) => <ShimmerComponent />}
+              keyExtractor={(item) => item.toString()}
             />
           )}
         </View>
@@ -135,13 +136,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 10,
-    borderColor: '#FFFF',
+    borderColor: colors['secondary-light'],
     borderWidth: 2,
     zIndex: 1,
     marginBottom: -40,
     marginLeft: 140,
   },
   topIconContainer: {
+    paddingTop: 10,
     padding: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -152,14 +154,14 @@ const styles = StyleSheet.create({
   },
   letter: {
     fontSize: 48,
-    color: '#ffff',
+    color: colors['secondary-light'],
   },
   icon: {
-    color: '#ffff',
+    color: colors['secondary-light'],
     alignSelf: 'center',
   },
   cardContainer: {
-    backgroundColor: '#ffff',
+    backgroundColor: colors['secondary-light'],
     height: 700,
     width: '100%',
     borderRadius: 26,
@@ -175,12 +177,12 @@ const styles = StyleSheet.create({
     paddingBottom: 150,
   },
   contactName: {
-    color: '#0B0B0B',
+    color: colors['primary-text'],
     fontSize: 40,
     marginTop: 40,
   },
   cardHeading: {
-    color: '#0B0B0B',
+    color: colors['primary-text'],
     fontSize: 24,
     marginTop: 30,
     marginBottom: 20,
