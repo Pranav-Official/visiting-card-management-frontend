@@ -1,21 +1,24 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet,TouchableOpacity, View } from 'react-native';
 import colors from '../utils/colorPallete';
 import ContactListComponent from './ContactListComponent';
 import Selected from '../assets/images/selected.svg';
+import { listUsers } from '../hooks/GetUserHook';
 
-type ShareCardProps = {contactName:string,card_id:string}
+type ShareCardProps = {user_fullname:string,user_id:string}
 
 const ShareCardComponent = ({
 
-    contactName,
-    card_id,
+    user_fullname,
+    onPress,
 
 }:ShareCardProps)=>{
     const [ticked, setTicked] = useState(false);
     const toggleTick = () => {
         setTicked(!ticked);
     };
+
+   
     return(
         <View style={[styles.main_container, { backgroundColor: ticked ? colors['secondary-grey'] : 'transparent' }]}>
             <TouchableOpacity onPress={toggleTick}>
@@ -24,7 +27,7 @@ const ShareCardComponent = ({
                 </View>
             </TouchableOpacity>
             <View style = {styles.contact_container}>
-            <ContactListComponent contactName={contactName} card_id={card_id} />
+            <ContactListComponent contactName={user_fullname} onPress={userListPrint}/>
             </View>
         </View>
 
