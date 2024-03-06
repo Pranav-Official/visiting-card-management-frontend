@@ -28,8 +28,6 @@ const CardDetailPage = ({ route }: any) => {
         const userToken = (await getLocalItem(Constants.USER_JWT)) ?? '{}';
         const card_id = route.params.card_id;
 
-        // console.log('route in cardDetailpage----->', route);
-
         const { cardDetailsResp } = await listCardDetails({
           user_id: userId,
           jwtToken: userToken,
@@ -69,7 +67,15 @@ const CardDetailPage = ({ route }: any) => {
         <TouchableOpacity style={styles.buttonStyle}>
           <Text style={styles.buttonText}>Translate</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonStyle}>
+        <TouchableOpacity
+          style={styles.buttonStyle}
+          onPress={() => {
+            navigation.navigate('EditCardPage', {
+              cardDetails: cardDetail,
+              card_id: route.params.card_id,
+            });
+          }}
+        >
           <Text style={styles.buttonText}>Edit</Text>
         </TouchableOpacity>
       </View>

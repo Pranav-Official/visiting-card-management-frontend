@@ -18,7 +18,7 @@ const EditCardDetails = ({ route }: any) => {
   const [cardDetails, setCardDetails] = useState(route.params.cardDetails);
 
   useEffect(() => {
-    if (route.params.cardDetails) {
+    if (route.params.cardDetail) {
       setCardDetails(route.params.cardDetails);
     }
   }, [route.params.cardDetails]);
