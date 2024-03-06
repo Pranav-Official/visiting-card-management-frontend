@@ -8,6 +8,8 @@ import { useIsFocused } from '@react-navigation/native';
 import colors from '../utils/colorPallete';
 import ContactsPage from '../screens/AppScreens/Contacts';
 import CardListScreen from '../screens/AppScreens/CardListScreen';
+import CardDetailsScreen from '../screens/AppScreens/CardDetailsScreen';
+import EditCardScreen from '../screens/AppScreens/EditCardScreen';
 import SearchScreen from '../screens/AppScreens/SearchScreen';
 const StackNav = createNativeStackNavigator();
 const HomeStackNavigation = () => {
@@ -96,6 +98,8 @@ const CardStackNavigation = () => {
       }}
     >
       <StackNav.Screen name="CardListScreen" component={CardListScreen} />
+      <StackNav.Screen name="CardDetailsScreen" component={CardDetailsScreen} />
+      <StackNav.Screen name="EditCardScreen" component={EditCardScreen} />
     </CardStackNav.Navigator>
   );
 };

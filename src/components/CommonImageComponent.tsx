@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import colors from '../utils/colorPallete';
 
 type ImgContainer = {
   Image: string;
@@ -64,8 +65,8 @@ const CommonImageComponent = () => {
 
 const styles = StyleSheet.create({
   mainStyle: {
-    backgroundColor: 'white',
-    paddingLeft: 20,
+    backgroundColor:colors['secondary-light'],
+   // paddingLeft: 20,
     paddingTop: 20,
     flex: 1,
     gap: 10,
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
   cardContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: 'blue',
+    backgroundColor: colors['accent-white'],
     borderRadius: 20,
     height: 200,
     width: 320,
