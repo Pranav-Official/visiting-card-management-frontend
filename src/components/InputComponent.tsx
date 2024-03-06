@@ -11,16 +11,20 @@ import ClosedEyeIcon from '../assets/images/eye-closed.svg';
 import OpenEyeIcon from '../assets/images/eye-open.svg';
 import colors from '../utils/colorPallete';
 
+type BorderTypes = 'Danger' | 'Auth' | 'Normal';
+
 type InputProps = {
-  placeholder: string;
-  hidden: boolean;
+  placeholder?: string;
+  hidden?: boolean;
   header: string;
+  borderType?: BorderTypes;
   value: string;
   setter: (value: string) => void;
 };
 const InputComponent = ({
-  placeholder,
-  hidden,
+  placeholder = '',
+  hidden = false,
+  borderType = 'Normal',
   header,
   value,
   setter,
@@ -31,12 +35,19 @@ const InputComponent = ({
   const toggleShowHide = () => {
     setShowSecret(!showSecret);
   };
+  const inputContainerStyle = {
+    ...styles.inputContainer,
+    ...(borderType === 'Auth' && styles.authBorder),
+    ...(borderType === 'Danger' && styles.dangerBorder),
+    ...(borderType === 'Normal' && styles.normalBorder),
+  };
+
   return (
     <View>
       <View>
         <Text style={styles.label}>{header}</Text>
       </View>
-      <View style={styles.inputContainer}>
+      <View style={inputContainerStyle}>
         <TextInput
           style={styles.input}
           placeholder={placeholder}
@@ -98,7 +109,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors['secondary-light'],
     alignSelf: 'flex-start',
     marginLeft: 15,
-    color: '#7A7A7A',
+    color: colors['accent-grey'],
     paddingHorizontal: 5,
     fontWeight: '500',
   },
@@ -108,6 +119,15 @@ const styles = StyleSheet.create({
   },
   hiddenIcon: {
     pointerEvents: 'none',
+  },
+  authBorder: {
+    borderColor: colors['primary-accent'],
+  },
+  dangerBorder: {
+    borderColor: colors['primary-danger'],
+  },
+  normalBorder: {
+    borderColor: colors['primary-text'],
   },
 });
 
