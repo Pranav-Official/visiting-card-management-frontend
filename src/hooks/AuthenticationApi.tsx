@@ -14,7 +14,7 @@ interface signUpUserProp {
 interface LoginUserResponse {
   status: boolean;
   message: string;
-  data: {
+  data?: {
     token: string;
     user_id: string;
   };
@@ -24,7 +24,7 @@ export async function loginUser({
   loginUsername,
   loginPassword,
 }: LogInUserProp): Promise<LoginUserResponse> {
-  let loginResp: any;
+  let loginResp: LoginUserResponse;
 
   const logInPayload = {
     user_email: loginUsername,
@@ -35,9 +35,14 @@ export async function loginUser({
     const logInResponse = await api.post('/userLogin', logInPayload);
     loginResp = logInResponse.data;
     console.log(loginResp);
-  } catch (error: any) {
-    console.log('Error while logging in:', error.response.data, logInPayload);
-    loginResp = error.response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log('Axios Error while signing in:', error);
+      loginResp = error.response?.data;
+    } else {
+      console.log('Error while signing in', error);
+      loginResp = { status: false, message: 'Error while signing in' };
+    }
   }
 
   return loginResp;
