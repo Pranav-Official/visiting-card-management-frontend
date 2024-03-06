@@ -1,11 +1,11 @@
 //Button component in Profile Screen
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import colors from '../utils/colorPallete';
 
 type ProfileButton = {
   title: string;
-  children?: any;
+  children?: ReactNode;
   onPressing?: () => any;
   danger?: any;
 };
@@ -13,6 +13,7 @@ const ProfileButtonComponent = (props: ProfileButton) => {
   const defaultStyles = StyleSheet.create({
     button: {
       alignItems: 'center',
+      flexDirection:'row',
       backgroundColor: colors['secondary-light'],
       padding: 5,
       borderRadius: 8,
@@ -37,6 +38,7 @@ const ProfileButtonComponent = (props: ProfileButton) => {
 
   return (
     <TouchableOpacity style={defaultStyles.button} onPress={props.onPressing}>
+       {props.children}
       <Text style={defaultStyles.login}>{props.title}</Text>
     </TouchableOpacity>
   );
