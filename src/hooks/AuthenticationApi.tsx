@@ -1,7 +1,5 @@
-import { combineSlices } from '@reduxjs/toolkit';
+import axios from 'axios';
 import api from './api';
-
-import { useNavigation } from '@react-navigation/native';
 
 interface LogInUserProp {
   loginUsername: string;
@@ -45,15 +43,21 @@ export async function loginUser({
   return loginResp;
 }
 
+///////////////////////
+type SignUpRespType = {
+  status: boolean;
+  message: string;
+  data?: {
+    user_id: string;
+    token: string;
+  };
+};
 export const SignUpUser = async ({
   signUpUsername,
   signUpPassword,
   signUpEmail,
-}: signUpUserProp): Promise<LoginUserResponse> => {
-  let success: boolean = false;
-  let errorMessage: string = '';
-  let statusCode: string = '';
-  let loginResp: any;
+}: signUpUserProp): Promise<SignUpRespType> => {
+  let signUpResp: SignUpRespType;
 
   const signUpPayload = {
     user_fullname: signUpUsername,
@@ -63,12 +67,17 @@ export const SignUpUser = async ({
   console.log('signUpPayload', signUpPayload);
   try {
     const logInResponse = await api.post('/userRegistration', signUpPayload);
-    loginResp = logInResponse.data;
+    signUpResp = logInResponse.data;
     // console.log(loginResp);
-  } catch (error: any) {
-    console.log('Error while logging in:', error, signUpPayload);
-    errorMessage = error.message;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log('Axios Error while signing in:', error);
+      signUpResp = error.response?.data;
+    } else {
+      console.log('Error while signing in', error);
+      signUpResp = { status: false, message: 'Error while signing in' };
+    }
   }
 
-  return loginResp;
+  return signUpResp;
 };
