@@ -6,7 +6,7 @@ import CommonImageComponent from '../../components/CommonImageComponent';
 import CardDetailComponent from '../../components/CardDetailComponent';
 import Phone from '../../assets/images/phone.svg';
 import Email from '../../assets/images/mail.svg';
-import Website from '../../assets/images/websiteIcon.svg';
+import Website from '../../assets/images/website.svg';
 import ProfileButtonComponent from '../../components/ProfileButtonComponent';
 import MainButtonComponent from '../../components/MainButtoncomponent';
 import DeleteIcon from '../../assets/images/DeleteIcon.svg';
@@ -20,28 +20,29 @@ import { useNavigation } from '@react-navigation/native';
 const CardDetailPage = ({ route }: any) => {
   const [cardDetail, setCardDetail] = useState({});
   const navigation = useNavigation();
+  const [key, setKey] = useState(0);
+
+  const fetchData = async () => {
+    try {
+      const userId = (await getLocalItem(Constants.USER_ID)) ?? '{}';
+      const userToken = (await getLocalItem(Constants.USER_JWT)) ?? '{}';
+      const card_id = route.params.card_id;
+
+      const { cardDetailsResp } = await listCardDetails({
+        user_id: userId,
+        jwtToken: userToken,
+        card_id: card_id,
+      });
+
+      setCardDetail(cardDetailsResp.data);
+    } catch (error) {
+      console.error('Error fetching contacts:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const userId = (await getLocalItem(Constants.USER_ID)) ?? '{}';
-        const userToken = (await getLocalItem(Constants.USER_JWT)) ?? '{}';
-        const card_id = route.params.card_id;
-
-        const { cardDetailsResp } = await listCardDetails({
-          user_id: userId,
-          jwtToken: userToken,
-          card_id: card_id, // You might need to define card_id somewhere
-        });
-
-        setCardDetail(cardDetailsResp.data);
-      } catch (error) {
-        console.error('Error fetching contacts:', error);
-      }
-    };
-
     fetchData();
-  }, []);
+  }, [key]);
 
   return (
     <View style={styles.container}>
@@ -70,9 +71,11 @@ const CardDetailPage = ({ route }: any) => {
         <TouchableOpacity
           style={styles.buttonStyle}
           onPress={() => {
-            navigation.navigate('EditCardPage', {
+            navigation.navigate('EditCardScreen', {
               cardDetails: cardDetail,
               card_id: route.params.card_id,
+              cardListScreenUpdater: route.params.cardListScreenUpdater,
+              cardDetailsScreenUpdater: setKey,
             });
           }}
         >
@@ -207,11 +210,11 @@ const styles = StyleSheet.create({
   },
   profileButton: {
     flex: 1,
-    height: 50, // Make the button take up equal space
+    height: 50,
   },
   mainButton: {
     flex: 1,
-    height: 50, // Make the button take up equal space
+    height: 50,
   },
 });
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import CompanyIcon from '../../assets/images/company.svg';
 import PhoneIcon from '../../assets/images/phone.svg';
 import MailIcon from '../../assets/images/mail.svg';
@@ -10,32 +10,36 @@ import MainButtonComponent from '../../components/MainButtoncomponent';
 import CommonImageComponent from '../../components/CommonImageComponent';
 import EditInputComponent from '../../components/InputComponent';
 import EditCardNameComponent from '../../components/EditCardNameComponent';
+import BackButtonIcon from '../../assets/images/Arrow.svg';
 import { editCardDetails } from '../../hooks/editCardHook';
 import Constants from '../../utils/Constants';
 import { getLocalItem } from '../../utils/Utils';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
+//Edit Card Details Screen
 const EditCardDetails = ({ route }: any) => {
   const [cardDetails, setCardDetails] = useState(route.params.cardDetails);
+  const navigation = useNavigation<NavigationProp<any>>();
 
   useEffect(() => {
     if (route.params.cardDetail) {
       setCardDetails(route.params.cardDetails);
     }
   }, [route.params.cardDetails]);
-
+  //Function to save the edits
   const saveChanges = async () => {
     try {
       const user_id = (await getLocalItem(Constants.USER_ID)) ?? '{}';
       const token = (await getLocalItem(Constants.USER_JWT)) ?? '{}';
 
-      // Filtering out the edited fields only
+      // Filtering out the edited fields
       const editedData = Object.keys(cardDetails)
         .filter((key) => cardDetails[key] !== route.params.cardDetails[key])
         .reduce((obj: any, key) => {
           obj[key] = cardDetails[key];
           return obj;
         }, {});
-
+      //calling editCardDetails Hook
       const response = await editCardDetails({
         user_id,
         token,
@@ -44,6 +48,20 @@ const EditCardDetails = ({ route }: any) => {
       });
 
       console.log('Response:', response);
+
+      const isSaved = response.statusCode;
+
+      //if save successful,navigating to cardDetails screen
+      if (isSaved === '200') {
+        const cardListScreenUpdater = route.params.cardListScreenUpdater;
+        const cardDetailsScreenUpdater = route.params.cardDetailsScreenUpdater;
+        cardDetailsScreenUpdater((key) => key + 1);
+        cardListScreenUpdater((key) => key + 1);
+        navigation.navigate('CardStack', {
+          screen: 'CardDetailsScreen',
+          params: { card_id: route.params.card_id },
+        });
+      }
     } catch (error) {
       console.error('Error editing card:', error);
     }
@@ -55,6 +73,14 @@ const EditCardDetails = ({ route }: any) => {
 
   return (
     <View style={styles.editContainer}>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => {
+          navigation.goBack();
+        }}
+      >
+        <BackButtonIcon width={30} height={30} rotation={180} />
+      </TouchableOpacity>
       <View style={styles.imageContainer}>
         <CommonImageComponent />
       </View>
@@ -201,6 +227,11 @@ const styles = StyleSheet.create({
   inputFieldsContainer: {
     marginRight: 25,
     marginLeft: 25,
+  },
+  backButton: {
+    width: '100%',
+    marginTop: 20,
+    marginLeft: 20,
   },
 });
 

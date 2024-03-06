@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-// import HomeScreen from '../screens/AppScreens/HomeScreen';
+import HomeScreen from '../screens/AppScreens/HomeScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -9,6 +9,7 @@ import colors from '../utils/colorPallete';
 import ContactsPage from '../screens/AppScreens/Contacts';
 import CardListScreen from '../screens/AppScreens/CardListScreen';
 import CardDetailsScreen from '../screens/AppScreens/CardDetailsScreen';
+import EditCardScreen from '../screens/AppScreens/EditCardScreen';
 const StackNav = createNativeStackNavigator();
 const HomeStackNavigation = () => {
   return (
@@ -66,7 +67,7 @@ const HomeBottomBarNavigation = () => {
       />
       <BottomBarNavigation.Screen
         name="Profile"
-        component={EditCardScreen}
+        component={HomeScreen}
         options={{
           tabBarIcon: () => (
             <Ionicons
@@ -96,6 +97,7 @@ const CardStackNavigation = () => {
     >
       <StackNav.Screen name="CardListScreen" component={CardListScreen} />
       <StackNav.Screen name="CardDetailsScreen" component={CardDetailsScreen} />
+      <StackNav.Screen name="EditCardScreen" component={EditCardScreen} />
     </CardStackNav.Navigator>
   );
 };

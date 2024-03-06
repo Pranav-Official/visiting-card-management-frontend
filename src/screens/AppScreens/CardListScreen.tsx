@@ -21,6 +21,7 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 const CardListScreen = ({ route }: any) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [key, setKey] = useState(0);
   const arr = [1, 2, 3, 4, 5];
   const ShimmerComponent = () => {
     return (
@@ -41,34 +42,35 @@ const CardListScreen = ({ route }: any) => {
     phone: string;
     job_title: string;
   }
+
+  const fetchCardList = async () => {
+    try {
+      const userId = (await getLocalItem(Constants.USER_ID)) ?? '';
+      const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
+      const cardId = route.params.card_id ?? '';
+
+      const result = await listCards({
+        user_id: userId,
+        jwt_token: jwtToken,
+        card_id: cardId,
+      });
+
+      setCardList(result.cardResp.data);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const [cardList, setCardList] = useState<CardParameters[]>([]);
   useEffect(() => {
-    const fetchCardList = async () => {
-      try {
-        const userId = (await getLocalItem(Constants.USER_ID)) ?? '';
-        const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
-        const cardId = route.params.card_id ?? '';
-
-        const result = await listCards({
-          user_id: userId,
-          jwt_token: jwtToken,
-          card_id: cardId,
-        });
-
-        setCardList(result.cardResp.data);
-        setIsLoading(false);
-      } catch (error) {
-        console.log(error);
-      }
-    };
     fetchCardList();
-  }, []);
+  }, [key]);
 
   const navigation = useNavigation<NavigationProp<any>>();
   const handlePress = (card_id: string) => {
     navigation.navigate('CardStack', {
       screen: 'CardDetailsScreen',
-      params: { card_id: card_id },
+      params: { card_id: card_id, cardListScreenUpdater: setKey },
     });
   };
 
