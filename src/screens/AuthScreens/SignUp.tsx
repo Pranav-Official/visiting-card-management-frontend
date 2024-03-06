@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   ToastAndroid,
   View,
@@ -11,11 +12,8 @@ import ButtonComponent from '../../components/MainButtoncomponent';
 import InputComponent from '../../components/InputComponent';
 import MainLogoComponent from '../../components/MainLogoComponent';
 import BottomDialougeTouchable from '../../components/BottomDialougeTouchable';
-
-import api from '../../hooks/API';
 import { SignUpUser } from '../../hooks/AuthenticationApi';
-import { useNavigation } from '@react-navigation/native';
-import { getLocalItem, setLocalItem } from '../../utils/Utils';
+import { setLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import { useDispatch } from 'react-redux';
 import { userLogin } from '../../context/userSlice';
@@ -76,17 +74,17 @@ const SignUp = () => {
       setLocalItem(Constants.IS_LOGGED_IN, 'true');
       dispatch(
         userDetails({
-          token: response.data?.token??'',
-          user_id: response.data?.user_id??'',
+          token: response.data?.token ?? '',
+          user_id: response.data?.user_id ?? '',
         }),
       );
-      setLocalItem(Constants.USER_JWT, response.data?.token??'');
-      setLocalItem(Constants.USER_ID, response.data?.user_id??'');
+      setLocalItem(Constants.USER_JWT, response.data?.token ?? '');
+      setLocalItem(Constants.USER_ID, response.data?.user_id ?? '');
       dispatch(userLogin(true));
       dispatch(
         userDetails({
-          token: response.data?.token??'',
-          user_id: response.data?.user_id??'',
+          token: response.data?.token ?? '',
+          user_id: response.data?.user_id ?? '',
         }),
       );
     } else if (response.status === false) {
@@ -100,10 +98,10 @@ const SignUp = () => {
     }
   };
 
-  useEffect(() => {});
+  // useEffect(() => {});
 
   return (
-    <SafeAreaView style={styles.safeAreaView}>
+    <ScrollView contentContainerStyle={styles.safeAreaView}>
       <MainLogoComponent />
       <View style={styles.midSection}>
         <InputComponent
@@ -144,7 +142,7 @@ const SignUp = () => {
         mainText="Login!"
         navigateTo="Login"
       />
-    </SafeAreaView>
+    </ScrollView>
   );
 };
 
@@ -164,6 +162,7 @@ const styles = StyleSheet.create({
     width: '100%',
     gap: 15,
     flexDirection: 'column',
+    marginBottom: 50,
   },
   buttonContainer: {
     marginTop: 12,
