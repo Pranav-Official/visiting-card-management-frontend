@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { FlatList, SafeAreaView, StyleSheet, View } from 'react-native';
 import colors from '../../utils/colorPallete';
 import SearchBarComponent from '../../components/SearchBarComponent';
 import TopBackButton from '../../components/BackButton';
@@ -18,7 +18,7 @@ const SearchScreen = () => {
           alignItems: 'flex-start',
         }}
       >
-        <TopBackButton />
+        <TopBackButton color={colors['primary-text']} />
       </View>
       <View style={{ marginTop: 35, marginLeft: 50 }}>
         <SearchBarComponent editable={true} />

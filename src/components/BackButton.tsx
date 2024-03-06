@@ -1,23 +1,27 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigation } from '@react-navigation/native';
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import colors from '../utils/colorPallete';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
+type Props = {
+  color?: string;
+};
 // Define the type for the navigation object
-const TopBackButton = (props: any) => {
+const TopBackButton = (props: Props) => {
   const navigation = useNavigation();
 
   const onPress = () => {
     navigation.goBack();
   };
+
+  const styles = StyleSheet.create({
+    icon: {
+      color: props.color ? props.color : colors['secondary-light'],
+      alignSelf: 'center',
+      marginLeft: 10,
+    },
+  });
 
   return (
     <TouchableOpacity onPress={onPress}>
@@ -30,13 +34,5 @@ const TopBackButton = (props: any) => {
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  icon: {
-    color: colors['primary-text'],
-    alignSelf: 'center',
-    marginLeft: 10,
-  },
-});
 
 export default TopBackButton;
