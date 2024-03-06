@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View } from 'react-native';
 import CompanyIcon from '../../assets/images/company.svg';
 import PhoneIcon from '../../assets/images/phone.svg';
 import MailIcon from '../../assets/images/mail.svg';
@@ -10,8 +10,49 @@ import MainButtonComponent from '../../components/MainButtoncomponent';
 import CommonImageComponent from '../../components/CommonImageComponent';
 import EditInputComponent from '../../components/InputComponent';
 import EditCardNameComponent from '../../components/EditCardNameComponent';
+import { editCardDetails } from '../../hooks/editCardHook';
+import Constants from '../../utils/Constants';
+import { getLocalItem } from '../../utils/Utils';
 
-const EditCardDetails = () => {
+const EditCardDetails = ({ route }: any) => {
+  const [cardDetails, setCardDetails] = useState(route.params.cardDetails);
+
+  useEffect(() => {
+    if (route.params.cardDetails) {
+      setCardDetails(route.params.cardDetails);
+    }
+  }, [route.params.cardDetails]);
+
+  const saveChanges = async () => {
+    try {
+      const user_id = (await getLocalItem(Constants.USER_ID)) ?? '{}';
+      const token = (await getLocalItem(Constants.USER_JWT)) ?? '{}';
+
+      // Filtering out the edited fields only
+      const editedData = Object.keys(cardDetails)
+        .filter((key) => cardDetails[key] !== route.params.cardDetails[key])
+        .reduce((obj: any, key) => {
+          obj[key] = cardDetails[key];
+          return obj;
+        }, {});
+
+      const response = await editCardDetails({
+        user_id,
+        token,
+        card_id: route.params.card_id,
+        updatedData: editedData,
+      });
+
+      console.log('Response:', response);
+    } catch (error) {
+      console.error('Error editing card:', error);
+    }
+  };
+
+  const handleInputChange = (key: string, value: string) => {
+    setCardDetails({ ...cardDetails, [key]: value });
+  };
+
   return (
     <View style={styles.editContainer}>
       <View style={styles.imageContainer}>
@@ -20,8 +61,8 @@ const EditCardDetails = () => {
       <View style={styles.cardNameHead}>
         <EditCardNameComponent
           placeholder={'Card Name'}
-          value={'Card Name'}
-          setter={() => console.log('card_name')}
+          value={cardDetails.card_name}
+          setter={(value: string) => handleInputChange('card_name', value)}
         />
       </View>
       <View style={styles.inputFieldsContainer}>
@@ -34,8 +75,8 @@ const EditCardDetails = () => {
               placeholder="Job title"
               header="Job Title"
               hidden={false}
-              value={'Software Engineer'}
-              setter={() => console.log('job_title')}
+              value={cardDetails.job_title}
+              setter={(value: string) => handleInputChange('job_title', value)}
             />
           </View>
         </View>
@@ -48,8 +89,10 @@ const EditCardDetails = () => {
               placeholder="Company Name"
               header="Company Name"
               hidden={false}
-              value={'Company Name'}
-              setter={() => console.log('company_name')}
+              value={cardDetails.company_name}
+              setter={(value: string) =>
+                handleInputChange('company_name', value)
+              }
             />
           </View>
         </View>
@@ -62,8 +105,8 @@ const EditCardDetails = () => {
               placeholder="Phone Number"
               header="Phone Number"
               hidden={false}
-              value={'Phone Number'}
-              setter={() => console.log('phone')}
+              value={cardDetails.phone}
+              setter={(value: string) => handleInputChange('phone', value)}
             />
           </View>
         </View>
@@ -76,8 +119,8 @@ const EditCardDetails = () => {
               placeholder="E-mail"
               header="E-mail"
               hidden={false}
-              value={'E-mail'}
-              setter={() => console.log('email')}
+              value={cardDetails.email}
+              setter={(value: string) => handleInputChange('email', value)}
             />
           </View>
         </View>
@@ -90,8 +133,10 @@ const EditCardDetails = () => {
               placeholder="Website"
               header="Website"
               hidden={false}
-              value={'website.com'}
-              setter={() => console.log('company_website')}
+              value={cardDetails.company_website}
+              setter={(value: string) =>
+                handleInputChange('company_website', value)
+              }
             />
           </View>
         </View>
@@ -100,9 +145,7 @@ const EditCardDetails = () => {
         <MainButtonComponent
           children={undefined}
           title={'Save'}
-          onPressing={() => {
-            console.log('save');
-          }}
+          onPressing={saveChanges}
         />
       </View>
     </View>

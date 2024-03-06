@@ -8,7 +8,7 @@ import { useIsFocused } from '@react-navigation/native';
 import colors from '../utils/colorPallete';
 import ContactsPage from '../screens/AppScreens/Contacts';
 import CardListScreen from '../screens/AppScreens/CardListScreen';
-import HomeScreen from '../screens/AppScreens/HomeScreen';
+import EditCardScreen from '../screens/AppScreens/EditCardScreen';
 const StackNav = createNativeStackNavigator();
 const HomeStackNavigation = () => {
   return (
@@ -66,7 +66,7 @@ const HomeBottomBarNavigation = () => {
       />
       <BottomBarNavigation.Screen
         name="Profile"
-        component={HomeScreen}
+        component={EditCardScreen}
         options={{
           tabBarIcon: () => (
             <Ionicons
