@@ -1,13 +1,16 @@
 import React, { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import colors from '../../utils/colorPallete';
+import colors from '../utils/colorPallete';
 
-interface CardDetail{
+interface CardDetail {
   children: ReactNode;
   card_detail: string;
-};
+}
 
-const CardDetailComponent:React.FC<CardDetail> = ({ children, card_detail }) => {
+const CardDetailComponent: React.FC<CardDetail> = ({
+  children,
+  card_detail,
+}) => {
   return (
     <View>
       <View style={styles.component}>
@@ -20,12 +23,12 @@ const CardDetailComponent:React.FC<CardDetail> = ({ children, card_detail }) => 
 //
 const styles = StyleSheet.create({
   mainView: {
-    backgroundColor:colors['secondary-light']
+    backgroundColor: colors['secondary-light'],
   },
   component: {
     flexDirection: 'row',
     gap: 25,
-    paddingBottom:15,
+    paddingBottom: 15,
     alignItems: 'center',
   },
   iconBox: {
@@ -39,7 +42,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 20,
-    color:colors['primary-text'],
+    color: colors['primary-text'],
   },
 });
 

@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import colors from '../../utils/colorPallete';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import CompanyName from '../../assets/images/organisation.svg';
 import CommonImageComponent from '../../components/CommonImageComponent';
-import CardDetailComponent from '../../components/CardDetailComponents/CardDetailComponent';
+import CardDetailComponent from '../../components/CardDetailComponent';
 import Phone from '../../assets/images/phone.svg';
 import Email from '../../assets/images/mail.svg';
 import Website from '../../assets/images/websiteIcon.svg';
@@ -12,12 +12,12 @@ import MainButtonComponent from '../../components/MainButtoncomponent';
 import DeleteIcon from '../../assets/images/DeleteIcon.svg';
 import ShareIcon from '../../assets/images/ShareIcon.svg';
 import BackButtonIcon from '../../assets/images/Arrow.svg';
-import {listCardDetails} from '../../hooks/CardDetailHook';
+import { listCardDetails } from '../../hooks/CardDetailHook';
 import Constants from '../../utils/Constants';
-import {getLocalItem} from '../../utils/Utils';
-import {useNavigation} from '@react-navigation/native';
+import { getLocalItem } from '../../utils/Utils';
+import { useNavigation } from '@react-navigation/native';
 
-const CardDetailPage = ({route}: any) => {
+const CardDetailPage = ({ route }: any) => {
   const [cardDetail, setCardDetail] = useState({});
   const navigation = useNavigation();
 
@@ -28,9 +28,9 @@ const CardDetailPage = ({route}: any) => {
         const userToken = (await getLocalItem(Constants.USER_JWT)) ?? '{}';
         const card_id = route.params.card_id;
 
-       // console.log('route in cardDetailpage----->', route);
+        // console.log('route in cardDetailpage----->', route);
 
-        const {cardDetailsResp} = await listCardDetails({
+        const { cardDetailsResp } = await listCardDetails({
           user_id: userId,
           jwtToken: userToken,
           card_id: card_id, // You might need to define card_id somewhere
@@ -51,7 +51,8 @@ const CardDetailPage = ({route}: any) => {
         style={styles.backButton}
         onPress={() => {
           navigation.goBack();
-        }}>
+        }}
+      >
         <BackButtonIcon width={30} height={30} rotation={180} />
       </TouchableOpacity>
 
@@ -99,7 +100,8 @@ const CardDetailPage = ({route}: any) => {
             danger={true}
             onPressing={function () {
               throw new Error('Function not implemented.');
-            }}></ProfileButtonComponent>
+            }}
+          ></ProfileButtonComponent>
         </View>
 
         <View style={styles.mainButton}>
@@ -108,7 +110,8 @@ const CardDetailPage = ({route}: any) => {
             title={'Share'}
             onPressing={function () {
               throw new Error('Function not implemented.');
-            }}></MainButtonComponent>
+            }}
+          ></MainButtonComponent>
         </View>
       </View>
     </View>
@@ -198,11 +201,11 @@ const styles = StyleSheet.create({
   },
   profileButton: {
     flex: 1,
-    height: 50 // Make the button take up equal space
+    height: 50, // Make the button take up equal space
   },
   mainButton: {
     flex: 1,
-    height: 50 // Make the button take up equal space
+    height: 50, // Make the button take up equal space
   },
 });
 
