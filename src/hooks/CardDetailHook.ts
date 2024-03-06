@@ -35,7 +35,7 @@ export async function listCardDetails({
     user_id: user_id,
     card_id: card_id,
   };
-  console.log(CardDetailPayload);
+
   try {
     const CardDetailsResponse = await api.get('api/v1/getCardDetails', {
       params: CardDetailPayload,
@@ -44,7 +44,7 @@ export async function listCardDetails({
     statusCode = CardDetailsResponse.status.toString();
 
     cardDetailsResp = CardDetailsResponse.data;
-    console.log(cardDetailsResp);
+
   } catch (error) {
     console.log('Error while logging in:', error);
   }

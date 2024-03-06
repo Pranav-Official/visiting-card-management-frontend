@@ -48,7 +48,6 @@ const CardListScreen = ({ route }: any) => {
         const userId = (await getLocalItem(Constants.USER_ID)) ?? '';
         const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
         const cardId = route.params.card_id ?? '';
-        console.log('cardlist screen' + cardId);
 
         const result = await listCards({
           user_id: userId,
@@ -67,7 +66,6 @@ const CardListScreen = ({ route }: any) => {
 
   const navigation = useNavigation<NavigationProp<any>>();
   const handlePress = (card_id: string) => {
-    console.log('handlePress--->', card_id);
     navigation.navigate('CardStack', {
       screen: 'CardDetailsScreen',
       params: { card_id: card_id },
