@@ -39,7 +39,7 @@ const CardDetailPage = ({route}: any) => {
           card_id: card_id, // You might need to define card_id somewhere
         });
 
-        setCardDetail(cardDetailsResp);
+        setCardDetail(cardDetailsResp.data);
       } catch (error) {
         console.error('Error fetching contacts:', error);
       }
@@ -97,10 +97,8 @@ const CardDetailPage = ({route}: any) => {
       <View style={styles.editButtons}>
         <View style={styles.profileButton}>
           <ProfileButtonComponent
-            children={<DeleteIcon width={40} height={25} />}
+            children={<DeleteIcon width={40} height={24} />}
             title={'Delete'}
-            // proButtonBgColor={colors['secondary-light']}
-            // proButtonTextColor={colors['primary-danger']}
             danger={true}
             onPressing={function () {
               throw new Error('Function not implemented.');
@@ -109,7 +107,7 @@ const CardDetailPage = ({route}: any) => {
 
         <View style={styles.mainButton}>
           <MainButtonComponent
-            children={<ShareIcon width={40} height={25} />}
+            children={<ShareIcon width={40} height={24} />}
             title={'Share'}
             onPressing={function () {
               throw new Error('Function not implemented.');
@@ -143,7 +141,7 @@ const styles = StyleSheet.create({
     color: colors['primary-text'],
   },
   jobTitle: {
-    color: '#565656',
+    color: colors['accent-grey'],
     fontSize: 24,
   },
   cardButton: {
@@ -194,7 +192,7 @@ const styles = StyleSheet.create({
   },
   buttonStyle: {
     padding: 15,
-    backgroundColor: '#E8EDF2',
+    backgroundColor: colors['secondary-grey'],
     width: 120,
     height: 50,
     alignItems: 'center',
@@ -202,10 +200,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   profileButton: {
-    flex: 1, // Make the button take up equal space
+    flex: 1,
+    height: 50 // Make the button take up equal space
   },
   mainButton: {
-    flex: 1, // Make the button take up equal space
+    flex: 1,
+    height: 50 // Make the button take up equal space
   },
 });
 

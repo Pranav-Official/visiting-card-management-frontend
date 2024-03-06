@@ -17,6 +17,7 @@ import Constants from '../../utils/Constants';
 import colors from '../../utils/colorPallete';
 import TopBackButton from '../../components/BackButton';
 import TopMenuButton from '../../components/MenuButton';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 const CardListScreen = ({ route }: any) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -64,6 +65,15 @@ const CardListScreen = ({ route }: any) => {
     fetchCardList();
   }, []);
 
+  const navigation = useNavigation<NavigationProp<any>>();
+  const handlePress = (card_id: string) => {
+    console.log('handlePress--->', card_id);
+    navigation.navigate('CardStack', {
+      screen: 'CardDetailsScreen',
+      params: { card_id: card_id },
+    });
+  };
+
   return (
     <View
       style={[
@@ -101,6 +111,7 @@ const CardListScreen = ({ route }: any) => {
                   email={item.email}
                   phone_number={item.phone}
                   company_name={item.company_name}
+                  clickFunc={() => handlePress(item.card_id)}
                   alignToSides={true}
                 />
               )}
