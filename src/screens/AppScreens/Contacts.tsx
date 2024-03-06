@@ -32,11 +32,9 @@ const DATA = [
 ];
 
 const ContactsPage = () => {
+  const navigation = useNavigation<NavigationProp<any>>();
   const [contactList, setContactList] = useState(DATA);
-  const [searchText, setSearchText] = useState('');
-  const [searchResults, setSearchResults] = useState(DATA);
   const [loading, setLoading] = useState(true);
-  const [showHeader, setShowHeader] = useState(true);
 
   const get = async () => {
     const user_id = (await getLocalItem(Constants.USER_ID)) || '';
@@ -50,51 +48,21 @@ const ContactsPage = () => {
           a.contact_name.localeCompare(b.contact_name),
         ),
       );
-      setSearchResults(
-        response.data.sort((a: any, b: any) =>
-          a.contact_name.localeCompare(b.contact_name),
-        ),
-      );
-      // console.log(' get', 'user_id ' + user_id, 'token ' + token);
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    // console.log('useEffect', searchText);
-    if (searchText === '') {
-      setSearchResults(contactList);
-    } else {
-      setSearchResults(
-        contactList
-          .filter((contact: any) =>
-            contact.contact_name
-              .toLowerCase()
-              .includes(searchText.toLowerCase()),
-          )
-          .sort((a, b) => {
-            const indexA = a.contact_name
-              .toLowerCase()
-              .indexOf(searchText.toLowerCase());
-            const indexB = b.contact_name
-              .toLowerCase()
-              .indexOf(searchText.toLowerCase());
-            return indexA - indexB;
-          }),
-      );
-    }
-  }, [searchText]);
-
-  const flatListRef = useRef(null);
-  const lastScrollPosition = useRef(0);
 
   useEffect(() => {
     get();
   }, []);
 
   const contactPage = (id: string, name: string) => {
-    const navigation = useNavigation<NavigationProp<any>>();
-    navigation.navigate('CardListStack', { name: name, id: id });
+    console.log('contactPage', id, name);
+
+    navigation.navigate('CardStack', {
+      screen: 'CardListScreen',
+      params: { card_id: id, name: name },
+    });
   };
 
   return (
@@ -102,17 +70,26 @@ const ContactsPage = () => {
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Contacts</Text>
       </View>
-      <SearchBarComponent />
+      <TouchableOpacity
+        onPress={() => {
+          console.log('search');
+        }}
+      >
+        <SearchBarComponent editable={false} />
+      </TouchableOpacity>
+
       {loading ? (
         <ContactShimmer />
       ) : (
         <FlatList
-          ref={flatListRef}
           showsVerticalScrollIndicator={false}
           style={{ marginTop: 20 }}
-          data={searchResults}
+          data={contactList}
           renderItem={({ item }) => (
-            <ContactListComponent contactName={item.contact_name} />
+            <ContactListComponent
+              contactName={item.contact_name}
+              onPress={() => contactPage(item.card_id, item.contact_name)}
+            />
           )}
           keyExtractor={(item) => item.card_id}
           scrollEventThrottle={16}
