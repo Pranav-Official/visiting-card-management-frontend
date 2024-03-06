@@ -16,9 +16,15 @@ import { listCardDetails } from '../../hooks/CardDetailHook';
 import Constants from '../../utils/Constants';
 import { getLocalItem } from '../../utils/Utils';
 import { useNavigation } from '@react-navigation/native';
+import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
+import LinearGradient from 'react-native-linear-gradient';
 
 const CardDetailPage = ({ route }: any) => {
   const [cardDetail, setCardDetail] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+
+ 
+
   const navigation = useNavigation();
 
   useEffect(() => {
