@@ -7,6 +7,7 @@ const colors = {
   'accent-grey': '#6D8B92', // grey for accent
   'primary-danger': '#E53F3F', // red for danger
   'secondary-grey': '#E8EDF2', // light grey
+  'label-text': '#7A7A7A', // grey color for label
 };
 
 export default colors;

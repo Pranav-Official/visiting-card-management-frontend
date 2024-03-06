@@ -17,6 +17,7 @@ import Constants from '../../utils/Constants';
 import colors from '../../utils/colorPallete';
 import TopBackButton from '../../components/BackButton';
 import TopMenuButton from '../../components/MenuButton';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 const CardListScreen = ({ route }: any) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -47,7 +48,6 @@ const CardListScreen = ({ route }: any) => {
         const userId = (await getLocalItem(Constants.USER_ID)) ?? '';
         const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
         const cardId = route.params.card_id ?? '';
-        console.log('cardlist screen' + cardId);
 
         const result = await listCards({
           user_id: userId,
@@ -63,6 +63,14 @@ const CardListScreen = ({ route }: any) => {
     };
     fetchCardList();
   }, []);
+
+  const navigation = useNavigation<NavigationProp<any>>();
+  const handlePress = (card_id: string) => {
+    navigation.navigate('CardStack', {
+      screen: 'CardDetailsScreen',
+      params: { card_id: card_id },
+    });
+  };
 
   return (
     <View
@@ -101,6 +109,7 @@ const CardListScreen = ({ route }: any) => {
                   email={item.email}
                   phone_number={item.phone}
                   company_name={item.company_name}
+                  clickFunc={() => handlePress(item.card_id)}
                   alignToSides={true}
                 />
               )}
