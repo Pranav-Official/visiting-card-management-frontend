@@ -7,7 +7,7 @@ interface CardDetail{
   card_detail: string;
 };
 
-const CompanyNameComponent:React.FC<CardDetail> = ({ children, card_detail }) => {
+const CardDetailComponent:React.FC<CardDetail> = ({ children, card_detail }) => {
   return (
     <View>
       <View style={styles.component}>
@@ -43,4 +43,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CompanyNameComponent;
+export default CardDetailComponent;

@@ -3,13 +3,10 @@ import colors from '../../utils/colorPallete';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import CompanyName from '../../assets/images/organisation.svg';
 import CommonImageComponent from '../../components/CommonImageComponent';
-import CardDetailComponent from '../../components/CardDetailComponents/CompanyNameComponent';
+import CardDetailComponent from '../../components/CardDetailComponents/CardDetailComponent';
 import Phone from '../../assets/images/phone.svg';
 import Email from '../../assets/images/mail.svg';
 import Website from '../../assets/images/websiteIcon.svg';
-import EmailComponent from '../../components/CardDetailComponents/EmailComponent';
-import WebComponent from '../../components/CardDetailComponents/WebComponent';
-import PhoneComponent from '../../components/CardDetailComponents/PhoneComponent';
 import ProfileButtonComponent from '../../components/ProfileButtonComponent';
 import MainButtonComponent from '../../components/MainButtoncomponent';
 import DeleteIcon from '../../assets/images/DeleteIcon.svg';
@@ -81,17 +78,17 @@ const CardDetailPage = ({route}: any) => {
           <CompanyName width={20} height={20} color={'primary-text'} />
         </CardDetailComponent>
 
-        <PhoneComponent card_detail={cardDetail.phone || ''}>
+        <CardDetailComponent card_detail={cardDetail.phone || ''}>
           <Phone width={20} height={20} color={'primary-text'} />
-        </PhoneComponent>
+        </CardDetailComponent>
 
-        <EmailComponent card_detail={cardDetail.email || ''}>
+        <CardDetailComponent card_detail={cardDetail.email || ''}>
           <Email width={20} height={20} color={'primary-text'} />
-        </EmailComponent>
+        </CardDetailComponent>
 
-        <WebComponent card_detail={cardDetail.company_website || ''}>
+        <CardDetailComponent card_detail={cardDetail.company_website || ''}>
           <Website width={20} height={20} color={'primary-text'} />
-        </WebComponent>
+        </CardDetailComponent>
       </View>
 
       <View style={styles.editButtons}>
