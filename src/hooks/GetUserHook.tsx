@@ -6,7 +6,7 @@ interface UserListProp{
 }
 
 type UserReturn ={
-    user_Id:string;
+    user_id:string;
     user_fullname:string;
     user_email:string;
 }
@@ -33,7 +33,7 @@ export async function listUsers({
             headers: { Authorization: `Bearer ${jwt_token}` },
         });
         statusCode = userListResponse.status.toString();
-        userResp = userListResponse.data;
+        userResp = userListResponse.data.data;
         return{statusCode,userResp};
     }
     catch(error)

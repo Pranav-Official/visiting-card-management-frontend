@@ -6,6 +6,7 @@ import { setLocalItem } from '../../utils/Utils';
 import { useDispatch } from 'react-redux';
 import { userLogin } from '../../context/userSlice';
 import Constants from '../../utils/Constants';
+import ShareCardScreen from './ShareCardPage';
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
@@ -19,21 +20,22 @@ const HomeScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Home Screen</Text>
+      <ShareCardScreen></ShareCardScreen>
       <MainButtonComponent title="Logout" onPressing={Logout} />
     </View>
   );
 };
 
-// const styles = StyleSheet.create({
-//   container: {
-//     backgroundColor: colors['secondary-light'],
-//     color: colors['primary-text'],
-//     flex: 1,
-//   },
-//   text: {
-//     color: colors['primary-text'],
-//     fontSize: 40,
-//   },
-// });
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: colors['secondary-light'],
+    color: colors['primary-text'],
+    flex: 1,
+  },
+  text: {
+    color: colors['primary-text'],
+    fontSize: 40,
+  },
+});
 
 export default HomeScreen;
