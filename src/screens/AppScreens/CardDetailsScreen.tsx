@@ -24,6 +24,7 @@ import Constants from '../../utils/Constants';
 import { getLocalItem } from '../../utils/Utils';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import Clipboard from '@react-native-clipboard/clipboard';
+import { isValidWebsiteUrl } from '../../utils/regexCheck';
 
 type CardDetails = {
   card_name: string;
@@ -56,7 +57,7 @@ const CardDetailPage = ({ route }: any) => {
 
       setCardDetail(cardDetailsResp.data);
     } catch (error) {
-      console.error('Error fetching contacts:', error);
+      console.log('Error fetching contacts:', error);
     }
   };
 
@@ -67,28 +68,33 @@ const CardDetailPage = ({ route }: any) => {
   const phonePress = (phoneNumber: string) => {
     if (phoneNumber === '') return;
     const url = `tel:${phoneNumber}`;
-    Linking.openURL(url).catch((err) =>
-      console.error('An error occurred', err),
-    );
+    Linking.openURL(url).catch((err) => console.log('An error occurred', err));
   };
 
   const emailPress = (emailAddress: string) => {
     if (emailAddress === '') return;
     const url = `mailto:${emailAddress}`;
-    Linking.openURL(url).catch((err) =>
-      console.error('An error occurred', err),
-    );
+    Linking.openURL(url).catch((err) => console.log('An error occurred', err));
   };
 
   const websitePress = (webUrl: string) => {
     if (webUrl === '') return;
+    const webUrlSplit = webUrl.split('.');
+
+    if (!isValidWebsiteUrl(webUrl)) return;
+
+    if (webUrlSplit[0] === 'www') {
+      webUrl = 'https://' + webUrl;
+    } else {
+      webUrl = 'https://www.' + webUrl;
+    }
+
     Linking.openURL(webUrl).catch((err) =>
-      console.error('An error occurred', err),
+      console.log('An error occurred', err),
     );
   };
 
   const longPressToCopy = async (string: string) => {
-    if (string === '') return;
     try {
       await Clipboard.setString(string);
       Alert.alert(
@@ -132,7 +138,6 @@ const CardDetailPage = ({ route }: any) => {
               card_id: route.params.card_id,
               cardListScreenUpdater: route.params.cardListScreenUpdater,
               cardDetailsScreenUpdater: setKey,
-              create: true,
             });
           }}
         >
