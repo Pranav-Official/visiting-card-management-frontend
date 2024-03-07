@@ -20,7 +20,6 @@ const HomeScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Home Screen</Text>
-      <ShareCardScreen></ShareCardScreen>
       <MainButtonComponent title="Logout" onPressing={Logout} />
     </View>
   );
