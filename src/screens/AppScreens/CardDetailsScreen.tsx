@@ -162,7 +162,7 @@ const CardDetailPage = ({ route }: any) => {
           onLongPress={() => {
             longPressToCopy(cardDetail.company_name || '');
           }}
-          card_detail={cardDetail.company_name || ''}
+          card_detail={cardDetail.company_name || ''} isLoading={isLoading}
         >
           <CompanyName width={20} height={20} color={'primary-text'} />
         </CardDetailComponent>
@@ -172,7 +172,7 @@ const CardDetailPage = ({ route }: any) => {
             longPressToCopy(cardDetail.phone || '');
           }}
           onPress={() => phonePress(cardDetail.phone || '')}
-          card_detail={cardDetail.phone || ''}
+          card_detail={cardDetail.phone || ''} isLoading={isLoading}
         >
           <Phone width={20} height={20} color={'primary-text'} />
         </CardDetailComponent>
@@ -182,7 +182,7 @@ const CardDetailPage = ({ route }: any) => {
             longPressToCopy(cardDetail.email || '');
           }}
           onPress={() => emailPress(cardDetail.email || '')}
-          card_detail={cardDetail.email || ''}
+          card_detail={cardDetail.email || ''} isLoading={isLoading}
         >
           <Email width={20} height={20} color={'primary-text'} />
         </CardDetailComponent>
@@ -192,7 +192,7 @@ const CardDetailPage = ({ route }: any) => {
             longPressToCopy(cardDetail.company_website || '');
           }}
           onPress={() => websitePress(cardDetail.company_website || '')}
-          card_detail={cardDetail.company_website || ''}
+          card_detail={cardDetail.company_website || ''} isLoading={isLoading}
         >
           <Website width={20} height={20} color={'primary-text'} />
         </CardDetailComponent>
