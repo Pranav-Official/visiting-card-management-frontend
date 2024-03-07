@@ -15,6 +15,7 @@ import { editCardDetails } from '../../hooks/editCardHook';
 import Constants from '../../utils/Constants';
 import { getLocalItem } from '../../utils/Utils';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { newCardDetails } from '../../hooks/createCardHook';
 
 //Edit Card Details Screen
 const EditCardDetails = ({ route }: any) => {
@@ -66,6 +67,63 @@ const EditCardDetails = ({ route }: any) => {
       console.error('Error editing card:', error);
     }
   };
+  ////////////////////////////////////////////////////////////////////////////
+  const createCard = async () => {
+    try {
+      const user_id = (await getLocalItem(Constants.USER_ID)) ?? '{}';
+      const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '{}';
+
+      // Filtering out the edited fields
+      const newCardData = Object.keys(cardDetails)
+        .filter((key) => cardDetails[key] !== route.params.cardDetails[key])
+        .reduce((obj: any, key) => {
+          obj[key] = cardDetails[key];
+          return obj;
+        }, {});
+      //calling editCardDetails Hook
+      const response = await newCardDetails({
+        user_id,
+        jwtToken,
+        card_id: route.params.card_id,
+        newData: cardDetails,
+      });
+
+      console.log('Response:', response.newCardResp);
+
+      const newStatus = response.statusCode;
+
+      // if save successful,navigating to cardDetails screen
+      if (newStatus === '200') {
+        // const cardListScreenUpdater = route.params.cardListScreenUpdater;
+        // const cardDetailsScreenUpdater = route.params.cardDetailsScreenUpdater;
+        // cardDetailsScreenUpdater((key) => key + 1);
+        // cardListScreenUpdater((key) => key + 1);
+        if (route.params.create) {
+          // If create flag is true, call createCard function
+          navigation.navigate('Home', {});
+        } else {
+          // If create flag is false, call saveChanges function
+          navigation.navigate('CardStack', {
+            screen: 'CardDetailsScreen',
+            params: { card_id: route.params.card_id },
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error craeting new card:', error);
+    }
+  };
+  ////////////////////////////////////////////////////////////////////////////
+
+  const handleSave = async () => {
+    if (route.params.create) {
+      // If create flag is true, call createCard function
+      await createCard();
+    } else {
+      // If create flag is false, call saveChanges function
+      await saveChanges();
+    }
+  };
 
   const handleInputChange = (key: string, value: string) => {
     setCardDetails({ ...cardDetails, [key]: value });
@@ -89,6 +147,7 @@ const EditCardDetails = ({ route }: any) => {
           placeholder={'Card Name'}
           value={cardDetails.card_name}
           setter={(value: string) => handleInputChange('card_name', value)}
+          readonly={!route.params.create}
         />
       </View>
       <View style={styles.inputFieldsContainer}>
@@ -171,7 +230,7 @@ const EditCardDetails = ({ route }: any) => {
         <MainButtonComponent
           children={undefined}
           title={'Save'}
-          onPressing={saveChanges}
+          onPressing={handleSave}
         />
       </View>
     </View>
