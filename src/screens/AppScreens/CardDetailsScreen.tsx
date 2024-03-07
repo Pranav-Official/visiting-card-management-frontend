@@ -16,14 +16,11 @@ import { listCardDetails } from '../../hooks/CardDetailHook';
 import Constants from '../../utils/Constants';
 import { getLocalItem } from '../../utils/Utils';
 import { useNavigation } from '@react-navigation/native';
-import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
-import LinearGradient from 'react-native-linear-gradient';
+import CardDetailsShimmer from '../../components/Shimmers/CardDetailsShimmer';
 
 const CardDetailPage = ({ route }: any) => {
   const [cardDetail, setCardDetail] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-
- 
 
   const navigation = useNavigation();
   const [key, setKey] = useState(0);
@@ -40,7 +37,8 @@ const CardDetailPage = ({ route }: any) => {
         card_id: card_id,
       });
 
-      setCardDetail(cardDetailsResp.data);
+     setCardDetail(cardDetailsResp.data);
+     setIsLoading(false);
     } catch (error) {
       console.error('Error fetching contacts:', error);
     }
@@ -64,10 +62,18 @@ const CardDetailPage = ({ route }: any) => {
       <View style={styles.imageContainer}>
         <CommonImageComponent />
       </View>
-
       <View style={styles.conatctHead}>
-        <Text style={styles.cardName}>{cardDetail.card_name}</Text>
-        <Text style={styles.jobTitle}>{cardDetail.job_title}</Text>
+        {isLoading ? (
+          <>
+            <CardDetailsShimmer />
+            <CardDetailsShimmer />
+          </>
+        ) : (
+          <>
+            <Text style={styles.cardName}>{cardDetail.card_name}</Text>
+            <Text style={styles.jobTitle}>{cardDetail.job_title}</Text>
+          </>
+        )}
       </View>
 
       <View style={styles.headerStyle}>
@@ -82,7 +88,7 @@ const CardDetailPage = ({ route }: any) => {
               card_id: route.params.card_id,
               cardListScreenUpdater: route.params.cardListScreenUpdater,
               cardDetailsScreenUpdater: setKey,
-              create: true
+              create: true,
             });
           }}
         >
@@ -91,19 +97,19 @@ const CardDetailPage = ({ route }: any) => {
       </View>
 
       <View style={styles.cardDetailsContainer}>
-        <CardDetailComponent card_detail={cardDetail.company_name || ''}>
+        <CardDetailComponent card_detail={cardDetail.company_name || ''} isLoading={isLoading}>
           <CompanyName width={20} height={20} color={'primary-text'} />
         </CardDetailComponent>
 
-        <CardDetailComponent card_detail={cardDetail.phone || ''}>
+        <CardDetailComponent card_detail={cardDetail.phone || ''} isLoading={isLoading}>
           <Phone width={20} height={20} color={'primary-text'} />
         </CardDetailComponent>
 
-        <CardDetailComponent card_detail={cardDetail.email || ''}>
+        <CardDetailComponent card_detail={cardDetail.email || ''} isLoading={isLoading}>
           <Email width={20} height={20} color={'primary-text'} />
         </CardDetailComponent>
 
-        <CardDetailComponent card_detail={cardDetail.company_website || ''}>
+        <CardDetailComponent card_detail={cardDetail.company_website || ''} isLoading={isLoading}>
           <Website width={20} height={20} color={'primary-text'} />
         </CardDetailComponent>
       </View>

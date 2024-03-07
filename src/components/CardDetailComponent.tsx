@@ -1,21 +1,25 @@
 import React, { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import colors from '../utils/colorPallete';
+import CardDetailsShimmer from './Shimmers/CardDetailsShimmer';
 
 interface CardDetail {
   children: ReactNode;
   card_detail: string;
+  isLoading: boolean;
 }
 
 const CardDetailComponent: React.FC<CardDetail> = ({
   children,
   card_detail,
+  isLoading
 }) => {
   return (
     <View>
       <View style={styles.component}>
         <View style={styles.iconBox}>{children}</View>
-        <Text style={styles.text}>{card_detail}</Text>
+        {isLoading?(<CardDetailsShimmer/>):(<Text style={styles.text}>{card_detail}</Text>)}
+        
       </View>
     </View>
   );
