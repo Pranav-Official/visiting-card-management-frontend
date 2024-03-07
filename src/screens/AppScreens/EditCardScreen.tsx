@@ -15,7 +15,6 @@ import { editCardDetails } from '../../hooks/editCardHook';
 import Constants from '../../utils/Constants';
 import { getLocalItem } from '../../utils/Utils';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { newCardDetails } from '../../hooks/createCardHook';
 
 //Edit Card Details Screen
 const EditCardDetails = ({ route }: any) => {
@@ -48,8 +47,6 @@ const EditCardDetails = ({ route }: any) => {
         updatedData: editedData,
       });
 
-      console.log('Response:', response);
-
       const isSaved = response.statusCode;
 
       //if save successful,navigating to cardDetails screen
@@ -68,42 +65,11 @@ const EditCardDetails = ({ route }: any) => {
     }
   };
 
-  //If flag is true, call create card function
-  const createCard = async () => {
-    try {
-      const user_id = (await getLocalItem(Constants.USER_ID)) ?? '{}';
-      const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '{}';
-
-      //calling createNewCard  Hook
-      const response = await newCardDetails({
-        user_id,
-        jwtToken,
-        card_id: route.params.card_id,
-        newData: cardDetails,
-      });
-      const newStatus = response.statusCode;
-
-      // if save successful,navigating to home screen
-      if (newStatus === '200') {
-        if (route.params.create) {
-          // If create flag is true, call createCard function
-          navigation.navigate('Home', {});
-        } else {
-          navigation.navigate('CardStack', {
-            screen: 'CardDetailsScreen',
-            params: { card_id: route.params.card_id },
-          });
-        }
-      }
-    } catch (error) {
-      console.error('Error craeting new card:', error);
-    }
-  };
-
   const handleSave = async () => {
     if (route.params.create) {
-      // If create flag is true, call createCard function
-      await createCard();
+      navigation.navigate('SetContactNameScreen', {
+        cardDetails: cardDetails,
+      });
     } else {
       // If create flag is false, call saveChanges function
       await saveChanges();
