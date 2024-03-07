@@ -37,9 +37,12 @@ type CardDetails = {
   company_website?: string;
   description?: string | null;
 };
+import CardDetailsShimmer from '../../components/Shimmers/CardDetailsShimmer';
 
 const CardDetailPage = ({ route }: any) => {
   const [cardDetail, setCardDetail] = useState<CardDetails>({});
+  const [isLoading, setIsLoading] = useState(true);
+
   const navigation = useNavigation<NavigationProp<any>>();
   const [key, setKey] = useState(0);
 
@@ -56,6 +59,7 @@ const CardDetailPage = ({ route }: any) => {
       });
 
       setCardDetail(cardDetailsResp.data);
+      setIsLoading(false);
     } catch (error) {
       console.log('Error fetching contacts:', error);
     }
@@ -120,10 +124,22 @@ const CardDetailPage = ({ route }: any) => {
       <View style={styles.imageContainer}>
         <CommonImageComponent />
       </View>
-
       <View style={styles.conatctHead}>
-        <Text style={styles.cardName}>{cardDetail.card_name}</Text>
-        <Text style={styles.jobTitle}>{cardDetail.job_title}</Text>
+        {isLoading ? (
+          <>
+            <View style={styles.shimmerContainer}>
+              <CardDetailsShimmer />
+            </View>
+            <View style={styles.shimmerContainer}>
+              <CardDetailsShimmer />
+            </View>
+          </>
+        ) : (
+          <>
+            <Text style={styles.cardName}>{cardDetail.card_name}</Text>
+            <Text style={styles.jobTitle}>{cardDetail.job_title}</Text>
+          </>
+        )}
       </View>
 
       <View style={styles.headerStyle}>
@@ -151,6 +167,7 @@ const CardDetailPage = ({ route }: any) => {
             longPressToCopy(cardDetail.company_name || '');
           }}
           card_detail={cardDetail.company_name || ''}
+          isLoading={isLoading}
         >
           <CompanyName width={20} height={20} color={'primary-text'} />
         </CardDetailComponent>
@@ -161,6 +178,7 @@ const CardDetailPage = ({ route }: any) => {
           }}
           onPress={() => phonePress(cardDetail.phone || '')}
           card_detail={cardDetail.phone || ''}
+          isLoading={isLoading}
         >
           <Phone width={20} height={20} color={'primary-text'} />
         </CardDetailComponent>
@@ -171,6 +189,7 @@ const CardDetailPage = ({ route }: any) => {
           }}
           onPress={() => emailPress(cardDetail.email || '')}
           card_detail={cardDetail.email || ''}
+          isLoading={isLoading}
         >
           <Email width={20} height={20} color={'primary-text'} />
         </CardDetailComponent>
@@ -181,6 +200,7 @@ const CardDetailPage = ({ route }: any) => {
           }}
           onPress={() => websitePress(cardDetail.company_website || '')}
           card_detail={cardDetail.company_website || ''}
+          isLoading={isLoading}
         >
           <Website width={20} height={20} color={'primary-text'} />
         </CardDetailComponent>
@@ -237,6 +257,9 @@ const styles = StyleSheet.create({
   jobTitle: {
     color: colors['accent-grey'],
     fontSize: 24,
+  },
+  shimmerContainer: {
+    marginBottom: 10, // Adjust the margin bottom as needed
   },
   cardButton: {
     alignItems: 'center',
