@@ -58,8 +58,8 @@ const CardDetailPage = ({ route }: any) => {
         card_id: card_id,
       });
 
-     setCardDetail(cardDetailsResp.data);
-     setIsLoading(false);
+      setCardDetail(cardDetailsResp.data);
+      setIsLoading(false);
     } catch (error) {
       console.log('Error fetching contacts:', error);
     }
@@ -127,8 +127,12 @@ const CardDetailPage = ({ route }: any) => {
       <View style={styles.conatctHead}>
         {isLoading ? (
           <>
-            <CardDetailsShimmer />
-            <CardDetailsShimmer />
+            <View style={styles.shimmerContainer}>
+              <CardDetailsShimmer />
+            </View>
+            <View style={styles.shimmerContainer}>
+              <CardDetailsShimmer />
+            </View>
           </>
         ) : (
           <>
@@ -162,7 +166,8 @@ const CardDetailPage = ({ route }: any) => {
           onLongPress={() => {
             longPressToCopy(cardDetail.company_name || '');
           }}
-          card_detail={cardDetail.company_name || ''} isLoading={isLoading}
+          card_detail={cardDetail.company_name || ''}
+          isLoading={isLoading}
         >
           <CompanyName width={20} height={20} color={'primary-text'} />
         </CardDetailComponent>
@@ -172,7 +177,8 @@ const CardDetailPage = ({ route }: any) => {
             longPressToCopy(cardDetail.phone || '');
           }}
           onPress={() => phonePress(cardDetail.phone || '')}
-          card_detail={cardDetail.phone || ''} isLoading={isLoading}
+          card_detail={cardDetail.phone || ''}
+          isLoading={isLoading}
         >
           <Phone width={20} height={20} color={'primary-text'} />
         </CardDetailComponent>
@@ -182,7 +188,8 @@ const CardDetailPage = ({ route }: any) => {
             longPressToCopy(cardDetail.email || '');
           }}
           onPress={() => emailPress(cardDetail.email || '')}
-          card_detail={cardDetail.email || ''} isLoading={isLoading}
+          card_detail={cardDetail.email || ''}
+          isLoading={isLoading}
         >
           <Email width={20} height={20} color={'primary-text'} />
         </CardDetailComponent>
@@ -192,7 +199,8 @@ const CardDetailPage = ({ route }: any) => {
             longPressToCopy(cardDetail.company_website || '');
           }}
           onPress={() => websitePress(cardDetail.company_website || '')}
-          card_detail={cardDetail.company_website || ''} isLoading={isLoading}
+          card_detail={cardDetail.company_website || ''}
+          isLoading={isLoading}
         >
           <Website width={20} height={20} color={'primary-text'} />
         </CardDetailComponent>
@@ -249,6 +257,9 @@ const styles = StyleSheet.create({
   jobTitle: {
     color: colors['accent-grey'],
     fontSize: 24,
+  },
+  shimmerContainer: {
+    marginBottom: 10, // Adjust the margin bottom as needed
   },
   cardButton: {
     alignItems: 'center',
