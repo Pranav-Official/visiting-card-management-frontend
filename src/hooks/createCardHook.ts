@@ -43,7 +43,6 @@ export async function newCardDetails({
         user_id: user_id,
         card_id: card_id,
         ...newData,
-        contact_name: 'Default',
       },
       {
         headers: { Authorization: `Bearer ${jwtToken}` },

@@ -9,11 +9,11 @@ import Constants from '../../utils/Constants';
 import { newCardDetails } from '../../hooks/createCardHook';
 
 const SetContactNameScreen = ({ route }: any) => {
-
   const { cardDetails } = route.params;
   const navigation = useNavigation<NavigationProp<any>>();
   const [newContactName, setNewContactName] = useState('');
 
+  //Calling create card hook
   const createCard = async () => {
     try {
       const user_id = (await getLocalItem(Constants.USER_ID)) ?? '{}';
@@ -35,9 +35,9 @@ const SetContactNameScreen = ({ route }: any) => {
 
       const newStatus = response.statusCode;
 
-      // if save successful, navigating to home screen 
+      // if save successful, navigating to home screen
       if (newStatus === '200') {
-          navigation.navigate('Home', {});
+        navigation.navigate('Home', {});
       }
     } catch (error) {
       console.error('Error creating new card:', error);
@@ -58,10 +58,7 @@ const SetContactNameScreen = ({ route }: any) => {
       </View>
       <View style={styles.buttonContainer}>
         <ProfileButtonComponent title={'Go Back'} danger={true} />
-        <MainButtonComponent
-          title="Save"
-          onPressing={createCard}
-        />
+        <MainButtonComponent title="Save" onPressing={createCard} />
       </View>
     </View>
   );

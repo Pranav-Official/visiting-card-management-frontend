@@ -15,7 +15,6 @@ import { editCardDetails } from '../../hooks/editCardHook';
 import Constants from '../../utils/Constants';
 import { getLocalItem } from '../../utils/Utils';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { newCardDetails } from '../../hooks/createCardHook';
 
 //Edit Card Details Screen
 const EditCardDetails = ({ route }: any) => {
@@ -47,8 +46,6 @@ const EditCardDetails = ({ route }: any) => {
         card_id: route.params.card_id,
         updatedData: editedData,
       });
-
-      console.log('Response:', response);
 
       const isSaved = response.statusCode;
 
