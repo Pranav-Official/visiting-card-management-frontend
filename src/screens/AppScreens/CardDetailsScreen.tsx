@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import colors from '../../utils/colorPallete';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Alert,
+  Linking,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import CompanyName from '../../assets/images/organisation.svg';
 import CommonImageComponent from '../../components/CommonImageComponent';
 import CardDetailComponent from '../../components/CardDetailComponent';
@@ -15,14 +22,28 @@ import BackButtonIcon from '../../assets/images/Arrow.svg';
 import { listCardDetails } from '../../hooks/CardDetailHook';
 import Constants from '../../utils/Constants';
 import { getLocalItem } from '../../utils/Utils';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import Clipboard from '@react-native-clipboard/clipboard';
+import { isValidWebsiteUrl } from '../../utils/regexCheck';
+
+type CardDetails = {
+  card_name: string;
+  img_front_link?: string;
+  img_back_link?: string;
+  job_title?: string;
+  email?: string;
+  phone?: string;
+  company_name?: string;
+  company_website?: string;
+  description?: string | null;
+};
 import CardDetailsShimmer from '../../components/Shimmers/CardDetailsShimmer';
 
 const CardDetailPage = ({ route }: any) => {
-  const [cardDetail, setCardDetail] = useState({});
+  const [cardDetail, setCardDetail] = useState<CardDetails>({});
   const [isLoading, setIsLoading] = useState(true);
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<any>>();
   const [key, setKey] = useState(0);
 
   const fetchData = async () => {
@@ -40,13 +61,54 @@ const CardDetailPage = ({ route }: any) => {
      setCardDetail(cardDetailsResp.data);
      setIsLoading(false);
     } catch (error) {
-      console.error('Error fetching contacts:', error);
+      console.log('Error fetching contacts:', error);
     }
   };
 
   useEffect(() => {
     fetchData();
   }, [key]);
+
+  const phonePress = (phoneNumber: string) => {
+    if (phoneNumber === '') return;
+    const url = `tel:${phoneNumber}`;
+    Linking.openURL(url).catch((err) => console.log('An error occurred', err));
+  };
+
+  const emailPress = (emailAddress: string) => {
+    if (emailAddress === '') return;
+    const url = `mailto:${emailAddress}`;
+    Linking.openURL(url).catch((err) => console.log('An error occurred', err));
+  };
+
+  const websitePress = (webUrl: string) => {
+    if (webUrl === '') return;
+    const webUrlSplit = webUrl.split('.');
+
+    if (!isValidWebsiteUrl(webUrl)) return;
+
+    if (webUrlSplit[0] === 'www') {
+      webUrl = 'https://' + webUrl;
+    } else {
+      webUrl = 'https://www.' + webUrl;
+    }
+
+    Linking.openURL(webUrl).catch((err) =>
+      console.log('An error occurred', err),
+    );
+  };
+
+  const longPressToCopy = async (string: string) => {
+    try {
+      await Clipboard.setString(string);
+      Alert.alert(
+        'Copied to Clipboard',
+        `Content "${string}" copied to clipboard successfully.`,
+      );
+    } catch (error) {
+      console.error('Error copying to clipboard:', error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -88,7 +150,6 @@ const CardDetailPage = ({ route }: any) => {
               card_id: route.params.card_id,
               cardListScreenUpdater: route.params.cardListScreenUpdater,
               cardDetailsScreenUpdater: setKey,
-              create: true,
             });
           }}
         >
@@ -97,19 +158,42 @@ const CardDetailPage = ({ route }: any) => {
       </View>
 
       <View style={styles.cardDetailsContainer}>
-        <CardDetailComponent card_detail={cardDetail.company_name || ''} isLoading={isLoading}>
+        <CardDetailComponent
+          onLongPress={() => {
+            longPressToCopy(cardDetail.company_name || '');
+          }}
+          card_detail={cardDetail.company_name || ''}
+        >
           <CompanyName width={20} height={20} color={'primary-text'} />
         </CardDetailComponent>
 
-        <CardDetailComponent card_detail={cardDetail.phone || ''} isLoading={isLoading}>
+        <CardDetailComponent
+          onLongPress={() => {
+            longPressToCopy(cardDetail.phone || '');
+          }}
+          onPress={() => phonePress(cardDetail.phone || '')}
+          card_detail={cardDetail.phone || ''}
+        >
           <Phone width={20} height={20} color={'primary-text'} />
         </CardDetailComponent>
 
-        <CardDetailComponent card_detail={cardDetail.email || ''} isLoading={isLoading}>
+        <CardDetailComponent
+          onLongPress={() => {
+            longPressToCopy(cardDetail.email || '');
+          }}
+          onPress={() => emailPress(cardDetail.email || '')}
+          card_detail={cardDetail.email || ''}
+        >
           <Email width={20} height={20} color={'primary-text'} />
         </CardDetailComponent>
 
-        <CardDetailComponent card_detail={cardDetail.company_website || ''} isLoading={isLoading}>
+        <CardDetailComponent
+          onLongPress={() => {
+            longPressToCopy(cardDetail.company_website || '');
+          }}
+          onPress={() => websitePress(cardDetail.company_website || '')}
+          card_detail={cardDetail.company_website || ''}
+        >
           <Website width={20} height={20} color={'primary-text'} />
         </CardDetailComponent>
       </View>

@@ -44,7 +44,6 @@ export async function listCardDetails({
     statusCode = CardDetailsResponse.status.toString();
 
     cardDetailsResp = CardDetailsResponse.data;
-
   } catch (error) {
     console.log('Error while logging in:', error);
   }
