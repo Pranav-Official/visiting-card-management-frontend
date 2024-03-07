@@ -32,6 +32,7 @@ const DATA = [
 ];
 
 const ContactsPage = () => {
+  const [cardDetail, setCardDetail] = useState({});
   const navigation = useNavigation<NavigationProp<any>>();
   const [contactList, setContactList] = useState(DATA);
   const [loading, setLoading] = useState(true);
@@ -96,6 +97,12 @@ const ContactsPage = () => {
         />
       )}
       <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('CardStack', {
+            screen: 'EditCardScreen',
+            params: { create: true, cardDetails: cardDetail },
+          });
+        }}
         style={{
           position: 'absolute',
           bottom: 50,

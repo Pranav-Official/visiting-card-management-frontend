@@ -76,6 +76,7 @@ const CardDetailPage = ({ route }: any) => {
               card_id: route.params.card_id,
               cardListScreenUpdater: route.params.cardListScreenUpdater,
               cardDetailsScreenUpdater: setKey,
+              create: true
             });
           }}
         >

@@ -32,11 +32,11 @@ const CommonImageComponent = () => {
   const imageData = [
     {
       Image:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRg_4qTecYyAS3Le7wSQWgrJoMCHMUVBhSn1B1JxQCBJ7NTeQKMF9IlopklR-24QLFRN00&usqp=CAU',
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEXptu3jFyRY50KKSUvX0iKJ7f2zxNPNsMwA&usqp=CAU',
     },
     {
       Image:
-        'https://i.pinimg.com/736x/59/25/a4/5925a4faff25017e546391c8a8527d9b.jpg',
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEXptu3jFyRY50KKSUvX0iKJ7f2zxNPNsMwA&usqp=CAU',
     },
   ];
 
