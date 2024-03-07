@@ -26,7 +26,7 @@ const EditCardDetails = ({ route }: any) => {
       setCardDetails(route.params.cardDetails);
     }
   }, [route.params.cardDetails]);
-  //Function to save the edits
+  //If flag is false, function to save the edits
   const saveChanges = async () => {
     try {
       const user_id = (await getLocalItem(Constants.USER_ID)) ?? '{}';
@@ -47,8 +47,6 @@ const EditCardDetails = ({ route }: any) => {
         updatedData: editedData,
       });
 
-      console.log('Response:', response);
-
       const isSaved = response.statusCode;
 
       //if save successful,navigating to cardDetails screen
@@ -64,6 +62,17 @@ const EditCardDetails = ({ route }: any) => {
       }
     } catch (error) {
       console.error('Error editing card:', error);
+    }
+  };
+
+  const handleSave = async () => {
+    if (route.params.create) {
+      navigation.navigate('SetContactNameScreen', {
+        cardDetails: cardDetails,
+      });
+    } else {
+      // If create flag is false, call saveChanges function
+      await saveChanges();
     }
   };
 
@@ -89,6 +98,7 @@ const EditCardDetails = ({ route }: any) => {
           placeholder={'Card Name'}
           value={cardDetails.card_name}
           setter={(value: string) => handleInputChange('card_name', value)}
+          readonly={!route.params.create}
         />
       </View>
       <View style={styles.inputFieldsContainer}>
@@ -171,7 +181,7 @@ const EditCardDetails = ({ route }: any) => {
         <MainButtonComponent
           children={undefined}
           title={'Save'}
-          onPressing={saveChanges}
+          onPressing={handleSave}
         />
       </View>
     </View>
