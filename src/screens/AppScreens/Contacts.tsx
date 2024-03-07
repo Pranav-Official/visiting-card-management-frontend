@@ -1,13 +1,9 @@
-/* eslint-disable react-native/no-inline-styles */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  Animated,
   FlatList,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -15,25 +11,20 @@ import ContactListComponent from '../../components/ContactListComponent';
 import { getContactList } from '../../hooks/contactListHook';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
-import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
-import LinearGradient from 'react-native-linear-gradient';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import colors from '../../utils/colorPallete';
 import SearchBarComponent from '../../components/SearchBarComponent';
 import ContactShimmer from '../../components/Shimmers/ContactShimmer';
 
-const DATA = [
-  {
-    card_id: '1',
-    contact_name: '',
-  },
-];
+type contact = {
+  card_id: string;
+  contact_name: string;
+};
 
 const ContactsPage = () => {
   const navigation = useNavigation<NavigationProp<any>>();
-  const [contactList, setContactList] = useState(DATA);
+  const [contactList, setContactList] = useState<contact[]>([]);
   const [loading, setLoading] = useState(true);
 
   const get = async () => {
@@ -44,7 +35,7 @@ const ContactsPage = () => {
       return;
     } else {
       setContactList(
-        response.data.sort((a: any, b: any) =>
+        response.data.sort((a: contact, b: contact) =>
           a.contact_name.localeCompare(b.contact_name),
         ),
       );

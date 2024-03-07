@@ -29,7 +29,7 @@ const SearchListComponent = ({
     },
     nameText: {
       color: colors['primary-text'],
-      fontSize: matchType === 'name' ? 26 : 22,
+      fontSize: matchType === 'name' || matchType === 'none' ? 26 : 22,
       fontFamily: 'roberto',
     },
     circle: {
@@ -41,7 +41,7 @@ const SearchListComponent = ({
     },
     subTestContainer: {
       flexDirection: 'row',
-      display: matchType === 'name' ? 'none' : 'flex',
+      display: matchType === 'name' || matchType === 'none' ? 'none' : 'flex',
     },
     subtext: {
       color: colors['primary-text'],
@@ -59,9 +59,9 @@ const SearchListComponent = ({
         </View>
         <View style={{ flexDirection: 'column' }}>
           <View style={{ flexDirection: 'row' }}>
-            <Text style={styles.nameText}>Mak</Text>
-            <Text style={[styles.nameText, { fontWeight: 'bold' }]}>oto</Text>
-            <Text style={styles.nameText}>Shinkai</Text>
+            <Text style={styles.nameText}>{contactName}</Text>
+            <Text style={[styles.nameText, { fontWeight: 'bold' }]}></Text>
+            <Text style={styles.nameText}></Text>
           </View>
           <View style={styles.subTestContainer}>
             <Text style={styles.subtext}>342</Text>

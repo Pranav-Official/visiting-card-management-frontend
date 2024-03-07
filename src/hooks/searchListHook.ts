@@ -1,7 +1,7 @@
 import axios from 'axios';
 import api from './api';
 
-type CardData = {
+export type CardData = {
   card_id: string;
   contact_name: string;
   card_names: string[];
@@ -10,11 +10,11 @@ type CardData = {
   company_names: string[];
 };
 
-type ApiResponse = {
+export type ApiResponse = {
   statusCode: string;
-  status?: boolean;
-  message?: string;
-  data?: CardData[];
+  status: boolean;
+  message: string;
+  data: CardData[];
 };
 
 export const fetchSearchableList = async (
@@ -30,9 +30,14 @@ export const fetchSearchableList = async (
     return { statusCode, ...response.data };
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      return { statusCode, message: error.message };
+      return { statusCode, status: false, message: error.message, data: [] };
     }
     console.log(error);
-    return { statusCode, message: 'An unexpected error occurred' };
+    return {
+      statusCode,
+      status: false,
+      message: 'An unexpected error occurred',
+      data: [],
+    };
   }
 };
