@@ -1,23 +1,27 @@
 import React, { ReactNode } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import colors from '../utils/colorPallete';
 
 interface CardDetail {
   children: ReactNode;
   card_detail: string;
+  onPress?: () => any;
+  onLongPress?: () => any;
 }
 
 const CardDetailComponent: React.FC<CardDetail> = ({
   children,
   card_detail,
+  onPress,
+  onLongPress,
 }) => {
   return (
-    <View>
+    <TouchableOpacity onLongPress={onLongPress} onPress={onPress}>
       <View style={styles.component}>
         <View style={styles.iconBox}>{children}</View>
         <Text style={styles.text}>{card_detail}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 //
