@@ -27,7 +27,7 @@ const EditCardDetails = ({ route }: any) => {
       setCardDetails(route.params.cardDetails);
     }
   }, [route.params.cardDetails]);
-  //Function to save the edits
+  //If flag is false, function to save the edits
   const saveChanges = async () => {
     try {
       const user_id = (await getLocalItem(Constants.USER_ID)) ?? '{}';
@@ -67,42 +67,28 @@ const EditCardDetails = ({ route }: any) => {
       console.error('Error editing card:', error);
     }
   };
-  ////////////////////////////////////////////////////////////////////////////
+
+  //If flag is true, call create card function
   const createCard = async () => {
     try {
       const user_id = (await getLocalItem(Constants.USER_ID)) ?? '{}';
       const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '{}';
 
-      // Filtering out the edited fields
-      const newCardData = Object.keys(cardDetails)
-        .filter((key) => cardDetails[key] !== route.params.cardDetails[key])
-        .reduce((obj: any, key) => {
-          obj[key] = cardDetails[key];
-          return obj;
-        }, {});
-      //calling editCardDetails Hook
+      //calling createNewCard  Hook
       const response = await newCardDetails({
         user_id,
         jwtToken,
         card_id: route.params.card_id,
         newData: cardDetails,
       });
-
-      console.log('Response:', response.newCardResp);
-
       const newStatus = response.statusCode;
 
-      // if save successful,navigating to cardDetails screen
+      // if save successful,navigating to home screen
       if (newStatus === '200') {
-        // const cardListScreenUpdater = route.params.cardListScreenUpdater;
-        // const cardDetailsScreenUpdater = route.params.cardDetailsScreenUpdater;
-        // cardDetailsScreenUpdater((key) => key + 1);
-        // cardListScreenUpdater((key) => key + 1);
         if (route.params.create) {
           // If create flag is true, call createCard function
           navigation.navigate('Home', {});
         } else {
-          // If create flag is false, call saveChanges function
           navigation.navigate('CardStack', {
             screen: 'CardDetailsScreen',
             params: { card_id: route.params.card_id },
@@ -113,7 +99,6 @@ const EditCardDetails = ({ route }: any) => {
       console.error('Error craeting new card:', error);
     }
   };
-  ////////////////////////////////////////////////////////////////////////////
 
   const handleSave = async () => {
     if (route.params.create) {

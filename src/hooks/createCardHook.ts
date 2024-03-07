@@ -50,12 +50,10 @@ export async function newCardDetails({
       },
     );
 
-    console.log('card detail response--->', CardDetailsResponse);
     statusCode = CardDetailsResponse.status.toString();
 
-    // Check if data is present before type assertion
     newCardResp = CardDetailsResponse.data;
-    console.log('New card response------>', newCardResp);
+    // console.log('New card response------>', newCardResp);
   } catch (error) {
     console.log('Error while logging in:', error);
   }
