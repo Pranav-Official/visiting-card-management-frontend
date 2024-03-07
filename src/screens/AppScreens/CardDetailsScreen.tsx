@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import colors from '../../utils/colorPallete';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Modal from 'react-native-modal';
 import CompanyName from '../../assets/images/organisation.svg';
 import CommonImageComponent from '../../components/CommonImageComponent';
 import CardDetailComponent from '../../components/CardDetailComponent';
@@ -16,11 +17,17 @@ import { listCardDetails } from '../../hooks/CardDetailHook';
 import Constants from '../../utils/Constants';
 import { getLocalItem } from '../../utils/Utils';
 import { useNavigation } from '@react-navigation/native';
+import ShareCardScreen from './ShareCardPage';
 
 const CardDetailPage = ({ route }: any) => {
   const [cardDetail, setCardDetail] = useState({});
   const navigation = useNavigation();
   const [key, setKey] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
 
   const fetchData = async () => {
     try {
@@ -117,10 +124,19 @@ const CardDetailPage = ({ route }: any) => {
           <MainButtonComponent
             children={<ShareIcon width={40} height={24} />}
             title={'Share'}
-            onPressing={function () {
-              throw new Error('Function not implemented.');
-            }}
+            onPressing={toggleModal}
           ></MainButtonComponent>
+          <Modal
+            animationIn="slideInUp"
+            animationInTiming={5}
+            isVisible={modalVisible}
+            onBackdropPress={toggleModal}
+            style={styles.modal}
+          >
+            <View style={styles.modalContainer}>              
+              <ShareCardScreen user_id={''} jwt_token={''} card_id={route.params.card_id} receiver_user_ids={[]} />
+            </View>
+          </Modal>
         </View>
       </View>
     </View>
@@ -215,6 +231,24 @@ const styles = StyleSheet.create({
   mainButton: {
     flex: 1,
     height: 50,
+  },
+  modal: {
+    margin: 0,
+  },
+  modalContainer: {
+    height: 600,
+    marginBottom: 0,
+    marginTop: '50%',
+    backgroundColor: colors['secondary-light'],
+    width: '100%',
+    margin: 0,
+    paddingTop:10,
+  },
+  closeButton: {
+    height: 10,
+  },
+  closeButtonText: {
+    fontFamily: 'Roboto',
   },
 });
 

@@ -10,6 +10,7 @@ import ContactsPage from '../screens/AppScreens/Contacts';
 import CardListScreen from '../screens/AppScreens/CardListScreen';
 import CardDetailsScreen from '../screens/AppScreens/CardDetailsScreen';
 import EditCardScreen from '../screens/AppScreens/EditCardScreen';
+import ShareCardScreen from '../screens/AppScreens/ShareCardPage';
 const StackNav = createNativeStackNavigator();
 const HomeStackNavigation = () => {
   return (
@@ -97,6 +98,7 @@ const CardStackNavigation = () => {
     >
       <StackNav.Screen name="CardListScreen" component={CardListScreen} />
       <StackNav.Screen name="CardDetailsScreen" component={CardDetailsScreen} />
+      <StackNav.Screen name="ShareCardScreen" component={ShareCardScreen}/>
       <StackNav.Screen name="EditCardScreen" component={EditCardScreen} />
     </CardStackNav.Navigator>
   );
