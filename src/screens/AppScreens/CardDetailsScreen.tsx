@@ -3,6 +3,7 @@ import colors from '../../utils/colorPallete';
 import {
   Alert,
   Linking,
+  Modal,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -25,6 +26,7 @@ import { getLocalItem } from '../../utils/Utils';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { isValidWebsiteUrl } from '../../utils/regexCheck';
+import { deleteCard } from '../../hooks/deleteCardHook';
 
 type CardDetails = {
   card_name: string;
@@ -41,11 +43,15 @@ import CardDetailsShimmer from '../../components/Shimmers/CardDetailsShimmer';
 
 const CardDetailPage = ({ route }: any) => {
   const [cardDetail, setCardDetail] = useState<CardDetails>({});
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
   const navigation = useNavigation<NavigationProp<any>>();
   const [key, setKey] = useState(0);
-
+  //Function to toggle modal visibility
+  const toggleModal = () => {
+    setIsModalVisible(!isModalVisible);
+  };
+  //Function to fetch card details
   const fetchData = async () => {
     try {
       const userId = (await getLocalItem(Constants.USER_ID)) ?? '{}';
@@ -65,22 +71,46 @@ const CardDetailPage = ({ route }: any) => {
     }
   };
 
+  // useEffect hook to fetch data when component mounts or key changes
   useEffect(() => {
     fetchData();
   }, [key]);
 
+  // Function to handle deletion of card
+  const handleDeleteCard = async () => {
+    try {
+      const userId = (await getLocalItem(Constants.USER_ID)) ?? '';
+      const userToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
+
+      const { statusCode, deleteCardResp } = await deleteCard({
+        user_id: userId,
+        jwtToken: userToken,
+        card_id: route.params.card_id,
+      });
+      console.log('DeleteCard Resp', statusCode, deleteCardResp);
+
+      if (statusCode === '200') {
+        navigation.goBack();
+      } else {
+        console.log('Delete card failed:', deleteCardResp);
+      }
+    } catch (error) {
+      console.error('Error deleting card:', error);
+    }
+  };
+  //function to handle phone number press
   const phonePress = (phoneNumber: string) => {
     if (phoneNumber === '') return;
     const url = `tel:${phoneNumber}`;
     Linking.openURL(url).catch((err) => console.log('An error occurred', err));
   };
-
+  //function to handle email press
   const emailPress = (emailAddress: string) => {
     if (emailAddress === '') return;
     const url = `mailto:${emailAddress}`;
     Linking.openURL(url).catch((err) => console.log('An error occurred', err));
   };
-
+  //function to handle website press
   const websitePress = (webUrl: string) => {
     if (webUrl === '') return;
     const webUrlSplit = webUrl.split('.');
@@ -98,6 +128,7 @@ const CardDetailPage = ({ route }: any) => {
     );
   };
 
+  // Function to copy text to clipboard
   const longPressToCopy = async (string: string) => {
     try {
       await Clipboard.setString(string);
@@ -161,6 +192,7 @@ const CardDetailPage = ({ route }: any) => {
         </TouchableOpacity>
       </View>
 
+      {/* Card details display */}
       <View style={styles.cardDetailsContainer}>
         <CardDetailComponent
           onLongPress={() => {
@@ -208,14 +240,14 @@ const CardDetailPage = ({ route }: any) => {
 
       <View style={styles.editButtons}>
         <View style={styles.profileButton}>
-          <ProfileButtonComponent
-            children={<DeleteIcon width={40} height={24} />}
-            title={'Delete'}
-            danger={true}
-            onPressing={function () {
-              throw new Error('Function not implemented.');
-            }}
-          ></ProfileButtonComponent>
+          <TouchableOpacity style={styles.delete}>
+            <ProfileButtonComponent
+              children={<DeleteIcon width={40} height={24} />}
+              title={'Delete'}
+              danger={true}
+              onPressing={toggleModal}
+            ></ProfileButtonComponent>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.mainButton}>
@@ -227,6 +259,33 @@ const CardDetailPage = ({ route }: any) => {
             }}
           ></MainButtonComponent>
         </View>
+
+        {/* Modal for delete a card confirmation */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isModalVisible}
+          onRequestClose={toggleModal}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>
+                Are you sure you want to delete this card?
+              </Text>
+              <View style={styles.buttonContainer}>
+                <ProfileButtonComponent
+                  title={'Delete'}
+                  danger={true}
+                  onPressing={handleDeleteCard}
+                ></ProfileButtonComponent>
+                <MainButtonComponent
+                  title={'Cancel'}
+                  onPressing={toggleModal}
+                ></MainButtonComponent>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </View>
     </View>
   );
@@ -244,7 +303,6 @@ const styles = StyleSheet.create({
   },
   conatctHead: {
     flexDirection: 'column',
-    // marginTop: '3%',
     marginBottom: '5%',
     justifyContent: 'center',
     alignItems: 'center',
@@ -323,6 +381,40 @@ const styles = StyleSheet.create({
   mainButton: {
     flex: 1,
     height: 50,
+  },
+  delete: {
+    height: '100%',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: colors['primary-text'],
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    color: colors['primary-text'],
+    fontSize: 20,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    marginTop: 20,
+    gap: 20,
   },
 });
 
