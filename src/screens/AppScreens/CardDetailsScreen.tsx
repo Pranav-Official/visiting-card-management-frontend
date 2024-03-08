@@ -25,6 +25,7 @@ import { getLocalItem } from '../../utils/Utils';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { isValidWebsiteUrl } from '../../utils/regexCheck';
+import BottomSheetComponent from '../../components/BottomSheetComponent';
 
 type CardDetails = {
   card_name: string;
@@ -38,6 +39,7 @@ type CardDetails = {
   description?: string | null;
 };
 import CardDetailsShimmer from '../../components/Shimmers/CardDetailsShimmer';
+import ShareCardScreen from './ShareCardPage';
 
 const CardDetailPage = ({ route }: any) => {
   const [cardDetail, setCardDetail] = useState<CardDetails>({});
@@ -229,7 +231,13 @@ const CardDetailPage = ({ route }: any) => {
             title={'Share'}
             onPressing={toggleModal}
           ></MainButtonComponent>
-          <Modal
+          <BottomSheetComponent
+          visibility = {modalVisible}
+          visibilitySetter= {setModalVisible}
+          >
+            <ShareCardScreen user_id={''} jwt_token={''} card_id={route.params.card_id} receiver_user_ids={[]} />
+          </BottomSheetComponent>
+          {/* <Modal
             animationIn="slideInUp"
             animationInTiming={5}
             isVisible={modalVisible}
@@ -238,8 +246,8 @@ const CardDetailPage = ({ route }: any) => {
           >
             <View style={styles.modalContainer}>              
               <ShareCardScreen user_id={''} jwt_token={''} card_id={route.params.card_id} receiver_user_ids={[]} />
-            </View>
-          </Modal>
+            </View> */}
+          {/* </Modal> */}
         </View>
       </View>
     </View>
@@ -344,11 +352,10 @@ const styles = StyleSheet.create({
   modalContainer: {
     height: 600,
     marginBottom: 0,
-    marginTop: '50%',
+    marginTop: '60%',
     backgroundColor: colors['secondary-light'],
     width: '100%',
     margin: 0,
-    paddingTop:10,
   },
   closeButton: {
     height: 10,

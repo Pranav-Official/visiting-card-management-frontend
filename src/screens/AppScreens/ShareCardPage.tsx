@@ -112,7 +112,8 @@ const styles = StyleSheet.create({
     height: 400,
     marginBottom: 0,
     paddingTop: 10,
-    paddingBottom: 20,
+    paddingBottom: 10,
+    marginTop:30,
   },
   search_bar_container: {
     width: '100%',
