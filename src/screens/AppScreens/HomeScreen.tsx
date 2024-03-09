@@ -35,7 +35,7 @@ const HomeScreen = () => {
       setIsModalVisible(true);
       startTimer(6);
       const rawText =
-        '\\n\\n12 dfクdf\\ndfaa   2w  w 新津 誠,\\n83  121 \\n  hhcegsm ew3342786 2\\n+ 80-1234-5678. sefe432323 会 www.shinkai.com\\n 株式会社コミッス・ウェーブ・フィルム  2343dcse';
+        'GOLFERS PGA ASSOCIATION PGA TM AMERICA 1916 全米プロゴルフ協会 ケイシー・M・モートン 放送・新規メディアマーケティング担当部長 33418米国フロリダ州パームビーチガーデンズ市 アベニューオブザチャンピオンズ 100番地 : +1 (561 ) 624-8811 : +1 (561) 541-3342 FAX: +1 (561 ) 443-1234 Eメール: cma-pga@pgahq.com • www.pga.com';
       const response = await aiDetailsExtraction(rawText);
       if (response.status) {
         console.log('object received', response.data);
@@ -72,9 +72,12 @@ const HomeScreen = () => {
     <View style={styles.container}>
       <Text style={styles.text}>Home Screen</Text>
       <Text style={{ color: colors['primary-text'], fontSize: 20 }}>
-        \\n\\n12 dfクdf\\ndfaa 2w w 新津 誠,\\n83 121 \\n hhcegsm ew3342786
-        2\\n+ 80-1234-5678. sefe432323 会 www.shinkai.com\\n
-        株式会社コミッス・ウェーブ・フィルム 2343dcse
+        GOLFERS PGA ASSOCIATION PGA TM AMERICA 1916 全米プロゴルフ協会
+        ケイシー・M・モートン 放送・新規メディアマーケティング担当部長
+        33418米国フロリダ州パームビーチガーデンズ市
+        アベニューオブザチャンピオンズ 100番地 : +1 (561 ) 624-8811 : +1 (561)
+        541-3342 FAX: +1 (561 ) 443-1234 Eメール: cma-pga@pgahq.com •
+        www.pga.com
       </Text>
       <MainButtonComponent
         title="Send Predition Request"

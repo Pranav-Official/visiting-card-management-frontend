@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import replicateApi from './replicateApi';
 
 type responseType = {
@@ -11,33 +12,11 @@ type responseType = {
 
 const arrayToStringObject = async (arr: string[]) => {
   let result = arr.join('');
-  //   result = result.trim();
-  //   console.log('result', result);
   const newArray = result.split('\n');
   result = newArray.join('');
-
   result = result.replace(/,/g, '');
-  function addCommaBetweenQuotes(inputString: string) {
-    // Define the regular expression pattern
-    const pattern = /"\s*"\s*/g;
-
-    // Replace occurrences of the pattern with ", "
-    const stringWithComma = inputString.replace(pattern, '", "');
-
-    return stringWithComma;
-  }
-  let new_string = addCommaBetweenQuotes(result);
-  function addCommaBetweenNullQuotes(inputString: string) {
-    // Define the regular expression pattern
-    const pattern = /null\s*"/g;
-
-    // Replace occurrences of the pattern with ", "
-    const stringWithComma = inputString.replace(pattern, 'null , "');
-
-    return stringWithComma;
-  }
-  new_string = addCommaBetweenNullQuotes(new_string);
-  //   console.log('new_string', new_string);
+  let new_string = result.replace(/"\s*"\s*/g, '", "');
+  new_string = new_string.replace(/null\s*"/g, 'null , "');
   try {
     return JSON.parse(new_string);
   } catch (err) {
@@ -58,7 +37,7 @@ const getFinalResponse = async (id: string) => {
     const response = await arrayToStringObject(ApiResponse.data.output);
     console.log('response', response);
     return response;
-  } catch (err) {
+  } catch (err: any) {
     console.log(err.response.data);
     return {
       fullname: null,
