@@ -11,6 +11,7 @@ import CardListScreen from '../screens/AppScreens/CardListScreen';
 import CardDetailsScreen from '../screens/AppScreens/CardDetailsScreen';
 import EditCardScreen from '../screens/AppScreens/EditCardScreen';
 import SetContactNameScreen from '../screens/AppScreens/SetContactNameScreen';
+import AddToContactScreen from '../screens/AppScreens/AddToContactScreen';
 const StackNav = createNativeStackNavigator();
 const HomeStackNavigation = () => {
   return (
@@ -99,7 +100,14 @@ const CardStackNavigation = () => {
       <StackNav.Screen name="CardListScreen" component={CardListScreen} />
       <StackNav.Screen name="CardDetailsScreen" component={CardDetailsScreen} />
       <StackNav.Screen name="EditCardScreen" component={EditCardScreen} />
-      <StackNav.Screen name="SetContactNameScreen" component={SetContactNameScreen} />
+      <StackNav.Screen
+        name="SetContactNameScreen"
+        component={SetContactNameScreen}
+      />
+      <StackNav.Screen
+        name="AddToContactScreen"
+        component={AddToContactScreen}
+      />
     </CardStackNav.Navigator>
   );
 };
