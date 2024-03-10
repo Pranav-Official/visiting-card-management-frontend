@@ -18,7 +18,9 @@ const arrayToStringObject = async (arr: string[]) => {
   let new_string = result.replace(/"\s*"\s*/g, '", "');
   new_string = new_string.replace(/null\s*"/g, 'null , "');
   try {
-    return JSON.parse(new_string);
+    const json = JSON.parse(new_string);
+    json['phone'] = json['phone'].replace(/[()\s\-a-zA-Z]/g, '');
+    return json;
   } catch (err) {
     return {
       fullname: null,
