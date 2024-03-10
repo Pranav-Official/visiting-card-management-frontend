@@ -1,4 +1,3 @@
-import { AxiosError } from 'axios';
 import replicateApi from './replicateApi';
 
 type responseType = {

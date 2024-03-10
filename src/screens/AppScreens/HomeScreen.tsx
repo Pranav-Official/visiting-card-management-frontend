@@ -8,7 +8,6 @@ import { userLogin } from '../../context/userSlice';
 import Constants from '../../utils/Constants';
 import { aiDetailsExtraction } from '../../hooks/aiDetailsExtraction';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import ProfileButtonComponent from '../../components/ProfileButtonComponent';
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
