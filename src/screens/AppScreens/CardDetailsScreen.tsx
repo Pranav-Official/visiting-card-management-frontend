@@ -336,23 +336,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 50,
   },
-  modal: {
-    margin: 0,
-  },
-  modalContainer: {
-    height: 600,
-    marginBottom: 0,
-    marginTop: '60%',
-    backgroundColor: colors['secondary-light'],
-    width: '100%',
-    margin: 0,
-  },
-  closeButton: {
-    height: 10,
-  },
-  closeButtonText: {
-    fontFamily: 'Roboto',
-  },
+ 
 });
 
 export default CardDetailPage;
