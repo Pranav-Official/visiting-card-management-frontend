@@ -58,10 +58,9 @@ export async function getSimilarCards({
     statusCode = getSimilarCardsResponse.status.toString();
     responseBody = getSimilarCardsResponse.data;
     similarCardList = responseBody.data;
-    // console.log('From GSC Hook : ', responseBody.data, statusCode)
     return { similarCardList, statusCode };
   } catch (error: unknown) {
-    // console.log('From GSC Hook: Error fetching SimilarCards :', error)
+    console.log('From GSC Hook: Error fetching SimilarCards :', error);
     return { statusCode };
   }
 }
