@@ -47,10 +47,10 @@ const CardDetailPage = ({ route }: any) => {
 
   const navigation = useNavigation<NavigationProp<any>>();
   const [key, setKey] = useState(0);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [ShareModalVisible, setShareModalVisible] = useState(false);
 
-  const toggleModal = () => {
-    setModalVisible(!modalVisible);
+  const toggleShareModal = () => {
+    setShareModalVisible(!ShareModalVisible);
   };
 
   const fetchData = async () => {
@@ -229,25 +229,15 @@ const CardDetailPage = ({ route }: any) => {
           <MainButtonComponent
             children={<ShareIcon width={40} height={24} />}
             title={'Share'}
-            onPressing={toggleModal}
+            onPressing={toggleShareModal}
           ></MainButtonComponent>
           <BottomSheetComponent
-          visibility = {modalVisible}
-          visibilitySetter= {setModalVisible}
+          visibility = {ShareModalVisible}
+          visibilitySetter= {setShareModalVisible}
           >
             <ShareCardScreen user_id={''} jwt_token={''} card_id={route.params.card_id} receiver_user_ids={[]} />
           </BottomSheetComponent>
-          {/* <Modal
-            animationIn="slideInUp"
-            animationInTiming={5}
-            isVisible={modalVisible}
-            onBackdropPress={toggleModal}
-            style={styles.modal}
-          >
-            <View style={styles.modalContainer}>              
-              <ShareCardScreen user_id={''} jwt_token={''} card_id={route.params.card_id} receiver_user_ids={[]} />
-            </View> */}
-          {/* </Modal> */}
+          
         </View>
       </View>
     </View>
