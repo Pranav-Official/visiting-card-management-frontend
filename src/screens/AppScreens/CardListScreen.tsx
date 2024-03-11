@@ -1,16 +1,8 @@
 import nameToColor from '../../hooks/nameToHex';
 import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 import LinearGradient from 'react-native-linear-gradient';
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import { useEffect, useState } from 'react';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { useCallback, useState } from 'react';
 import CardComponent from '../../components/CardComponent';
 import { listCards } from '../../hooks/CardListHook';
 import { getLocalItem } from '../../utils/Utils';
@@ -18,7 +10,11 @@ import Constants from '../../utils/Constants';
 import colors from '../../utils/colorPallete';
 import TopBackButton from '../../components/BackButton';
 import TopMenuButton from '../../components/MenuButton';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import {
+  NavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
 import { editCardDetails } from '../../hooks/editCardHook';
 
 const CardListScreen = ({ route }: any) => {
@@ -95,15 +91,16 @@ const CardListScreen = ({ route }: any) => {
     }
   };
   const [cardList, setCardList] = useState<CardParameters[]>([]);
-  useEffect(() => {
-    fetchCardList();
-  }, [key]);
-
+  useFocusEffect(
+    useCallback(() => {
+      fetchCardList();
+    }, []),
+  );
   const navigation = useNavigation<NavigationProp<any>>();
   const handlePress = (card_id: string) => {
     navigation.navigate('CardStack', {
       screen: 'CardDetailsScreen',
-      params: { card_id: card_id, cardListScreenUpdater: setKey },
+      params: { card_id: card_id },
     });
   };
 

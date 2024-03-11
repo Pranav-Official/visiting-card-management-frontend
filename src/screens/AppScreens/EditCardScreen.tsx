@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  FlatList,
+  KeyboardAvoidingView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import CompanyIcon from '../../assets/images/company.svg';
 import PhoneIcon from '../../assets/images/phone.svg';
 import MailIcon from '../../assets/images/mail.svg';
@@ -15,11 +23,34 @@ import { editCardDetails } from '../../hooks/editCardHook';
 import Constants from '../../utils/Constants';
 import { getLocalItem } from '../../utils/Utils';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import BottomSheetComponent from '../../components/BottomSheetComponent';
+import CardComponent from '../../components/CardComponent';
+import { getSimilarCards } from '../../hooks/getSimilarCardsHook';
+
+type Card = {
+  card_id: string;
+  card_name: string;
+  email: string;
+  phone: string;
+  job_title: string;
+  company_name: string;
+  company_website: string;
+};
+type ContactCards = {
+  contact_name: string;
+  cards: Card[];
+};
 
 //Edit Card Details Screen
 const EditCardDetails = ({ route }: any) => {
   const [cardDetails, setCardDetails] = useState(route.params.cardDetails);
   const navigation = useNavigation<NavigationProp<any>>();
+
+  const [similarCardList, setSimilarCardList] = React.useState<ContactCards>({
+    contact_name: '',
+    cards: [],
+  });
+  const [modalVisibility, setModalVisibility] = React.useState(false);
 
   useEffect(() => {
     if (route.params.cardDetail) {
@@ -51,10 +82,6 @@ const EditCardDetails = ({ route }: any) => {
 
       //if save successful,navigating to cardDetails screen
       if (isSaved === '200') {
-        const cardListScreenUpdater = route.params.cardListScreenUpdater;
-        const cardDetailsScreenUpdater = route.params.cardDetailsScreenUpdater;
-        cardDetailsScreenUpdater((key) => key + 1);
-        cardListScreenUpdater((key) => key + 1);
         navigation.navigate('CardStack', {
           screen: 'CardDetailsScreen',
           params: { card_id: route.params.card_id },
@@ -67,9 +94,17 @@ const EditCardDetails = ({ route }: any) => {
 
   const handleSave = async () => {
     if (route.params.create) {
-      navigation.navigate('SetContactNameScreen', {
-        cardDetails: cardDetails,
-      });
+      //calls the fetchSimilarCards api hook
+      const SimilarCardsCheck = await fetchSimilarCards();
+
+      //if similar cards exist, show the modal, else go to add contact screen
+      if (SimilarCardsCheck) {
+        setModalVisibility(true);
+      } else {
+        navigation.navigate('SetContactNameScreen', {
+          cardDetails: cardDetails,
+        });
+      }
     } else {
       // If create flag is false, call saveChanges function
       await saveChanges();
@@ -80,8 +115,63 @@ const EditCardDetails = ({ route }: any) => {
     setCardDetails({ ...cardDetails, [key]: value });
   };
 
+  const renderItem = ({ item }: any) => (
+    <View style={[styles.similarCardsContainer]}>
+      <Text style={styles.contactNameInModal}>{item.contact_name}</Text>
+
+      {item.cards.map((card: any) => (
+        <View style={styles.singleCard}>
+          <CardComponent
+            key={card.card_id}
+            alignToSides={false}
+            job_position={card.job_title}
+            name={card.card_name}
+            email={card.email}
+            phone_number={card.phone}
+            company_name={card.company_name}
+          />
+        </View>
+      ))}
+    </View>
+  );
+
+  const fetchSimilarCards = async () => {
+    try {
+      console.log('\n\nREACHED FETCH SIMILAR Cards\n\n');
+      const user_id = (await getLocalItem(Constants.USER_ID)) ?? '';
+      const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
+      const result = await getSimilarCards({
+        user_id,
+        card_name: cardDetails.card_name,
+        phone: cardDetails.phone,
+        email: cardDetails.email,
+        jwtToken,
+      });
+      console.log('Result Is: ', result);
+
+      setSimilarCardList(result.similarCardList);
+      console.log('\n\nSimilar Card Data = ', result.similarCardList);
+
+      if (result.statusCode === '200') {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.log('\n\nCatch Error\n\n');
+    }
+  };
+
+  const navigateToPage = async (pageToNavigate: string) => {
+    console.log(
+      '\n\nSIMILAR CARD LIST: from Edit Card Screen',
+      similarCardList,
+    );
+    navigation.navigate(pageToNavigate, { similarCardList, cardDetails });
+  };
+
   return (
-    <View style={styles.editContainer}>
+    <ScrollView style={styles.editContainer}>
       <TouchableOpacity
         style={styles.backButton}
         onPress={() => {
@@ -184,7 +274,39 @@ const EditCardDetails = ({ route }: any) => {
           onPressing={handleSave}
         />
       </View>
-    </View>
+
+      <BottomSheetComponent
+        visibility={modalVisibility}
+        visibilitySetter={setModalVisibility}
+      >
+        <View style={styles.modalView}>
+          <Text style={styles.similarCardsText}>
+            Similar Cards Alredy Exists!
+          </Text>
+
+          <FlatList
+            data={similarCardList}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.cards}
+          />
+          <View style={styles.buttonContainer}>
+            <Text style={styles.similarCardsText}>Choose an Option</Text>
+            <MainButtonComponent
+              title="Overwrite Existing Card"
+              onPressing={() => navigateToPage('CardOverwriteScreen')}
+            ></MainButtonComponent>
+            <MainButtonComponent
+              title="Add to Existing Contacts"
+              onPressing={() => navigateToPage('AddToContactScreen')}
+            ></MainButtonComponent>
+            <MainButtonComponent
+              title="Add as a New Contact"
+              onPressing={() => navigateToPage('SetContactNameScreen')}
+            ></MainButtonComponent>
+          </View>
+        </View>
+      </BottomSheetComponent>
+    </ScrollView>
   );
 };
 
@@ -199,7 +321,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   imageContainer: {
-    width: 400,
+    width: '100%',
     height: 250,
     backgroundColor: colors['secondary-light'],
     marginTop: 20,
@@ -242,6 +364,42 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 20,
     marginLeft: 20,
+  },
+
+  //Modal Stylings
+  modalView: {
+    marginHorizontal: 25,
+    height: '100%',
+  },
+  similarCardsText: {
+    textAlign: 'center',
+    color: colors['primary-text'],
+    fontSize: 26,
+    fontWeight: 'bold',
+    marginVertical: 10,
+  },
+  similarCardsContainer: {
+    borderWidth: 2,
+    borderRadius: 14,
+    paddingHorizontal: 10,
+    paddingBottom: 10,
+    marginBottom: 20,
+  },
+  contactNameInModal: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: colors['primary-text'],
+    paddingVertical: 10,
+    marginLeft: 10,
+  },
+  singleCard: {
+    paddingBottom: 15,
+  },
+  buttonContainer: {
+    flexDirection: 'column',
+    gap: 10,
+    height: 250,
+    marginBottom: 25,
   },
 });
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import colors from '../../utils/colorPallete';
 import {
   Alert,
@@ -23,9 +23,14 @@ import BackButtonIcon from '../../assets/images/Arrow.svg';
 import { listCardDetails } from '../../hooks/CardDetailHook';
 import Constants from '../../utils/Constants';
 import { getLocalItem } from '../../utils/Utils';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import {
+  NavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { isValidWebsiteUrl } from '../../utils/regexCheck';
+import BottomSheetComponent from '../../components/BottomSheetComponent';
 import { deleteCard } from '../../hooks/deleteCardHook';
 
 type CardDetails = {
@@ -40,16 +45,21 @@ type CardDetails = {
   description?: string | null;
 };
 import CardDetailsShimmer from '../../components/Shimmers/CardDetailsShimmer';
+import ShareCardScreen from './ShareCardPage';
 
 const CardDetailPage = ({ route }: any) => {
   const [cardDetail, setCardDetail] = useState<CardDetails>({});
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation<NavigationProp<any>>();
-  const [key, setKey] = useState(0);
-  //Function to toggle modal visibility
-  const toggleModal = () => {
-    setIsModalVisible(!isModalVisible);
+  const [ShareModalVisible, setShareModalVisible] = useState(false);
+
+  const toggleShareModal = () => {
+    setShareModalVisible(!ShareModalVisible);
+  };
+  //Function to toggle delete modal visibility
+  const toggleDeleteModal = () => {
+    setIsDeleteModalVisible(!isDeleteModalVisible);
   };
   //Function to fetch card details
   const fetchData = async () => {
@@ -71,11 +81,11 @@ const CardDetailPage = ({ route }: any) => {
     }
   };
 
-  // useEffect hook to fetch data when component mounts or key changes
-  useEffect(() => {
-    fetchData();
-  }, [key]);
-
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, []),
+  );
   // Function to handle deletion of card
   const handleDeleteCard = async () => {
     try {
@@ -183,8 +193,6 @@ const CardDetailPage = ({ route }: any) => {
             navigation.navigate('EditCardScreen', {
               cardDetails: cardDetail,
               card_id: route.params.card_id,
-              cardListScreenUpdater: route.params.cardListScreenUpdater,
-              cardDetailsScreenUpdater: setKey,
             });
           }}
         >
@@ -245,7 +253,7 @@ const CardDetailPage = ({ route }: any) => {
               children={<DeleteIcon width={40} height={24} />}
               title={'Delete'}
               danger={true}
-              onPressing={toggleModal}
+              onPressing={toggleDeleteModal}
             ></ProfileButtonComponent>
           </TouchableOpacity>
         </View>
@@ -254,25 +262,34 @@ const CardDetailPage = ({ route }: any) => {
           <MainButtonComponent
             children={<ShareIcon width={40} height={24} />}
             title={'Share'}
-            onPressing={function () {
-              throw new Error('Function not implemented.');
-            }}
+            onPressing={toggleShareModal}
           ></MainButtonComponent>
+          <BottomSheetComponent
+            visibility={ShareModalVisible}
+            visibilitySetter={setShareModalVisible}
+          >
+            <ShareCardScreen
+              user_id={''}
+              jwt_token={''}
+              card_id={route.params.card_id}
+              receiver_user_ids={[]}
+            />
+          </BottomSheetComponent>
         </View>
 
         {/* Modal for delete a card confirmation */}
         <Modal
           animationType="slide"
           transparent={true}
-          visible={isModalVisible}
-          onRequestClose={toggleModal}
+          visible={isDeleteModalVisible}
+          onRequestClose={toggleDeleteModal}
         >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalText}>
+          <View style={styles.centeredDeleteView}>
+            <View style={styles.deleteModalView}>
+              <Text style={styles.deleteModalText}>
                 Are you sure you want to delete this card?
               </Text>
-              <View style={styles.buttonContainer}>
+              <View style={styles.deleteButtonContainer}>
                 <ProfileButtonComponent
                   title={'Delete'}
                   danger={true}
@@ -280,7 +297,7 @@ const CardDetailPage = ({ route }: any) => {
                 ></ProfileButtonComponent>
                 <MainButtonComponent
                   title={'Cancel'}
-                  onPressing={toggleModal}
+                  onPressing={toggleDeleteModal}
                 ></MainButtonComponent>
               </View>
             </View>
@@ -317,7 +334,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   shimmerContainer: {
-    marginBottom: 10, // Adjust the margin bottom as needed
+    marginBottom: 10,
   },
   cardButton: {
     alignItems: 'center',
@@ -385,14 +402,14 @@ const styles = StyleSheet.create({
   delete: {
     height: '100%',
   },
-  centeredView: {
+  centeredDeleteView: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
-  modalView: {
-    backgroundColor: 'white',
+  deleteModalView: {
+    backgroundColor: colors['accent-white'],
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',
@@ -405,13 +422,13 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  modalText: {
+  deleteModalText: {
     marginBottom: 15,
     textAlign: 'center',
     color: colors['primary-text'],
     fontSize: 20,
   },
-  buttonContainer: {
+  deleteButtonContainer: {
     flexDirection: 'row',
     marginTop: 20,
     gap: 20,
