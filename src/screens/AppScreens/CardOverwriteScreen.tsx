@@ -109,12 +109,6 @@ const CardOverwriteScreen = ({ route }: any) => {
     console.log('\n\nOverWrite Response: ', overwriteResponse);
     if (overwriteResponse?.statusCode === '200') {
       Toast.show('Card Overwritten Successfully');
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 1,
-          routes: [{ name: 'Contacts' }],
-        }),
-      );
       navigation.navigate('CardDetailsScreen', { card_id: selected });
     } else {
       Toast.show('Error Overwriting Card');
