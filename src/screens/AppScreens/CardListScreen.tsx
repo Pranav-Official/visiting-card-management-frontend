@@ -1,7 +1,14 @@
 import nameToColor from '../../hooks/nameToHex';
 import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 import LinearGradient from 'react-native-linear-gradient';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { useCallback, useState } from 'react';
 import CardComponent from '../../components/CardComponent';
 import { listCards } from '../../hooks/CardListHook';
@@ -28,8 +35,12 @@ const CardListScreen = ({ route }: any) => {
     setChangeContactName(true);
   };
   const editedData = { contact_name: temporaryContactName };
-  const changeContact = async () => {  //To change the contactname ,we call the edit card hook
+  
+  const changeContact = async () => {
+    //To change the contactname ,we call the edit card hook
     try {
+      if(editedData.contact_name.trim())
+     {
       const user_id = (await getLocalItem(Constants.USER_ID)) ?? '{}';
       const token = (await getLocalItem(Constants.USER_JWT)) ?? '{}';
       const response = await editCardDetails({
@@ -46,11 +57,16 @@ const CardListScreen = ({ route }: any) => {
       } else {
         console.log('Error in editing contact name');
       }
+    }
+    else{
+       setChangeContactName(false)
+    }
+  
+      
     } catch (error) {
       console.error('Error editing card:', error);
     }
   };
-
   const ShimmerComponent = () => {
     return (
       <View>
@@ -119,10 +135,7 @@ const CardListScreen = ({ route }: any) => {
               label: 'Change Contact Name',
               onSelect: changeContactNameFunction,
             },
-            {
-              label: 'Change Card Detail',
-              onSelect: changeContactNameFunction,
-            },
+
             // Add more menu options as needed
           ]}
         />

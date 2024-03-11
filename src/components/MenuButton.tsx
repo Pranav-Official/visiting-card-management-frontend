@@ -583,12 +583,12 @@ const styles = StyleSheet.create({
     left: 200, // Adjust this value to position the modal closer or further from the icon
     right: 10,
     justifyContent: 'center',
-   //alignItems: 'center',
+    //alignItems: 'center',
     margin: 0,
   },
   modalContent: {
-    backgroundColor: '#FFFFFF',
-    padding: 20,
+    backgroundColor: colors['accent-white'],
+    padding: 10,
     borderRadius: 10,
 
     elevation: 5, // Add elevation to give a shadow effect
@@ -597,7 +597,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   optionText: {
-    fontWeight: 'bold',
+    
+    color:colors['primary-text'],
     fontSize: 20,
   },
 });
