@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'column',
     gap: 10,
-    height: 250,
+    height: 200,
     marginBottom: 25,
   },
 });

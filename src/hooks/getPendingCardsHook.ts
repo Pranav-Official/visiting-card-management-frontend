@@ -87,7 +87,7 @@ export async function getPendingCards({
 
     return { statusCode, pendingCardList };
   } catch (error: unknown) {
-    console.error('From GSC Hook: Error fetching SimilarCards:', error);
+    console.error('From GPC Hook: Error fetching SimilarCards:', error);
     return { statusCode };
   }
 }
