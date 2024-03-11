@@ -3,11 +3,12 @@ import { StyleSheet, Image, Text, View, TouchableOpacity } from 'react-native';
 import MainButtonComponent from '../../components/MainButtoncomponent';
 import TextRecognition from '@react-native-ml-kit/text-recognition';
 import Toast from 'react-native-root-toast';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 const CropConfirmationScreen = ({ route }) => {
   const imageData = route.params.image;
   console.log(imageData);
-
+  const navigation = useNavigation<NavigationProp<any>>();
   const extractData = async () => {
     console.log('GGGG');
     const result = await TextRecognition.recognize(imageData.path);
@@ -15,6 +16,20 @@ const CropConfirmationScreen = ({ route }) => {
     Toast.show(result.text + 'Hello', {
       duration: Toast.durations.LONG,
       position: Toast.positions.BOTTOM,
+    });
+    navigation.navigate('CardStack', {
+      screen: 'EditCardScreen',
+      params: {
+        create: true,
+        cardDetails: {
+          card_name: '',
+          email: '',
+          phone: '',
+          job_title: '',
+          company_name: '',
+          company_website: '',
+        },
+      },
     });
   };
 
