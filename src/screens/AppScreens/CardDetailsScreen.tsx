@@ -26,6 +26,7 @@ import { getLocalItem } from '../../utils/Utils';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { isValidWebsiteUrl } from '../../utils/regexCheck';
+import BottomSheetComponent from '../../components/BottomSheetComponent';
 import { deleteCard } from '../../hooks/deleteCardHook';
 
 type CardDetails = {
@@ -40,6 +41,7 @@ type CardDetails = {
   description?: string | null;
 };
 import CardDetailsShimmer from '../../components/Shimmers/CardDetailsShimmer';
+import ShareCardScreen from './ShareCardPage';
 
 const CardDetailPage = ({ route }: any) => {
   const [cardDetail, setCardDetail] = useState<CardDetails>({});
@@ -47,6 +49,11 @@ const CardDetailPage = ({ route }: any) => {
   const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation<NavigationProp<any>>();
   const [key, setKey] = useState(0);
+  const [ShareModalVisible, setShareModalVisible] = useState(false);
+
+  const toggleShareModal = () => {
+    setShareModalVisible(!ShareModalVisible);
+  };
   //Function to toggle delete modal visibility
   const toggleDeleteModal = () => {
     setIsDeleteModalVisible(!isDeleteModalVisible);
@@ -254,10 +261,15 @@ const CardDetailPage = ({ route }: any) => {
           <MainButtonComponent
             children={<ShareIcon width={40} height={24} />}
             title={'Share'}
-            onPressing={function () {
-              throw new Error('Function not implemented.');
-            }}
+            onPressing={toggleShareModal}
           ></MainButtonComponent>
+          <BottomSheetComponent
+          visibility = {ShareModalVisible}
+          visibilitySetter= {setShareModalVisible}
+          >
+            <ShareCardScreen user_id={''} jwt_token={''} card_id={route.params.card_id} receiver_user_ids={[]} />
+          </BottomSheetComponent>
+          
         </View>
 
         {/* Modal for delete a card confirmation */}
