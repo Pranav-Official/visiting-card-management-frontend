@@ -5,6 +5,7 @@ import {
   FlatList,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -22,7 +23,10 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 const CardListScreen = ({ route }: any) => {
   const [isLoading, setIsLoading] = useState(true);
   const [key, setKey] = useState(0);
-  const arr = [1, 2, 3, 4, 5];
+  const arr = [1, 2, 3, 4, 5, 6];
+  const navigateToEdit = () => {
+    navigation.navigate('SetContactNameScreen', { cardList });
+  };
   const ShimmerComponent = () => {
     return (
       <View>
@@ -83,7 +87,13 @@ const CardListScreen = ({ route }: any) => {
     >
       <View style={styles.topIconContainer}>
         <TopBackButton />
-        <TopMenuButton />
+        <TopMenuButton
+          options={[
+            { label: 'Change Contact Name', onSelect: navigateToEdit },
+            { label: 'Change Card Detail', onSelect: navigateToEdit },
+            // Add more menu options as needed
+          ]}
+        />
       </View>
       <View style={styles.letterCardContainer}>
         <View
@@ -95,9 +105,19 @@ const CardListScreen = ({ route }: any) => {
           <Text style={styles.letter}>{contact_name[0]}</Text>
         </View>
         <View style={styles.cardContainer}>
-          <View style={styles.contactNameContainer}>
+          {/* <View style={styles.contactNameContainer}>
             <Text style={styles.contactName}>{contact_name}</Text>
-          </View>
+          </View> */}
+      <View style={styles.contactNameContainer}>
+      <TextInput
+        placeholder={placeholder}
+        style={styles.contactName}
+        value={value}
+        onChangeText={(val) => setter(val)}
+        underlineColorAndroid="transparent"
+        readOnly={readonly}
+      />
+    </View>
           <Text style={styles.cardHeading}>Cards</Text>
           {!isLoading ? (
             <FlatList
@@ -132,6 +152,9 @@ const CardListScreen = ({ route }: any) => {
   );
 };
 const styles = StyleSheet.create({
+  threeDots: {
+    flex: 1,
+  },
   mainContainer: {},
   cardcontainer: {
     width: '100%',
@@ -157,6 +180,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     padding: 10,
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
   },
   letterCardContainer: {
