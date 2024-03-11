@@ -145,7 +145,7 @@ const CardOverwriteScreen = ({ route }: any) => {
         <View style={{ flex: 1 }}>
           <ProfileButtonComponent
             title="Cancel"
-            onPressing={() => console.log('Hii')}
+            onPressing={() => navigation.goBack()}
           />
         </View>
       </View>
