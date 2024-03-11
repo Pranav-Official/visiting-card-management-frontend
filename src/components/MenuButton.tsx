@@ -1,41 +1,101 @@
+
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import {
-  Image,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
+  TouchableWithoutFeedback,
 } from 'react-native';
-import colors from '../utils/colorPallete';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import colors from '../utils/colorPallete';
+import Modal from 'react-native-modal';
 
-// Define the type for the navigation object
-const TopMenuButton = (props: any) => {
+const TopMenuButton = ({ options }) => {
   const navigation = useNavigation();
+  const [isModalVisible, setModalVisible] = useState(false);
 
-  const onPress = () => {
-    navigation.goBack();
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+
+  const handleOptionClick = (option) => {
+    if (option.onSelect) {
+      option.onSelect();
+    }
+    toggleModal();
   };
 
   return (
-    <TouchableOpacity>
-      <MaterialIcons
-        name="more-vert"
-        color={'black'}
-        size={34}
-        style={styles.icon}
-      />
-    </TouchableOpacity>
+    <View style={styles.container}>
+      <TouchableOpacity onPress={toggleModal}>
+        <MaterialIcons
+          name="more-vert"
+          color={'black'}
+          size={34}
+          style={styles.icon}
+        />
+      </TouchableOpacity>
+      <Modal
+        isVisible={isModalVisible}
+        animationIn="fadeIn"
+        animationOut="fadeOut"
+        backdropOpacity={0}
+        onBackdropPress={toggleModal}
+        style={styles.modal}
+      >
+        <TouchableWithoutFeedback>
+          <View style={styles.modalContent}>
+            {options.map((option, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.optionButton}
+                onPress={() => handleOptionClick(option)}
+              >
+                <Text style={styles.optionText}>{option.label}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   icon: {
     color: colors['secondary-light'],
-    alignSelf: 'center',
-    marginRight: 10,
+    zIndex: 1, // Ensure the icon is above the modal
+  },
+  modal: {
+    position: 'absolute',
+    top:10,
+    left: 190, // Adjust this value to position the modal closer or further from the icon
+    right: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 0,
+  },
+  modalContent: {
+    backgroundColor: colors['secondary-light'],
+    padding: 10,
+    borderRadius: 10,
+
+  
+  },
+  optionButton: {
+    marginBottom: 8,
+  },
+  optionText: {
+    
+    color:colors['primary-text'],
+    fontSize: 20,
   },
 });
 
