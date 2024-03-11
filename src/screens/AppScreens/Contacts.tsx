@@ -12,6 +12,7 @@ import ContactListComponent from '../../components/ContactListComponent';
 import { getContactList } from '../../hooks/contactListHook';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
+import ImagePicker from 'react-native-image-crop-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
   NavigationProp,
@@ -130,6 +131,20 @@ const ContactsPage = () => {
       console.log('\n\nCatch Error\n\n');
     }
   };
+
+  const takeImage = async () => {
+    ImagePicker.openCamera({
+      cropping: true,
+      width: 300,
+      height: 150,
+      freeStyleCropEnabled: true,
+    }).then(async (image) => {
+      navigation.navigate('CardStack', {
+        screen: 'CropConfirmationScreen',
+        params: { image },
+      });
+    });
+  };
   useEffect(() => {
     try {
       getPendingCardsList();
@@ -191,12 +206,7 @@ const ContactsPage = () => {
         />
       )}
       <TouchableOpacity
-        onPress={() => {
-          navigation.navigate('CardStack', {
-            screen: 'EditCardScreen',
-            params: { create: true, cardDetails: cardDetail },
-          });
-        }}
+        onPress={takeImage}
         style={{
           position: 'absolute',
           bottom: 50,
