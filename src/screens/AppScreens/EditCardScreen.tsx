@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
   FlatList,
+  KeyboardAvoidingView,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -173,7 +175,7 @@ const EditCardDetails = ({ route }: any) => {
   };
 
   return (
-    <View style={styles.editContainer}>
+    <ScrollView style={styles.editContainer}>
       <TouchableOpacity
         style={styles.backButton}
         onPress={() => {
@@ -308,7 +310,7 @@ const EditCardDetails = ({ route }: any) => {
           </View>
         </View>
       </BottomSheetComponent>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -323,7 +325,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   imageContainer: {
-    width: 400,
+    width: '100%',
     height: 250,
     backgroundColor: colors['secondary-light'],
     marginTop: 20,
