@@ -1,13 +1,10 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  Animated,
   FlatList,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -29,8 +26,6 @@ import BottomSheetComponent from '../../components/BottomSheetComponent';
 import MainButtonComponent from '../../components/MainButtoncomponent';
 import ProfileButtonComponent from '../../components/ProfileButtonComponent';
 import CardComponent from '../../components/CardComponent';
-import { useSelector } from 'react-redux';
-import { selectScreenRerenderState } from '../../context/screenRerenderSlice';
 
 const DATA = [
   {
