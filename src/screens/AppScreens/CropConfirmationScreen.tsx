@@ -62,7 +62,7 @@ const CropConfirmationScreen = ({ route }) => {
       cropping: true,
       width: 3000,
       height: 1500,
-      // freeStyleCropEnabled: true,
+      freeStyleCropEnabled: true,
     }).then(async (image) => {
       navigation.navigate('CardStack', {
         screen: 'CropConfirmationScreen',
