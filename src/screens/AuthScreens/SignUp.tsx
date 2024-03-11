@@ -30,11 +30,17 @@ import { validateEmail } from '../../utils/regexCheck';
 //   };
 // };
 
+type BorderTypes = 'Danger' | 'Auth' | 'Normal';
+
 const SignUp = () => {
   const dispatch = useDispatch();
   const [fullname, setFullname] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [emailBorder, setEmailBorder] = useState<BorderTypes>('Normal');
+  const [fullnameBorder, setNameBorder] = useState<BorderTypes>('Normal');
+  const [passwordBorder, setPasswordBorder] = useState<BorderTypes>('Normal');
+  const [inputChanged, setInputChanged] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const SignUpMain = async () => {
@@ -44,6 +50,9 @@ const SignUp = () => {
         ToastAndroid.SHORT,
         ToastAndroid.CENTER,
       );
+      setEmailBorder('Danger');
+      setPasswordBorder('Danger');
+      setNameBorder('Danger');
       return;
     } else if (validateEmail(email) === false) {
       ToastAndroid.showWithGravity(
@@ -51,6 +60,7 @@ const SignUp = () => {
         ToastAndroid.SHORT,
         ToastAndroid.CENTER,
       );
+      setEmailBorder('Danger');
       return;
     }
 
@@ -96,33 +106,52 @@ const SignUp = () => {
       );
       setLoading(false);
     }
+    setInputChanged(false);
   };
 
-  // useEffect(() => {});
+  useEffect(() => {
+    if (inputChanged) {
+      setEmailBorder('Normal');
+      setPasswordBorder('Normal');
+      setNameBorder('Normal');
+    }
+  }, [email, password, fullname]);
 
   return (
-    <ScrollView contentContainerStyle={styles.safeAreaView}>
+    <SafeAreaView style={styles.safeAreaView}>
       <MainLogoComponent />
       <View style={styles.midSection}>
         <InputComponent
           hidden={false}
           header="Fullname"
           value={fullname}
-          setter={setFullname}
+          setter={(val) => {
+            setInputChanged(true);
+            setFullname(val);
+          }}
+          borderType={fullnameBorder}
           placeholder="Enter full Name"
         />
         <InputComponent
           hidden={false}
           header="Email"
           value={email}
-          setter={setEmail}
+          setter={(val) => {
+            setInputChanged(true);
+            setEmail(val);
+          }}
+          borderType={emailBorder}
           placeholder="Enter Email"
         />
         <InputComponent
           header="Password"
           hidden={true}
           value={password}
-          setter={setPassword}
+          setter={(val) => {
+            setInputChanged(true);
+            setPassword(val);
+          }}
+          borderType={passwordBorder}
           placeholder="Enter Password"
         />
         {!loading ? (
@@ -142,7 +171,7 @@ const SignUp = () => {
         mainText="Login!"
         navigateTo="Login"
       />
-    </ScrollView>
+    </SafeAreaView>
   );
 };
 
