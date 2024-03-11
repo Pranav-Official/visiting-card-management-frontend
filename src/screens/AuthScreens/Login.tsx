@@ -66,7 +66,7 @@ const Login = () => {
       loginPassword: password,
     });
     // console.log('LoginMain', response);
-    if (response.hasOwnProperty('status') === false) {
+    if (response && response.status === false) {
       setLoading(false);
       const message = 'Error while logging in: ' + response.message;
       ToastAndroid.showWithGravity(

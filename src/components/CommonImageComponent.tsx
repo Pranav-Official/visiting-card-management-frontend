@@ -15,12 +15,17 @@ type ImgContainer = {
 
 const CommonImage = (props: ImgContainer) => {
   return (
-    <View>
+    <View style={styles.CommonImagecontainer}>
       <TouchableOpacity
         style={styles.cardContainer}
-        onPress={() => props.onPress('Tapped Front')}>
+        onPress={() => props.onPress('Tapped Front')}
+      >
         <View style={styles.imageContainer}>
-          <Image source={{ uri: props.Image }} style={styles.image} resizeMode="cover" />
+          <Image
+            source={{ uri: props.Image }}
+            style={styles.image}
+            resizeMode="cover"
+          />
         </View>
       </TouchableOpacity>
     </View>
@@ -64,15 +69,18 @@ const CommonImageComponent = () => {
 };
 
 const styles = StyleSheet.create({
+  CommonImagecontainer: {
+    paddingLeft: 20,
+  },
   mainStyle: {
-    backgroundColor:colors['secondary-light'],
-   // paddingLeft: 20,
+    backgroundColor: colors['secondary-light'],
+    // paddingLeft: 20,
     paddingTop: 20,
     flex: 1,
     gap: 10,
   },
   separator: {
-    width: 20, // Adjust the width based on your desired spacing
+    width: 0, // Adjust the width based on your desired spacing
   },
   cardContainer: {
     flexDirection: 'row',
