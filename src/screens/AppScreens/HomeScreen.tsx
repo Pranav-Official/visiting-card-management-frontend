@@ -6,6 +6,7 @@ import { setLocalItem } from '../../utils/Utils';
 import { useDispatch } from 'react-redux';
 import { userLogin } from '../../context/userSlice';
 import Constants from '../../utils/Constants';
+import ShareCardScreen from './ShareCardPage';
 import { aiDetailsExtraction } from '../../hooks/aiDetailsExtraction';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
