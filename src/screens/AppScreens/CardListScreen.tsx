@@ -19,14 +19,42 @@ import colors from '../../utils/colorPallete';
 import TopBackButton from '../../components/BackButton';
 import TopMenuButton from '../../components/MenuButton';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { editCardDetails } from '../../hooks/editCardHook';
 
 const CardListScreen = ({ route }: any) => {
   const [isLoading, setIsLoading] = useState(true);
   const [key, setKey] = useState(0);
   const arr = [1, 2, 3, 4, 5, 6];
-  const navigateToEdit = () => {
-    navigation.navigate('SetContactNameScreen', { cardList });
+  const [changeContactName, setChangeContactName] = useState(false);
+  const [contactName, setContactName] = useState(route.params.name ?? '');
+  const [temporaryContactName, setTemporaryContactName] = useState('');
+  const changeContactNameFunction = () => {
+    setChangeContactName(true);
   };
+  const editedData = { contact_name: temporaryContactName };
+  const changeContact = async () => {  //To change the contactname ,we call the edit card hook
+    try {
+      const user_id = (await getLocalItem(Constants.USER_ID)) ?? '{}';
+      const token = (await getLocalItem(Constants.USER_JWT)) ?? '{}';
+      const response = await editCardDetails({
+        user_id,
+        token,
+        card_id: route.params.card_id,
+        updatedData: editedData,
+      });
+      const contactNameSetStatus = response.statusCode;
+      if (contactNameSetStatus == '200') {
+        setContactName(temporaryContactName);
+        setChangeContactName(false);
+        setTemporaryContactName('');
+      } else {
+        console.log('Error in editing contact name');
+      }
+    } catch (error) {
+      console.error('Error editing card:', error);
+    }
+  };
+
   const ShimmerComponent = () => {
     return (
       <View>
@@ -37,7 +65,8 @@ const CardListScreen = ({ route }: any) => {
       </View>
     );
   };
-  const contact_name = route.params.name ?? '';
+  // const contact_name = route.params.name ?? '';
+
   interface CardParameters {
     company_name: string;
     card_id: string;
@@ -82,15 +111,21 @@ const CardListScreen = ({ route }: any) => {
     <View
       style={[
         styles.mainContainer,
-        { backgroundColor: nameToColor(contact_name) },
+        { backgroundColor: nameToColor(contactName) },
       ]}
     >
       <View style={styles.topIconContainer}>
         <TopBackButton />
         <TopMenuButton
           options={[
-            { label: 'Change Contact Name', onSelect: navigateToEdit },
-            { label: 'Change Card Detail', onSelect: navigateToEdit },
+            {
+              label: 'Change Contact Name',
+              onSelect: changeContactNameFunction,
+            },
+            {
+              label: 'Change Card Detail',
+              onSelect: changeContactNameFunction,
+            },
             // Add more menu options as needed
           ]}
         />
@@ -99,25 +134,44 @@ const CardListScreen = ({ route }: any) => {
         <View
           style={[
             styles.letterCircle,
-            { backgroundColor: nameToColor(contact_name) },
+            { backgroundColor: nameToColor(contactName) },
           ]}
         >
-          <Text style={styles.letter}>{contact_name[0]}</Text>
+          <Text style={styles.letter}>{contactName[0]}</Text>
         </View>
         <View style={styles.cardContainer}>
-          {/* <View style={styles.contactNameContainer}>
-            <Text style={styles.contactName}>{contact_name}</Text>
-          </View> */}
-      <View style={styles.contactNameContainer}>
-      <TextInput
-        placeholder={placeholder}
-        style={styles.contactName}
-        value={value}
-        onChangeText={(val) => setter(val)}
-        underlineColorAndroid="transparent"
-        readOnly={readonly}
-      />
-    </View>
+          {!changeContactName ? (
+            <View style={styles.contactNameContainer}>
+              <Text style={styles.contactName}>{contactName}</Text>
+            </View>
+          ) : (
+            <View style={styles.contactNameContainer}>
+              <TextInput
+                placeholder={contactName}
+                style={styles.contactName}
+                value={temporaryContactName}
+                onChangeText={(val) => setTemporaryContactName(val)}
+                underlineColorAndroid="transparent"
+                //readOnly={readonly}
+              />
+              <View style={styles.headerStyle}>
+                <TouchableOpacity
+                  style={styles.buttonStyle}
+                  onPress={() => {
+                    changeContact();
+                  }}
+                >
+                  <Text style={styles.buttonText}>Apply</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.buttonStyle}
+                  onPress={() => setChangeContactName(false)}
+                >
+                  <Text style={styles.buttonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
           <Text style={styles.cardHeading}>Cards</Text>
           {!isLoading ? (
             <FlatList
@@ -152,8 +206,34 @@ const CardListScreen = ({ route }: any) => {
   );
 };
 const styles = StyleSheet.create({
-  threeDots: {
-    flex: 1,
+  headerStyle: {
+    flexDirection: 'row',
+    gap: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: 30,
+  },
+  buttonStyle: {
+    padding: 15,
+    backgroundColor: colors['secondary-grey'],
+    width: 120,
+    height: 50,
+    alignItems: 'center',
+    borderRadius: 10,
+    justifyContent: 'center',
+  },
+  buttonText: {
+    color: colors['primary-text'],
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  contactNameSetButton: {
+    top: '35%',
+  },
+  contactNameChangeText: {
+    backgroundColor: 'lightblue',
+    fontSize: 40,
+    fontFamily: 'roberto',
   },
   mainContainer: {},
   cardcontainer: {
@@ -203,8 +283,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   contactNameContainer: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   flatListStyle: {
     gap: 20,
