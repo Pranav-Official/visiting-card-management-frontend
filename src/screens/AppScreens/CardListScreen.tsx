@@ -240,12 +240,8 @@ const styles = StyleSheet.create({
   contactNameSetButton: {
     top: '35%',
   },
-  contactNameChangeText: {
-    backgroundColor: 'lightblue',
-    fontSize: 40,
-    fontFamily: 'roberto',
-  },
-  mainContainer: {},
+ 
+  
   cardcontainer: {
     width: '100%',
     height: 170,
