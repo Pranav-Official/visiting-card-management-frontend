@@ -6,6 +6,7 @@ import {
   View,
   ActivityIndicator,
   Modal,
+  TouchableOpacity,
 } from 'react-native';
 import MainButtonComponent from '../../components/MainButtoncomponent';
 import TextRecognition, {
@@ -81,7 +82,7 @@ const CropConfirmationScreen = ({ route }) => {
 
   const extractData = async () => {
     const firstSideData =
-      prevImageData == undefined
+      prevImageData != undefined
         ? await TextRecognition.recognize(
             prevImageData.path,
             TextRecognitionScript.JAPANESE,
@@ -108,21 +109,6 @@ const CropConfirmationScreen = ({ route }) => {
     });
     Predict(ocrText);
   };
-
-  const takeImage = async (prevImage) => {
-    ImagePicker.openCamera({
-      cropping: true,
-      width: 3000,
-      height: 1500,
-      freeStyleCropEnabled: true,
-    }).then(async (image) => {
-      navigation.navigate('CardStack', {
-        screen: 'CropConfirmationScreen',
-        params: { image, prevImage },
-      });
-    });
-  };
-
   const takeImage = async (prevImage) => {
     ImagePicker.openCamera({
       cropping: true,
@@ -151,8 +137,11 @@ const CropConfirmationScreen = ({ route }) => {
           style={styles.image}
         />
         {prevImageData == undefined ? (
-          <TouchableOpacity onPress={() => takeImage(imageData)}>
-            <Image source={require('../../assets/images/addNewImage.png')} />
+          <TouchableOpacity style={{}} onPress={() => takeImage(imageData)}>
+            <Image
+              style={{ width: '100%', objectFit: 'contain' }}
+              source={require('../../assets/images/addNewImage.png')}
+            />
           </TouchableOpacity>
         ) : (
           <Image
@@ -165,11 +154,12 @@ const CropConfirmationScreen = ({ route }) => {
           />
         )}
       </View>
-
-      <MainButtonComponent
-        title="Extract Card Details"
-        onPressing={extractData}
-      />
+      <View style={styles.extractButton}>
+        <MainButtonComponent
+          title="Extract Card Details"
+          onPressing={extractData}
+        />
+      </View>
       <Modal animationType="slide" transparent={true} visible={isModalVisible}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
@@ -226,6 +216,10 @@ const styles = StyleSheet.create({
     width: '100%',
     aspectRatio: '5/3',
     borderRadius: 8,
+  },
+  extractButton: {
+    marginBottom: 60,
+    height: 50,
   },
   buttonContainer: {
     height: 50,
