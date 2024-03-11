@@ -35,34 +35,30 @@ const CardListScreen = ({ route }: any) => {
     setChangeContactName(true);
   };
   const editedData = { contact_name: temporaryContactName };
-  
+
   const changeContact = async () => {
     //To change the contactname ,we call the edit card hook
     try {
-      if(editedData.contact_name.trim())
-     {
-      const user_id = (await getLocalItem(Constants.USER_ID)) ?? '{}';
-      const token = (await getLocalItem(Constants.USER_JWT)) ?? '{}';
-      const response = await editCardDetails({
-        user_id,
-        token,
-        card_id: route.params.card_id,
-        updatedData: editedData,
-      });
-      const contactNameSetStatus = response.statusCode;
-      if (contactNameSetStatus == '200') {
-        setContactName(temporaryContactName);
-        setChangeContactName(false);
-        setTemporaryContactName('');
+      if (editedData.contact_name.trim()) {
+        const user_id = (await getLocalItem(Constants.USER_ID)) ?? '{}';
+        const token = (await getLocalItem(Constants.USER_JWT)) ?? '{}';
+        const response = await editCardDetails({
+          user_id,
+          token,
+          card_id: route.params.card_id,
+          updatedData: editedData,
+        });
+        const contactNameSetStatus = response.statusCode;
+        if (contactNameSetStatus == '200') {
+          setContactName(temporaryContactName);
+          setChangeContactName(false);
+          setTemporaryContactName('');
+        } else {
+          console.log('Error in editing contact name');
+        }
       } else {
-        console.log('Error in editing contact name');
+        setChangeContactName(false);
       }
-    }
-    else{
-       setChangeContactName(false)
-    }
-  
-      
     } catch (error) {
       console.error('Error editing card:', error);
     }
@@ -77,7 +73,6 @@ const CardListScreen = ({ route }: any) => {
       </View>
     );
   };
-  
 
   interface CardParameters {
     company_name: string;
@@ -216,6 +211,9 @@ const CardListScreen = ({ route }: any) => {
   );
 };
 const styles = StyleSheet.create({
+  mainContainer: {
+    height: '100%',
+  },
   headerStyle: {
     flexDirection: 'row',
     gap: 20,
@@ -240,8 +238,7 @@ const styles = StyleSheet.create({
   contactNameSetButton: {
     top: '35%',
   },
- 
-  
+
   cardcontainer: {
     width: '100%',
     height: 170,
@@ -250,17 +247,17 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   letterCircle: {
-    borderRadius: 60,
-    height: 120,
-    width: 120,
+    borderRadius: 90,
+    height: 140,
+    width: 140,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 10,
     borderColor: colors['secondary-light'],
     borderWidth: 2,
     zIndex: 1,
-    marginBottom: -40,
-    marginLeft: 140,
+    alignSelf: 'center',
+    marginTop: '10%',
+    marginBottom: '-25%',
   },
   topIconContainer: {
     paddingTop: 10,
@@ -271,10 +268,9 @@ const styles = StyleSheet.create({
   },
   letterCardContainer: {
     flexDirection: 'column',
-    marginTop: 10,
   },
   letter: {
-    fontSize: 48,
+    fontSize: 60,
     color: colors['secondary-light'],
   },
   icon: {
@@ -283,8 +279,9 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     backgroundColor: colors['secondary-light'],
-    height: 700,
+    height: '100%',
     width: '100%',
+    marginTop: '15%',
     borderRadius: 26,
     paddingHorizontal: 20,
   },
@@ -301,12 +298,12 @@ const styles = StyleSheet.create({
   contactName: {
     color: colors['primary-text'],
     fontSize: 40,
-    marginTop: 40,
+    marginTop: 60,
   },
   cardHeading: {
     color: colors['primary-text'],
     fontSize: 24,
-    marginTop: 30,
+    marginTop: 10,
     marginBottom: 20,
     paddingHorizontal: 10,
   },

@@ -133,8 +133,8 @@ const ContactsPage = () => {
   const takeImage = async () => {
     ImagePicker.openCamera({
       cropping: true,
-      width: 3000,
-      height: 1500,
+      width: 1600,
+      height: 900,
       freeStyleCropEnabled: true,
     }).then(async (image) => {
       navigation.navigate('CardStack', {
@@ -205,6 +205,12 @@ const ContactsPage = () => {
       )}
       <TouchableOpacity
         onPress={takeImage}
+        onLongPress={() => {
+          navigation.navigate('CardStack', {
+            screen: 'EditCardScreen',
+            params: { create: true, cardDetails: {} },
+          });
+        }}
         style={{
           position: 'absolute',
           bottom: 50,
