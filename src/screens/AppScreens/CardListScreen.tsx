@@ -77,7 +77,7 @@ const CardListScreen = ({ route }: any) => {
       </View>
     );
   };
-  // const contact_name = route.params.name ?? '';
+  
 
   interface CardParameters {
     company_name: string;
@@ -132,7 +132,7 @@ const CardListScreen = ({ route }: any) => {
         <TopMenuButton
           options={[
             {
-              label: 'Change Contact Name',
+              label: 'Edit Contact Name',
               onSelect: changeContactNameFunction,
             },
 

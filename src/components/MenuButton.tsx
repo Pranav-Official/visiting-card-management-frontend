@@ -76,21 +76,21 @@ const styles = StyleSheet.create({
   modal: {
     position: 'absolute',
     top:10,
-    left: 200, // Adjust this value to position the modal closer or further from the icon
-    right: 10,
+    left: 190, // Adjust this value to position the modal closer or further from the icon
+    right: 5,
     justifyContent: 'center',
-    //alignItems: 'center',
+    alignItems: 'center',
     margin: 0,
   },
   modalContent: {
-    backgroundColor: colors['accent-white'],
+    backgroundColor: colors['secondary-light'],
     padding: 10,
     borderRadius: 10,
 
-    elevation: 5, // Add elevation to give a shadow effect
+  
   },
   optionButton: {
-    marginBottom: 10,
+    marginBottom: 8,
   },
   optionText: {
     
