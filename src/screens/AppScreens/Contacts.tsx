@@ -18,6 +18,7 @@ import Constants from '../../utils/Constants';
 import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import ImagePicker from 'react-native-image-crop-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import colors from '../../utils/colorPallete';
@@ -129,6 +130,20 @@ const ContactsPage = () => {
     }
   };
 
+  const takeImage = async () => {
+    ImagePicker.openCamera({
+      cropping: true,
+      width: 300,
+      height: 150,
+      freeStyleCropEnabled: true,
+    }).then(async (image) => {
+      navigation.navigate('CardStack', {
+        screen: 'CropConfirmationScreen',
+        params: { image },
+      });
+    });
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -181,12 +196,7 @@ const ContactsPage = () => {
         />
       )}
       <TouchableOpacity
-        onPress={() => {
-          navigation.navigate('CardStack', {
-            screen: 'EditCardScreen',
-            params: { create: true, cardDetails: cardDetail },
-          });
-        }}
+        onPress={takeImage}
         style={{
           position: 'absolute',
           bottom: 50,

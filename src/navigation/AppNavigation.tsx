@@ -12,6 +12,7 @@ import CardDetailsScreen from '../screens/AppScreens/CardDetailsScreen';
 import EditCardScreen from '../screens/AppScreens/EditCardScreen';
 import SetContactNameScreen from '../screens/AppScreens/SetContactNameScreen';
 import AddToContactScreen from '../screens/AppScreens/AddToContactScreen';
+import CropConfirmationScreen from '../screens/AppScreens/CropConfirmationScreen';
 const StackNav = createNativeStackNavigator();
 const HomeStackNavigation = () => {
   return (
@@ -107,6 +108,10 @@ const CardStackNavigation = () => {
       <StackNav.Screen
         name="AddToContactScreen"
         component={AddToContactScreen}
+      />
+      <StackNav.Screen
+        name="CropConfirmationScreen"
+        component={CropConfirmationScreen}
       />
     </CardStackNav.Navigator>
   );
