@@ -82,10 +82,6 @@ const EditCardDetails = ({ route }: any) => {
 
       //if save successful,navigating to cardDetails screen
       if (isSaved === '200') {
-        const cardListScreenUpdater = route.params.cardListScreenUpdater;
-        const cardDetailsScreenUpdater = route.params.cardDetailsScreenUpdater;
-        cardDetailsScreenUpdater((key) => key + 1);
-        cardListScreenUpdater((key) => key + 1);
         navigation.navigate('CardStack', {
           screen: 'CardDetailsScreen',
           params: { card_id: route.params.card_id },
