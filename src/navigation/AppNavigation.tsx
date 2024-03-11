@@ -12,6 +12,7 @@ import CardDetailsScreen from '../screens/AppScreens/CardDetailsScreen';
 import EditCardScreen from '../screens/AppScreens/EditCardScreen';
 import SetContactNameScreen from '../screens/AppScreens/SetContactNameScreen';
 import AddToContactScreen from '../screens/AppScreens/AddToContactScreen';
+import ProfileScreen from '../screens/AppScreens/ProfileScreen';
 const StackNav = createNativeStackNavigator();
 const HomeStackNavigation = () => {
   return (
@@ -69,7 +70,7 @@ const HomeBottomBarNavigation = () => {
       />
       <BottomBarNavigation.Screen
         name="Profile"
-        component={HomeScreen}
+        component={ProfileScreen}
         options={{
           tabBarIcon: () => (
             <Ionicons
