@@ -27,12 +27,10 @@ import MainButtonComponent from '../../components/MainButtoncomponent';
 import ProfileButtonComponent from '../../components/ProfileButtonComponent';
 import CardComponent from '../../components/CardComponent';
 
-const DATA = [
-  {
-    card_id: '1',
-    contact_name: '',
-  },
-];
+type Contact = {
+  card_id: string;
+  contact_name: string;
+};
 
 type Card = {
   card_id: string;
@@ -56,9 +54,9 @@ type UserData = {
 };
 
 const ContactsPage = () => {
-  const [cardDetail, setCardDetail] = useState({});
+  const [cardDetail] = useState({});
   const navigation = useNavigation<NavigationProp<any>>();
-  const [contactList, setContactList] = useState(DATA);
+  const [contactList, setContactList] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [pendingCardList, setPendingCardList] = React.useState<UserData>({
