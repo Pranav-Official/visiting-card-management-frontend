@@ -15,11 +15,12 @@ import ContactListComponent from '../../components/ContactListComponent';
 import { getContactList } from '../../hooks/contactListHook';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
-import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
-import LinearGradient from 'react-native-linear-gradient';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import {
+  NavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
 import colors from '../../utils/colorPallete';
 import SearchBarComponent from '../../components/SearchBarComponent';
 import ContactShimmer from '../../components/Shimmers/ContactShimmer';
@@ -28,6 +29,8 @@ import BottomSheetComponent from '../../components/BottomSheetComponent';
 import MainButtonComponent from '../../components/MainButtoncomponent';
 import ProfileButtonComponent from '../../components/ProfileButtonComponent';
 import CardComponent from '../../components/CardComponent';
+import { useSelector } from 'react-redux';
+import { selectScreenRerenderState } from '../../context/screenRerenderSlice';
 
 const DATA = [
   {
@@ -115,6 +118,10 @@ const ContactsPage = () => {
       const jwtToken = (await getLocalItem(Constants.USER_JWT)) || '';
       const pendingCards = await getPendingCards({ user_id, jwtToken });
 
+      if (pendingCards.statusCode !== '200') {
+        return;
+      }
+
       if (
         pendingCards.pendingCardList &&
         pendingCards.pendingCardList.length > 0
@@ -128,18 +135,26 @@ const ContactsPage = () => {
       console.log('\n\nCatch Error\n\n');
     }
   };
-
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await get();
-        await getPendingCardsList();
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchData();
+    try {
+      getPendingCardsList();
+    } catch (error) {
+      console.log('\n\nCatch Error\n\n');
+    }
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchData = async () => {
+        try {
+          await get();
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+      fetchData();
+    }, []),
+  );
 
   const contactPage = (id: string, name: string) => {
     console.log('contactPage', id, name);
