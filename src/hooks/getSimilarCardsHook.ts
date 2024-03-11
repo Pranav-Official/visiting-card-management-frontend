@@ -44,6 +44,8 @@ export async function getSimilarCards({
   let similarCardList: ContactCards[];
 
   try {
+    console.log('\n\nReached HOOK:');
+    console.log('\n\n', user_id, card_name, phone, email);
     const getSimilarCardsResponse = await api.get(`api/v1/getSimilarCards`, {
       params: {
         user_id,
@@ -55,13 +57,17 @@ export async function getSimilarCards({
         Authorization: `Bearer ${jwtToken}`,
       },
     });
+    console.log(
+      '\n\nGet Similart Card REsponse: ',
+      getSimilarCardsResponse.data.data,
+    );
     statusCode = getSimilarCardsResponse.status.toString();
     responseBody = getSimilarCardsResponse.data;
     similarCardList = responseBody.data;
     // console.log('From GSC Hook : ', responseBody.data, statusCode)
     return { similarCardList, statusCode };
   } catch (error: unknown) {
-    // console.log('From GSC Hook: Error fetching SimilarCards :', error)
+    console.log('From GSC Hook: Error fetching SimilarCards :', error);
     return { statusCode };
   }
 }
