@@ -14,7 +14,12 @@ import RadioButton from '../../components/RadioButton';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import { overwriteExistingCard } from '../../hooks/overWriteCardHook';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import {
+  CommonActions,
+  NavigationProp,
+  StackActions,
+  useNavigation,
+} from '@react-navigation/native';
 import Toast from 'react-native-root-toast';
 
 type Card = {
@@ -104,6 +109,12 @@ const CardOverwriteScreen = ({ route }: any) => {
     console.log('\n\nOverWrite Response: ', overwriteResponse);
     if (overwriteResponse?.statusCode === '200') {
       Toast.show('Card Overwritten Successfully');
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [{ name: 'Contacts' }],
+        }),
+      );
       navigation.navigate('CardDetailsScreen', { card_id: selected });
     } else {
       Toast.show('Error Overwriting Card');
