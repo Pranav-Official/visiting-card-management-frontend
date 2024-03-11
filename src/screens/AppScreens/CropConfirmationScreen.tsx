@@ -8,13 +8,16 @@ import {
   Modal,
 } from 'react-native';
 import MainButtonComponent from '../../components/MainButtoncomponent';
-import TextRecognition from '@react-native-ml-kit/text-recognition';
+import TextRecognition, {
+  TextRecognitionScript,
+} from '@react-native-ml-kit/text-recognition';
 import Toast from 'react-native-root-toast';
 import {
   NavigationProp,
   useNavigation,
   StackActions,
 } from '@react-navigation/native';
+import ImagePicker from 'react-native-image-crop-picker';
 import { aiDetailsExtraction } from '../../hooks/aiDetailsExtraction';
 import colors from '../../utils/colorPallete';
 
@@ -24,6 +27,8 @@ const CropConfirmationScreen = ({ route }) => {
   const [timer, setTimer] = useState(0);
 
   const imageData = route.params.image;
+  const prevImageData = route.params.prevImage ?? undefined;
+
   // console.log(imageData);
   const navigation = useNavigation<NavigationProp<any>>();
 
@@ -75,29 +80,90 @@ const CropConfirmationScreen = ({ route }) => {
   };
 
   const extractData = async () => {
-    // console.log('GGGG');
-    const result = await TextRecognition.recognize(imageData.path);
-    // console.log('OCR Text\n');
-    Toast.show(result.text + 'Hello', {
+    const firstSideData =
+      prevImageData == undefined
+        ? await TextRecognition.recognize(
+            prevImageData.path,
+            TextRecognitionScript.JAPANESE,
+          )
+        : await TextRecognition.recognize(
+            imageData.path,
+            TextRecognitionScript.JAPANESE,
+          );
+    const secondSideData =
+      prevImageData != undefined
+        ? await TextRecognition.recognize(
+            imageData.path,
+            TextRecognitionScript.JAPANESE,
+          )
+        : undefined;
+
+    const ocrText =
+      secondSideData != undefined
+        ? firstSideData.text + secondSideData.text
+        : firstSideData.text;
+    Toast.show(ocrText, {
       duration: Toast.durations.LONG,
       position: Toast.positions.BOTTOM,
     });
-    Predict(result.text);
+    Predict(ocrText);
+  };
+
+  const takeImage = async (prevImage) => {
+    ImagePicker.openCamera({
+      cropping: true,
+      width: 3000,
+      height: 1500,
+      freeStyleCropEnabled: true,
+    }).then(async (image) => {
+      navigation.navigate('CardStack', {
+        screen: 'CropConfirmationScreen',
+        params: { image, prevImage },
+      });
+    });
+  };
+
+  const takeImage = async (prevImage) => {
+    ImagePicker.openCamera({
+      cropping: true,
+      width: 3000,
+      height: 1500,
+      freeStyleCropEnabled: true,
+    }).then(async (image) => {
+      navigation.navigate('CardStack', {
+        screen: 'CropConfirmationScreen',
+        params: { image, prevImage },
+      });
+    });
   };
 
   return (
     <View style={styles.pageContainer}>
-      {/* <Image style={styles.image} source={require('../../assets/images/')} /> */}
       <View style={styles.imageContainer}>
         <Image
           source={
-            imageData && imageData.path
+            prevImageData && prevImageData.path
+              ? { uri: prevImageData.path }
+              : imageData && imageData.path
               ? { uri: imageData.path }
               : require('../../assets/images/addNewImage.png')
           }
-          style={imageData ? styles.image : null}
+          style={styles.image}
         />
-        <Image source={require('../../assets/images/addNewImage.png')} />
+        {prevImageData == undefined ? (
+          <TouchableOpacity onPress={() => takeImage(imageData)}>
+            <Image source={require('../../assets/images/addNewImage.png')} />
+          </TouchableOpacity>
+        ) : (
+          <Image
+            source={
+              imageData && imageData.path
+                ? { uri: imageData.path }
+                : require('../../assets/images/addNewImage.png')
+            }
+            style={styles.image}
+          />
+        )}
       </View>
 
       <MainButtonComponent
