@@ -133,8 +133,8 @@ const ContactsPage = () => {
   const takeImage = async () => {
     ImagePicker.openCamera({
       cropping: true,
-      width: 300,
-      height: 150,
+      width: 3000,
+      height: 1500,
       freeStyleCropEnabled: true,
     }).then(async (image) => {
       navigation.navigate('CardStack', {
