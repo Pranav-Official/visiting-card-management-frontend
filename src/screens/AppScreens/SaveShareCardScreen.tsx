@@ -98,7 +98,7 @@ const SaveShareCardScreen = ({ route }: any) => {
   
 
   const [selected, setSelected] = useState<string[]>(['']);
-
+  const navigation=useNavigation();
   return (
     <View style={{ padding: 18, flex: 1 }}>
       <Text
@@ -129,7 +129,7 @@ const SaveShareCardScreen = ({ route }: any) => {
         <View style={{ flex: 1 }}>
           <ProfileButtonComponent
             title="Later"
-            
+            onPressing={()=>navigation.goBack()}
           />
         </View>
       </View>
