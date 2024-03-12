@@ -19,17 +19,26 @@ export async function getProfile(
 ): Promise<ResponseType> {
   console.log('\n\nReached Profile HOOK');
 
-  const getProfileDetails = await api.get('api/v1/getProfile', {
-    params: { user_id },
-    headers: {
-      Authorization: `Bearer ${jwtToken}`,
-    },
-  });
+  try {
+    const getProfileDetails = await api.get('api/v1/getProfile', {
+      params: { user_id },
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    });
 
-  const userData = getProfileDetails.data.data;
-  const status = getProfileDetails.data.status;
+    if (getProfileDetails.status === 200) {
+      const userData = getProfileDetails.data.data;
+      const status = getProfileDetails.data.status;
 
-  console.log('\n\nGet Profile Response: ', userData, status);
-
-  return { userData, status };
+      console.log('\n\nGet Profile Response: ', userData, status);
+      return { userData, status };
+    } else {
+      console.log('\nError Getting Profile Details (getProfileDetailsHook)');
+      throw new Error('Failed to fetch profile details');
+    }
+  } catch (error) {
+    console.log(error);
+    throw new Error('Failed to fetch profile details');
+  }
 }
