@@ -15,7 +15,7 @@ const isValidWebsiteUrl = (url: string): boolean => {
 
 const isValidPhoneNumber = (phoneNumber: string): boolean => {
   // Regular expression for phone number validation
-  const phoneRegex = /^\+(?:[0-9] ?){6,14}[0-9]$/;
+  const phoneRegex = /^(\+)?\d+$/;
 
   return phoneRegex.test(phoneNumber);
 };

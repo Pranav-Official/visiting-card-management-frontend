@@ -9,21 +9,99 @@ import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 
 function searchContacts(contacts: CardData[], searchText: string) {
-  let results = [];
+  const results: {
+    matchIndex: number;
+    matchType: string;
+    matchString: string;
+    card_id: string;
+    contact_name: string;
+  }[] = [];
 
   contacts.forEach((contact) => {
+    const match = {
+      found: false,
+      item_index: -1,
+      string_index: -1,
+      type: '',
+      match_string: '',
+    };
     const matchArray = [];
     const contact_name = contact.contact_name;
     const card_names = contact.card_names;
     const emails = contact.email;
     const phone_numbers = contact.phone_number;
     const company_names = contact.company_names;
-    matchArray.push([
-      contact_name.indexOf(searchText) === -1 ? -1 : 0,
-      contact_name.indexOf(searchText),
-    ]);
+
+    if (contact_name.toLowerCase().includes(searchText)) {
+      match.found = true;
+      match.item_index = contact_name.toLowerCase().indexOf(searchText);
+      match.string_index = contact_name.toLowerCase().indexOf(searchText);
+      match.type = 'contact_name';
+      match.match_string = contact_name;
+    }
+    matchArray.push(match);
+    for (let i = 0; i < card_names.length; i++) {
+      if (card_names[i].toLowerCase().includes(searchText)) {
+        match.found = true;
+        match.string_index = card_names[i].toLowerCase().indexOf(searchText);
+        match.type = 'card_name';
+        match.match_string = card_names[i];
+        matchArray.push(match);
+        break;
+      }
+    }
+    for (let i = 0; i < emails.length; i++) {
+      if (emails[i].toLowerCase().includes(searchText)) {
+        match.found = true;
+        match.string_index = emails[i].toLowerCase().indexOf(searchText);
+        match.type = 'email';
+        match.match_string = emails[i];
+        matchArray.push(match);
+        break;
+      }
+    }
+    for (let i = 0; i < phone_numbers.length; i++) {
+      if (phone_numbers[i].toLowerCase().includes(searchText)) {
+        match.found = true;
+        match.string_index = phone_numbers[i].toLowerCase().indexOf(searchText);
+        match.type = 'phone_number';
+        match.match_string = phone_numbers[i];
+        matchArray.push(match);
+        break;
+      }
+    }
+    for (let i = 0; i < company_names.length; i++) {
+      if (company_names[i].toLowerCase().includes(searchText)) {
+        match.found = true;
+        match.string_index = company_names[i].toLowerCase().indexOf(searchText);
+        match.type = 'company_name';
+        match.match_string = company_names[i];
+        matchArray.push(match);
+        break;
+      }
+    }
+    if (matchArray[0].type === 'contact_name') {
+      results.push({
+        matchIndex: matchArray[0].string_index,
+        matchType: matchArray[0].type,
+        matchString: matchArray[0].match_string,
+        card_id: contact.card_id,
+        contact_name: contact.contact_name,
+      });
+    } else {
+      matchArray.sort((a, b) => a.string_index - b.string_index);
+      results.push({
+        matchIndex: matchArray[0].string_index,
+        matchType: matchArray[0].type,
+        matchString: matchArray[0].match_string,
+        card_id: contact.card_id,
+        contact_name: contact.contact_name,
+      });
+    }
   });
-  return results;
+  return results
+    .sort((a, b) => a.matchIndex - b.matchIndex)
+    .filter((result) => result.matchIndex !== -1);
 }
 const SearchScreen = () => {
   const [searchableList, setSearchableList] = useState<CardData[]>([]);
@@ -59,9 +137,12 @@ const SearchScreen = () => {
   }, []);
 
   useEffect(() => {
-    if (searchText.length > 0) {
+    if (searchText.length > 2) {
       console.log(searchText);
-      const result = searchContacts(filteredSearchableList, searchText);
+      const result = searchContacts(
+        filteredSearchableList,
+        searchText.toLowerCase(),
+      );
       console.log('search result =', result);
     }
   }, [searchText]);
