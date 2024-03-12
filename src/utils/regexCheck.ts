@@ -6,18 +6,10 @@ function validateEmail(email: string): boolean {
 }
 
 const isValidWebsiteUrl = (url: string): boolean => {
-  // Regular expression for website validation
   const websiteUrlRegex =
     /^((https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?)$/;
 
   return websiteUrlRegex.test(url);
 };
 
-const isValidPhoneNumber = (phoneNumber: string): boolean => {
-  // Regular expression for phone number validation
-  const phoneRegex = /^(\+)?\d+$/;
-
-  return phoneRegex.test(phoneNumber);
-};
-
-export { validateEmail, isValidWebsiteUrl, isValidPhoneNumber };
+export { validateEmail, isValidWebsiteUrl };
