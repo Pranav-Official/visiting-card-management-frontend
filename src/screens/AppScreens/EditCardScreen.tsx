@@ -42,7 +42,6 @@ type ContactCards = {
 };
 //To set border color for  mandatory fields
 type BorderTypes = 'Danger' | 'Auth' | 'Normal';
-type ColorTypes = 'red' | '#8080';
 
 //Edit Card Details Screen
 const EditCardDetails = ({ route }: any) => {
@@ -51,7 +50,6 @@ const EditCardDetails = ({ route }: any) => {
 
   const [emailBorder, setEmailBorder] = useState<BorderTypes>('Normal');
   const [phoneBorder, setPhoneBorder] = useState<BorderTypes>('Normal');
-  const [cardNameColor, setCardNameColor] = useState<ColorTypes>('#8080');
   const [mandatoryFieldsEmpty, setMandatoryFieldsEmpty] = useState(false);
 
   const [similarCardList, setSimilarCardList] = React.useState<ContactCards>({
@@ -133,12 +131,9 @@ const EditCardDetails = ({ route }: any) => {
     // checking whether edits are for creating a card
     if (route.params.create) {
       //Card name editable only on create a new card page
-      setCardNameColor('red');
       if (!cardDetails.card_name.trim()) {
         setMandatoryFieldsEmpty(true);
         return;
-      } else {
-        setCardNameColor('#8080');
       }
       if (!mandatoryFieldsEmpty) {
         //calls the fetchSimilarCards api hook
@@ -164,7 +159,6 @@ const EditCardDetails = ({ route }: any) => {
     //setting non empty states for mandatory fields for entries
     if (key === 'card_name') {
       setMandatoryFieldsEmpty(false);
-      setCardNameColor('#000');
     }
     if (key === 'email') {
       setMandatoryFieldsEmpty(false);
@@ -245,7 +239,6 @@ const EditCardDetails = ({ route }: any) => {
           value={cardDetails.card_name}
           setter={(value: string) => handleInputChange('card_name', value)}
           readonly={!route.params.create}
-          textColor={cardNameColor}
         />
       </View>
       <View style={styles.inputFieldsContainer}>
