@@ -2,4 +2,5 @@ export default {
   IS_LOGGED_IN: 'IS_LOGGED_IN',
   USER_JWT: 'USER_JWT',
   USER_ID: 'USER_ID',
+  SAVE_SHARES_LATER: 'SAVE_SHARES_LATER',
 };

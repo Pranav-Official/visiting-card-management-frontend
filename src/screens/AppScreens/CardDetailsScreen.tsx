@@ -23,7 +23,11 @@ import BackButtonIcon from '../../assets/images/Arrow.svg';
 import { listCardDetails } from '../../hooks/CardDetailHook';
 import Constants from '../../utils/Constants';
 import { getLocalItem } from '../../utils/Utils';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import {
+  NavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { isValidWebsiteUrl } from '../../utils/regexCheck';
 import BottomSheetComponent from '../../components/BottomSheetComponent';
@@ -48,7 +52,6 @@ const CardDetailPage = ({ route }: any) => {
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation<NavigationProp<any>>();
-  const [key, setKey] = useState(0);
   const [ShareModalVisible, setShareModalVisible] = useState(false);
 
   const toggleShareModal = () => {
@@ -79,9 +82,12 @@ const CardDetailPage = ({ route }: any) => {
   };
 
   // useEffect hook to fetch data when component mounts or key changes
-  useEffect(() => {
-    fetchData();
-  }, [key]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchData();
+    }, []),
+  );
 
   // Function to handle deletion of card
   const handleDeleteCard = async () => {
@@ -190,8 +196,6 @@ const CardDetailPage = ({ route }: any) => {
             navigation.navigate('EditCardScreen', {
               cardDetails: cardDetail,
               card_id: route.params.card_id,
-              cardListScreenUpdater: route.params.cardListScreenUpdater,
-              cardDetailsScreenUpdater: setKey,
             });
           }}
         >
@@ -267,7 +271,13 @@ const CardDetailPage = ({ route }: any) => {
             visibility={ShareModalVisible}
             visibilitySetter={setShareModalVisible}
           >
-            <ShareCardScreen user_id={''} jwt_token={''} card_id={route.params.card_id} receiver_user_ids={[]} visibilitySetter={toggleShareModal} />
+            <ShareCardScreen
+              user_id={''}
+              jwt_token={''}
+              card_id={route.params.card_id}
+              receiver_user_ids={[]}
+              visibilitySetter={toggleShareModal}
+            />
           </BottomSheetComponent>
         </View>
 

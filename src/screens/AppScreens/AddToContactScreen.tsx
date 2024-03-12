@@ -14,7 +14,11 @@ import ProfileButtonComponent from '../../components/ProfileButtonComponent';
 import Constants from '../../utils/Constants';
 import { addToExistingContact } from '../../hooks/addToContactHook';
 import { getLocalItem } from '../../utils/Utils';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import {
+  CommonActions,
+  NavigationProp,
+  useNavigation,
+} from '@react-navigation/native';
 
 const RenderItem = ({ item, selected, setter }) => (
   <View
@@ -88,7 +92,16 @@ const AddToContact = ({ route }: any) => {
     if (addToContactResponse?.statusCode === 200) {
       const createdCardId = addToContactResponse.addToContactData.data.cardId;
       console.log('\n\nNEWLY CREATED CARD ID: ', createdCardId);
-      navigation.navigate('CardDetailsScreen', { card_id: createdCardId });
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [{ name: 'Home' }],
+        }),
+      );
+      navigation.navigate('CardStack', {
+        screen: 'CardDetailsScreen',
+        params: { card_id: createdCardId },
+      });
     } else console.log('\n\nError Navigating');
   };
 

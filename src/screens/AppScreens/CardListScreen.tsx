@@ -94,7 +94,9 @@ const CardListScreen = ({ route }: any) => {
         jwt_token: jwtToken,
         card_id: cardId,
       });
-
+      if (result.cardResp.data.length == 0) {
+        navigation.goBack();
+      }
       setCardList(result.cardResp.data);
       setIsLoading(false);
     } catch (error) {
