@@ -2,10 +2,13 @@ import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import colors from '../utils/colorPallete';
 
+type ColorTypes = 'red' | '#8080';
+
 type InputProps = {
   placeholder: string;
   value: string;
   setter: (value: string) => void;
+  textColor: ColorTypes;
   readonly?: boolean;
 };
 
@@ -13,16 +16,20 @@ const EditCardNameComponent = ({
   placeholder,
   value,
   setter,
+  textColor = 'red',
   readonly = true,
 }: InputProps) => {
+  const placeholderColor = value.trim() === '' ? 'red' : 'grey';
   return (
     <View style={styles.inputContainer}>
       <TextInput
         placeholder={placeholder}
-        style={styles.input}
+        style={[
+          styles.input,
+          { color: textColor, placeholderTextColor: placeholderColor },
+        ]}
         value={value}
         onChangeText={(val) => setter(val)}
-        underlineColorAndroid="transparent"
         readOnly={readonly}
       />
     </View>
@@ -31,9 +38,9 @@ const EditCardNameComponent = ({
 
 const styles = StyleSheet.create({
   inputContainer: {
-    borderBottomColor: colors['primary-text'],
     paddingVertical: 0,
     paddingHorizontal: 0,
+    textDecorationLine: 'underline',
   },
   input: {
     textAlign: 'center',
@@ -43,6 +50,7 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
     fontWeight: '700',
     width: '100%',
+    color: colors['primary-text'],
   },
 });
 
