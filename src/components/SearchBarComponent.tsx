@@ -5,7 +5,8 @@ import colors from '../utils/colorPallete';
 
 type Props = {
   editable?: boolean;
-  onChangeText: (text: string) => void;
+  value?: string;
+  setter?: (value: string) => void;
 };
 
 const SearchBarComponent = (props: Props) => {
@@ -21,7 +22,8 @@ const SearchBarComponent = (props: Props) => {
         editable={props.editable}
         placeholder="Search Contact"
         style={styles.searchBarView}
-        onChangeText={props.onChangeText}
+        value={props.value}
+        onChangeText={onChangeText}
       ></TextInput>
       <TouchableOpacity style={styles.icon}>
         <MaterialIcons name="search" color={'grey'} size={30} />

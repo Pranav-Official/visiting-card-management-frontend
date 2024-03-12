@@ -34,21 +34,8 @@ const ShareCardScreen = ({ card_id, visibilitySetter }: ShareCardProp) => {
       }
     };
     fetchData();
-  }, []);
+  }, []); 
 
-  // const handleSearch = (text: string) => {
-  //   setSearchData(text);
-  //   const filteredData = contactList.filter(item =>
-  //     item.contact_name.toLowerCase().includes(text.toLowerCase()),
-  //   );
-  //   setFilteredShareList(filteredData);
-  // };
-
-  const handleSearch = (text: string) => {
-    setSearchQuery(text);
-  };
-
-  //new
   useEffect(() => {
     const filteredList = shareList.filter((item) =>
       item.user_fullname.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -93,7 +80,7 @@ const ShareCardScreen = ({ card_id, visibilitySetter }: ShareCardProp) => {
   return (
     <View style={styles.main_container}>
       <View style={styles.search_bar_container}>
-        <SearchBarComponent onChangeText={handleSearch} />
+        <SearchBarComponent value={searchQuery} setter={setSearchQuery} />
       </View>
       <View style={styles.contact_area}>
         <FlatList
