@@ -6,6 +6,7 @@ export interface ShareCardProp {
   jwt_token: string;
   card_id: string;
   receiver_user_ids: string[];
+  visibilitySetter?: () => void;
 }
 
 interface ShareCardResponse {
