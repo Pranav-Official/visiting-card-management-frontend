@@ -38,7 +38,6 @@ const styles = StyleSheet.create({
   input: {
     textAlign: 'center',
     color: colors['primary-text'],
-    textDecorationLine: 'underline',
     fontSize: 35,
     paddingVertical: 0,
     fontWeight: '700',
