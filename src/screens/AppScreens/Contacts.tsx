@@ -56,7 +56,14 @@ type UserData = {
 };
 
 const ContactsPage = () => {
-  const [cardDetail, setCardDetail] = useState({});
+  const [cardDetail, setCardDetail] = useState({
+    card_name: '',
+    job_title: '',
+    email: '',
+    phone: '',
+    company_name: '',
+    company_website: '',
+  });
   const navigation = useNavigation<NavigationProp<any>>();
   const [contactList, setContactList] = useState(DATA);
   const [loading, setLoading] = useState(true);
