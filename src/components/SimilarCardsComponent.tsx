@@ -21,7 +21,7 @@ type ContactCards = {
 
 const SimilarCardsComponent = (props) => {
   const cardDetails = props.cardDetails;
-  const similarCardList = props.similarCardList;
+  const similarCardList: ContactCards = props.similarCardList;
   //Setting SimilarCardList
 
   //Render Item
