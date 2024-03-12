@@ -13,7 +13,9 @@ import EditCardScreen from '../screens/AppScreens/EditCardScreen';
 import SetContactNameScreen from '../screens/AppScreens/SetContactNameScreen';
 import AddToContactScreen from '../screens/AppScreens/AddToContactScreen';
 import CardOverwriteScreen from '../screens/AppScreens/CardOverwriteScreen';
+import ProfileScreen from '../screens/AppScreens/ProfileScreen';
 import CropConfirmationScreen from '../screens/AppScreens/CropConfirmationScreen';
+import SaveShareCardScreen from '../screens/AppScreens/SaveShareCardScreen';
 import SearchScreen from '../screens/AppScreens/SearchScreen';
 const StackNav = createNativeStackNavigator();
 const HomeStackNavigation = () => {
@@ -73,7 +75,7 @@ const HomeBottomBarNavigation = () => {
       />
       <BottomBarNavigation.Screen
         name="Profile"
-        component={HomeScreen}
+        component={ProfileScreen}
         options={{
           tabBarIcon: () => (
             <Ionicons
@@ -111,6 +113,10 @@ const CardStackNavigation = () => {
       <StackNav.Screen
         name="SetContactNameScreen"
         component={SetContactNameScreen}
+      />
+      <StackNav.Screen
+      name="SaveShareCardScreen"
+      component={SaveShareCardScreen}
       />
       <StackNav.Screen
         name="AddToContactScreen"

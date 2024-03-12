@@ -59,12 +59,7 @@ const ContactsPage = () => {
   const [contactList, setContactList] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [pendingCardList, setPendingCardList] = React.useState<UserData>({
-    user_id: '',
-    user_fullname: '',
-    user_email: '',
-    cards: [],
-  });
+  const [pendingCardList, setPendingCardList] = React.useState<UserData[]>();
 
   const [modalVisibility, setModalVisibility] = React.useState(false);
 
@@ -125,7 +120,7 @@ const ContactsPage = () => {
         setModalVisibility(false);
       }
     } catch (error) {
-      console.log('\n\nCatch Error\n\n');
+      console.log('\n\nCatch Error\n\n ', error);
     }
   };
 
@@ -245,13 +240,18 @@ const ContactsPage = () => {
           <FlatList
             data={pendingCardList}
             renderItem={renderItem}
-            keyExtractor={(item) => item.card_id}
+            keyExtractor={(item) => item.user_id}
           />
           <View style={styles.buttonContainer}>
             <Text style={styles.pendingCardsText}>Choose an Option</Text>
             <MainButtonComponent
               title="Save shared cards"
-              onPressing={() => setModalVisibility(false)}
+              onPressing={() =>
+                navigation.navigate('CardStack', {
+                  screen: 'SaveShareCardScreen',
+                  params: { pendingCardList },
+                })
+              }
             ></MainButtonComponent>
             <ProfileButtonComponent
               title="I'll do it later"
