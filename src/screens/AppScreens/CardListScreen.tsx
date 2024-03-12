@@ -1,7 +1,14 @@
 import nameToColor from '../../hooks/nameToHex';
 import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 import LinearGradient from 'react-native-linear-gradient';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { useCallback, useState } from 'react';
 import CardComponent from '../../components/CardComponent';
 import { listCards } from '../../hooks/CardListHook';
@@ -15,11 +22,47 @@ import {
   useFocusEffect,
   useNavigation,
 } from '@react-navigation/native';
+import { editCardDetails } from '../../hooks/editCardHook';
 
 const CardListScreen = ({ route }: any) => {
   const [isLoading, setIsLoading] = useState(true);
   const [key, setKey] = useState(0);
-  const arr = [1, 2, 3, 4, 5];
+  const arr = [1, 2, 3, 4, 5, 6];
+  const [changeContactName, setChangeContactName] = useState(false);
+  const [contactName, setContactName] = useState(route.params.name ?? '');
+  const [temporaryContactName, setTemporaryContactName] = useState('');
+  const changeContactNameFunction = () => {
+    setChangeContactName(true);
+  };
+  const editedData = { contact_name: temporaryContactName };
+
+  const changeContact = async () => {
+    //To change the contactname ,we call the edit card hook
+    try {
+      if (editedData.contact_name.trim()) {
+        const user_id = (await getLocalItem(Constants.USER_ID)) ?? '{}';
+        const token = (await getLocalItem(Constants.USER_JWT)) ?? '{}';
+        const response = await editCardDetails({
+          user_id,
+          token,
+          card_id: route.params.card_id,
+          updatedData: editedData,
+        });
+        const contactNameSetStatus = response.statusCode;
+        if (contactNameSetStatus == '200') {
+          setContactName(temporaryContactName);
+          setChangeContactName(false);
+          setTemporaryContactName('');
+        } else {
+          console.log('Error in editing contact name');
+        }
+      } else {
+        setChangeContactName(false);
+      }
+    } catch (error) {
+      console.error('Error editing card:', error);
+    }
+  };
   const ShimmerComponent = () => {
     return (
       <View>
@@ -30,7 +73,7 @@ const CardListScreen = ({ route }: any) => {
       </View>
     );
   };
-  const contact_name = route.params.name ?? '';
+
   interface CardParameters {
     company_name: string;
     card_id: string;
@@ -76,26 +119,64 @@ const CardListScreen = ({ route }: any) => {
     <View
       style={[
         styles.mainContainer,
-        { backgroundColor: nameToColor(contact_name) },
+        { backgroundColor: nameToColor(contactName) },
       ]}
     >
       <View style={styles.topIconContainer}>
         <TopBackButton />
-        <TopMenuButton />
+        <TopMenuButton
+          options={[
+            {
+              label: 'Edit Contact Name',
+              onSelect: changeContactNameFunction,
+            },
+
+            // Add more menu options as needed
+          ]}
+        />
       </View>
       <View style={styles.letterCardContainer}>
         <View
           style={[
             styles.letterCircle,
-            { backgroundColor: nameToColor(contact_name) },
+            { backgroundColor: nameToColor(contactName) },
           ]}
         >
-          <Text style={styles.letter}>{contact_name[0]}</Text>
+          <Text style={styles.letter}>{contactName[0]}</Text>
         </View>
         <View style={styles.cardContainer}>
-          <View style={styles.contactNameContainer}>
-            <Text style={styles.contactName}>{contact_name}</Text>
-          </View>
+          {!changeContactName ? (
+            <View style={styles.contactNameContainer}>
+              <Text style={styles.contactName}>{contactName}</Text>
+            </View>
+          ) : (
+            <View style={styles.contactNameContainer}>
+              <TextInput
+                placeholder={contactName}
+                style={styles.contactName}
+                value={temporaryContactName}
+                onChangeText={(val) => setTemporaryContactName(val)}
+                underlineColorAndroid="transparent"
+                //readOnly={readonly}
+              />
+              <View style={styles.headerStyle}>
+                <TouchableOpacity
+                  style={styles.buttonStyle}
+                  onPress={() => {
+                    changeContact();
+                  }}
+                >
+                  <Text style={styles.buttonText}>Apply</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.buttonStyle}
+                  onPress={() => setChangeContactName(false)}
+                >
+                  <Text style={styles.buttonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
           <Text style={styles.cardHeading}>Cards</Text>
           {!isLoading ? (
             <FlatList
@@ -130,7 +211,34 @@ const CardListScreen = ({ route }: any) => {
   );
 };
 const styles = StyleSheet.create({
-  mainContainer: {},
+  mainContainer: {
+    height: '100%',
+  },
+  headerStyle: {
+    flexDirection: 'row',
+    gap: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: 30,
+  },
+  buttonStyle: {
+    padding: 15,
+    backgroundColor: colors['secondary-grey'],
+    width: 120,
+    height: 50,
+    alignItems: 'center',
+    borderRadius: 10,
+    justifyContent: 'center',
+  },
+  buttonText: {
+    color: colors['primary-text'],
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  contactNameSetButton: {
+    top: '35%',
+  },
+
   cardcontainer: {
     width: '100%',
     height: 170,
@@ -139,30 +247,30 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   letterCircle: {
-    borderRadius: 60,
-    height: 120,
-    width: 120,
+    borderRadius: 90,
+    height: 140,
+    width: 140,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 10,
     borderColor: colors['secondary-light'],
     borderWidth: 2,
     zIndex: 1,
-    marginBottom: -40,
-    marginLeft: 140,
+    alignSelf: 'center',
+    marginTop: '10%',
+    marginBottom: '-25%',
   },
   topIconContainer: {
     paddingTop: 10,
     padding: 10,
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
   },
   letterCardContainer: {
     flexDirection: 'column',
-    marginTop: 10,
   },
   letter: {
-    fontSize: 48,
+    fontSize: 60,
     color: colors['secondary-light'],
   },
   icon: {
@@ -171,14 +279,16 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     backgroundColor: colors['secondary-light'],
-    height: 700,
+    height: '100%',
     width: '100%',
+    marginTop: '15%',
     borderRadius: 26,
     paddingHorizontal: 20,
   },
   contactNameContainer: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   flatListStyle: {
     gap: 20,
@@ -188,12 +298,12 @@ const styles = StyleSheet.create({
   contactName: {
     color: colors['primary-text'],
     fontSize: 40,
-    marginTop: 40,
+    marginTop: 60,
   },
   cardHeading: {
     color: colors['primary-text'],
     fontSize: 24,
-    marginTop: 30,
+    marginTop: 10,
     marginBottom: 20,
     paddingHorizontal: 10,
   },

@@ -12,6 +12,7 @@ import ContactListComponent from '../../components/ContactListComponent';
 import { getContactList } from '../../hooks/contactListHook';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
+import ImagePicker from 'react-native-image-crop-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
   NavigationProp,
@@ -27,12 +28,10 @@ import MainButtonComponent from '../../components/MainButtoncomponent';
 import ProfileButtonComponent from '../../components/ProfileButtonComponent';
 import CardComponent from '../../components/CardComponent';
 
-const DATA = [
-  {
-    card_id: '1',
-    contact_name: '',
-  },
-];
+type Contact = {
+  card_id: string;
+  contact_name: string;
+};
 
 type Card = {
   card_id: string;
@@ -56,16 +55,9 @@ type UserData = {
 };
 
 const ContactsPage = () => {
-  const [cardDetail, setCardDetail] = useState({
-    card_name: '',
-    job_title: '',
-    email: '',
-    phone: '',
-    company_name: '',
-    company_website: '',
-  });
+  const [cardDetail] = useState({});
   const navigation = useNavigation<NavigationProp<any>>();
-  const [contactList, setContactList] = useState(DATA);
+  const [contactList, setContactList] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [pendingCardList, setPendingCardList] = React.useState<UserData>({
@@ -137,6 +129,20 @@ const ContactsPage = () => {
       console.log('\n\nCatch Error\n\n');
     }
   };
+
+  const takeImage = async () => {
+    ImagePicker.openCamera({
+      cropping: true,
+      width: 1600,
+      height: 900,
+      freeStyleCropEnabled: true,
+    }).then(async (image) => {
+      navigation.navigate('CardStack', {
+        screen: 'CropConfirmationScreen',
+        params: { image },
+      });
+    });
+  };
   useEffect(() => {
     try {
       getPendingCardsList();
@@ -198,10 +204,11 @@ const ContactsPage = () => {
         />
       )}
       <TouchableOpacity
-        onPress={() => {
+        onPress={takeImage}
+        onLongPress={() => {
           navigation.navigate('CardStack', {
             screen: 'EditCardScreen',
-            params: { create: true, cardDetails: cardDetail },
+            params: { create: true, cardDetails: {} },
           });
         }}
         style={{

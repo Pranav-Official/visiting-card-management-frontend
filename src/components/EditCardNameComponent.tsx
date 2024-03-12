@@ -11,7 +11,7 @@ type InputProps = {
   textColor: ColorTypes;
   readonly?: boolean;
 };
-//Card Name Component with-editable or non editable property
+
 const EditCardNameComponent = ({
   placeholder,
   value,
@@ -44,6 +44,8 @@ const styles = StyleSheet.create({
   },
   input: {
     textAlign: 'center',
+    color: colors['primary-text'],
+    textDecorationLine: 'underline',
     fontSize: 35,
     paddingVertical: 0,
     fontWeight: '700',
