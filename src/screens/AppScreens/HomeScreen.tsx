@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import colors from '../../utils/colorPallete';
 import { ActivityIndicator, Modal, StyleSheet, Text, View } from 'react-native';
 import MainButtonComponent from '../../components/MainButtoncomponent';
-import { setLocalItem } from '../../utils/Utils';
+import { getLocalItem, setLocalItem } from '../../utils/Utils';
 import { useDispatch } from 'react-redux';
 import { userLogin } from '../../context/userSlice';
 import Constants from '../../utils/Constants';
 import ShareCardScreen from './ShareCardPage';
 import { aiDetailsExtraction } from '../../hooks/aiDetailsExtraction';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { addToExistingContact } from '../../hooks/AddToExistingContact';
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
@@ -68,6 +69,40 @@ const HomeScreen = () => {
     }
   };
 
+  // Existing code...
+
+  const addToExistContact = async () => {
+    try {
+      const user_id = (await getLocalItem(Constants.USER_ID)) ?? '';
+      const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
+
+      const updatedCardDetails = {
+        card_name: 'Sreekutty2',
+        img_front_link: 'front',
+        img_back_link: 'back',
+        job_title: 'CEO',
+        email: 'test@example.com',
+        phone: '1234567890',
+        company_name: 'some company',
+        company_website: 'some.org',
+      };
+
+      const response = await addToExistingContact({
+        user_id,
+        jwtToken,
+        parent_card_id: '0bf25155-1932-4158-8dec-206c2535b98b',
+        newData: updatedCardDetails, // Pass an array with the updatedCardDetails
+      });
+
+      const newStatus = response.statusCode;
+      if (newStatus === '200') {
+        console.log('Successfully added card to existing contact!');
+      }
+    } catch (error) {
+      console.error('Error adding card to existing contact:', error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Home Screen</Text>
@@ -83,6 +118,12 @@ const HomeScreen = () => {
         title="Send Predition Request"
         onPressing={Predict}
       />
+
+      <MainButtonComponent
+        title="add to existing contact"
+        onPressing={addToExistContact}
+      />
+
       <MainButtonComponent title="Logout" onPressing={Logout} />
       <Modal animationType="slide" transparent={true} visible={isModalVisible}>
         <View style={styles.centeredView}>
