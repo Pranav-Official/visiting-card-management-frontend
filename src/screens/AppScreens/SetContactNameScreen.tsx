@@ -7,14 +7,16 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import { newCardDetails } from '../../hooks/createCardHook';
+import { acceptNewCard } from '../../hooks/acceptCardHook';
 
 const SetContactNameScreen = ({ route }: any) => {
-  const { cardDetails } = route.params;
+  const { cardDetails, pageType } = route.params;
+  console.log('\n\npageType = ', pageType);
   const navigation = useNavigation<NavigationProp<any>>();
   const [newContactName, setNewContactName] = useState('');
 
   //Calling create card hook
-  const createCard = async () => {
+  const createCard = async (acceptShared: boolean) => {
     try {
       const user_id = (await getLocalItem(Constants.USER_ID)) ?? '{}';
       const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '{}';
@@ -26,12 +28,22 @@ const SetContactNameScreen = ({ route }: any) => {
       };
 
       // calling createNewCard Hook
-      const response = await newCardDetails({
-        user_id,
-        jwtToken,
-        card_id: route.params.card_id,
-        newData: updatedCardDetails,
-      });
+      let response;
+      if (acceptShared == true) {
+        response = await acceptNewCard({
+          user_id,
+          jwtToken,
+          card_id: route.params.card_id,
+          newData: updatedCardDetails,
+        });
+      } else {
+        response = await newCardDetails({
+          user_id,
+          jwtToken,
+          card_id: route.params.card_id,
+          newData: updatedCardDetails,
+        });
+      }
 
       const newStatus = response.statusCode;
 
@@ -58,7 +70,12 @@ const SetContactNameScreen = ({ route }: any) => {
       </View>
       <View style={styles.buttonContainer}>
         <ProfileButtonComponent title={'Go Back'} danger={true} />
-        <MainButtonComponent title="Save" onPressing={createCard} />
+        <MainButtonComponent
+          title="Save"
+          onPressing={() =>
+            pageType === 'acceptCard' ? createCard(true) : createCard(false)
+          }
+        />
       </View>
     </View>
   );

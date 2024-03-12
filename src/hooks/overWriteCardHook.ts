@@ -31,7 +31,7 @@ export async function overwriteExistingCard(
   let statusCode = '';
   let responseBody: OWCBodyType;
   try {
-    console.log('\n\nREACHED OWC');
+    console.log('\n\nREACHED OWC', card_id);
     console.log('\n\noverWriteCardPayload: ', overWriteCardPayload);
     const overwriteResponse = await api.patch(
       '/api/v1/editCard',
