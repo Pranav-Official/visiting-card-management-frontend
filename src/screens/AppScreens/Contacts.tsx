@@ -1,13 +1,9 @@
-/* eslint-disable react-native/no-inline-styles */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  Animated,
   FlatList,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -15,11 +11,13 @@ import ContactListComponent from '../../components/ContactListComponent';
 import { getContactList } from '../../hooks/contactListHook';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
-import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
-import LinearGradient from 'react-native-linear-gradient';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import ImagePicker from 'react-native-image-crop-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import {
+  NavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
 import colors from '../../utils/colorPallete';
 import SearchBarComponent from '../../components/SearchBarComponent';
 import ContactShimmer from '../../components/Shimmers/ContactShimmer';
@@ -29,12 +27,10 @@ import MainButtonComponent from '../../components/MainButtoncomponent';
 import ProfileButtonComponent from '../../components/ProfileButtonComponent';
 import CardComponent from '../../components/CardComponent';
 
-const DATA = [
-  {
-    card_id: '1',
-    contact_name: '',
-  },
-];
+type Contact = {
+  card_id: string;
+  contact_name: string;
+};
 
 type Card = {
   card_id: string;
@@ -58,9 +54,9 @@ type UserData = {
 };
 
 const ContactsPage = () => {
-  const [cardDetail, setCardDetail] = useState({});
+  const [cardDetail] = useState({});
   const navigation = useNavigation<NavigationProp<any>>();
-  const [contactList, setContactList] = useState(DATA);
+  const [contactList, setContactList] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [pendingCardList, setPendingCardList] = React.useState<UserData>({
@@ -80,7 +76,7 @@ const ContactsPage = () => {
       return;
     } else {
       setContactList(
-        response.data.sort((a: any, b: any) =>
+        response.data.sort((a: Contact, b: Contact) =>
           a.contact_name.localeCompare(b.contact_name),
         ),
       );
@@ -115,6 +111,10 @@ const ContactsPage = () => {
       const jwtToken = (await getLocalItem(Constants.USER_JWT)) || '';
       const pendingCards = await getPendingCards({ user_id, jwtToken });
 
+      if (pendingCards.statusCode !== '200') {
+        return;
+      }
+
       if (
         pendingCards.pendingCardList &&
         pendingCards.pendingCardList.length > 0
@@ -129,17 +129,39 @@ const ContactsPage = () => {
     }
   };
 
+  const takeImage = async () => {
+    ImagePicker.openCamera({
+      cropping: true,
+      width: 1600,
+      height: 900,
+      freeStyleCropEnabled: true,
+    }).then(async (image) => {
+      navigation.navigate('CardStack', {
+        screen: 'CropConfirmationScreen',
+        params: { image },
+      });
+    });
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await get();
-        await getPendingCardsList();
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchData();
+    try {
+      getPendingCardsList();
+    } catch (error) {
+      console.log('\n\nCatch Error\n\n');
+    }
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchData = async () => {
+        try {
+          await get();
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+      fetchData();
+    }, []),
+  );
 
   const contactPage = (id: string, name: string) => {
     console.log('contactPage', id, name);
@@ -150,16 +172,16 @@ const ContactsPage = () => {
     });
   };
 
+  const goToSearchScreen = () => {
+    navigation.navigate('SearchScreen');
+  };
+
   return (
     <SafeAreaView style={styles.SafeAreaView}>
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Contacts</Text>
       </View>
-      <TouchableOpacity
-        onPress={() => {
-          console.log('search');
-        }}
-      >
+      <TouchableOpacity onPress={goToSearchScreen}>
         <SearchBarComponent editable={false} />
       </TouchableOpacity>
 
@@ -181,10 +203,11 @@ const ContactsPage = () => {
         />
       )}
       <TouchableOpacity
-        onPress={() => {
+        onPress={takeImage}
+        onLongPress={() => {
           navigation.navigate('CardStack', {
             screen: 'EditCardScreen',
-            params: { create: true, cardDetails: cardDetail },
+            params: { create: true, cardDetails: {} },
           });
         }}
         style={{

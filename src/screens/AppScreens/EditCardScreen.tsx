@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
   FlatList,
+  KeyboardAvoidingView,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -80,10 +82,6 @@ const EditCardDetails = ({ route }: any) => {
 
       //if save successful,navigating to cardDetails screen
       if (isSaved === '200') {
-        const cardListScreenUpdater = route.params.cardListScreenUpdater;
-        const cardDetailsScreenUpdater = route.params.cardDetailsScreenUpdater;
-        cardDetailsScreenUpdater((key) => key + 1);
-        cardListScreenUpdater((key) => key + 1);
         navigation.navigate('CardStack', {
           screen: 'CardDetailsScreen',
           params: { card_id: route.params.card_id },
@@ -173,7 +171,7 @@ const EditCardDetails = ({ route }: any) => {
   };
 
   return (
-    <View style={styles.editContainer}>
+    <ScrollView style={styles.editContainer}>
       <TouchableOpacity
         style={styles.backButton}
         onPress={() => {
@@ -308,7 +306,7 @@ const EditCardDetails = ({ route }: any) => {
           </View>
         </View>
       </BottomSheetComponent>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -323,7 +321,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   imageContainer: {
-    width: 400,
+    width: '100%',
     height: 250,
     backgroundColor: colors['secondary-light'],
     marginTop: 20,

@@ -9,6 +9,12 @@ type Props = {
 };
 
 const SearchBarComponent = (props: Props) => {
+  const onChangeText = (value: string) => {
+    if (props.setter) {
+      props.setter(value);
+    }
+  };
+
   return (
     <View style={styles.searchContainer}>
       <TextInput
