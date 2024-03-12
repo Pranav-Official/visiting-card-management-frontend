@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useState } from 'react';
 import {
   FlatList,
@@ -12,6 +11,7 @@ import ContactListComponent from '../../components/ContactListComponent';
 import { getContactList } from '../../hooks/contactListHook';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
+import ImagePicker from 'react-native-image-crop-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
   NavigationProp,
@@ -27,12 +27,10 @@ import MainButtonComponent from '../../components/MainButtoncomponent';
 import ProfileButtonComponent from '../../components/ProfileButtonComponent';
 import CardComponent from '../../components/CardComponent';
 
-const DATA = [
-  {
-    card_id: '1',
-    contact_name: '',
-  },
-];
+type Contact = {
+  card_id: string;
+  contact_name: string;
+};
 
 type Card = {
   card_id: string;
@@ -56,17 +54,12 @@ type UserData = {
 };
 
 const ContactsPage = () => {
-  const [cardDetail, setCardDetail] = useState({});
+  const [cardDetail] = useState({});
   const navigation = useNavigation<NavigationProp<any>>();
-  const [contactList, setContactList] = useState(DATA);
+  const [contactList, setContactList] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [pendingCardList, setPendingCardList] = React.useState<UserData>({
-    user_id: '',
-    user_fullname: '',
-    user_email: '',
-    cards: [],
-  });
+  const [pendingCardList, setPendingCardList] = React.useState<UserData[]>();
 
   const [modalVisibility, setModalVisibility] = React.useState(false);
 
@@ -78,7 +71,7 @@ const ContactsPage = () => {
       return;
     } else {
       setContactList(
-        response.data.sort((a: any, b: any) =>
+        response.data.sort((a: Contact, b: Contact) =>
           a.contact_name.localeCompare(b.contact_name),
         ),
       );
@@ -127,8 +120,22 @@ const ContactsPage = () => {
         setModalVisibility(false);
       }
     } catch (error) {
-      console.log('\n\nCatch Error\n\n');
+      console.log('\n\nCatch Error\n\n ', error);
     }
+  };
+
+  const takeImage = async () => {
+    ImagePicker.openCamera({
+      cropping: true,
+      width: 1600,
+      height: 900,
+      freeStyleCropEnabled: true,
+    }).then(async (image) => {
+      navigation.navigate('CardStack', {
+        screen: 'CropConfirmationScreen',
+        params: { image },
+      });
+    });
   };
   useEffect(() => {
     try {
@@ -160,16 +167,16 @@ const ContactsPage = () => {
     });
   };
 
+  const goToSearchScreen = () => {
+    navigation.navigate('SearchScreen');
+  };
+
   return (
     <SafeAreaView style={styles.SafeAreaView}>
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Contacts</Text>
       </View>
-      <TouchableOpacity
-        onPress={() => {
-          console.log('search');
-        }}
-      >
+      <TouchableOpacity onPress={goToSearchScreen}>
         <SearchBarComponent editable={false} />
       </TouchableOpacity>
 
@@ -191,10 +198,11 @@ const ContactsPage = () => {
         />
       )}
       <TouchableOpacity
-        onPress={() => {
+        onPress={takeImage}
+        onLongPress={() => {
           navigation.navigate('CardStack', {
             screen: 'EditCardScreen',
-            params: { create: true, cardDetails: cardDetail },
+            params: { create: true, cardDetails: {} },
           });
         }}
         style={{
@@ -222,13 +230,18 @@ const ContactsPage = () => {
           <FlatList
             data={pendingCardList}
             renderItem={renderItem}
-            keyExtractor={(item) => item.card_id}
+            keyExtractor={(item) => item.user_id}
           />
           <View style={styles.buttonContainer}>
             <Text style={styles.pendingCardsText}>Choose an Option</Text>
             <MainButtonComponent
               title="Save shared cards"
-              onPressing={() => setModalVisibility(false)}
+              onPressing={() =>
+                navigation.navigate('CardStack', {
+                  screen: 'SaveShareCardScreen',
+                  params: { pendingCardList },
+                })
+              }
             ></MainButtonComponent>
             <ProfileButtonComponent
               title="I'll do it later"
