@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import ContactListComponent from '../../components/ContactListComponent';
 import { getContactList } from '../../hooks/contactListHook';
-import { getLocalItem } from '../../utils/Utils';
+import { getLocalItem, setLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import ImagePicker from 'react-native-image-crop-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -102,6 +102,10 @@ const ContactsPage = () => {
   //calling get pending cards function
   const getPendingCardsList = async () => {
     try {
+      const SAVE_SHARES_LATER = await getLocalItem(Constants.SAVE_SHARES_LATER);
+      if (SAVE_SHARES_LATER === 'true') {
+        return;
+      }
       const user_id = (await getLocalItem(Constants.USER_ID)) || '';
       const jwtToken = (await getLocalItem(Constants.USER_JWT)) || '';
       const pendingCards = await getPendingCards({ user_id, jwtToken });
@@ -255,7 +259,10 @@ const ContactsPage = () => {
             ></MainButtonComponent>
             <ProfileButtonComponent
               title="I'll do it later"
-              onPressing={() => setModalVisibility(false)}
+              onPressing={async () => {
+                setModalVisibility(false);
+                await setLocalItem(Constants.SAVE_SHARES_LATER, 'true');
+              }}
               danger={true}
             ></ProfileButtonComponent>
           </View>

@@ -100,13 +100,16 @@ const EditCardDetails = ({ route }: any) => {
   };
   // function called when a newly created card or edited card is saved
   const handleSavePress = async () => {
-    if (!cardDetails.phone.trim()) {
+    if (cardDetails.phone != undefined && !cardDetails.phone.trim()) {
       setPhoneBorder('Danger');
     }
-    if (!cardDetails.email.trim()) {
+    if (cardDetails.email != undefined && !cardDetails.email.trim()) {
       setEmailBorder('Danger');
     }
-    if (!cardDetails.email.trim() || !cardDetails.phone.trim()) {
+    if (
+      (cardDetails.email != undefined && !cardDetails.email.trim()) ||
+      (cardDetails.phone != undefined && !cardDetails.phone.trim())
+    ) {
       setMandatoryFieldsEmpty(true);
       return;
     }
