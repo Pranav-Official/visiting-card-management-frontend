@@ -76,7 +76,7 @@ const ContactsPage = () => {
       return;
     } else {
       setContactList(
-        response.data.sort((a: contact, b: contact) =>
+        response.data.sort((a: Contact, b: Contact) =>
           a.contact_name.localeCompare(b.contact_name),
         ),
       );

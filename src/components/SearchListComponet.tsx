@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import colors from '../utils/colorPallete';
 import nameToColor from '../hooks/nameToHex';
@@ -7,12 +7,18 @@ type Contact = {
   onPress?: () => void;
   matchIndex: number;
   matchType: string;
+  matchString: string;
+  matchLength: number;
+  searchText: string;
 };
 const SearchListComponent = ({
   contactName,
   onPress,
   matchIndex,
+  matchString,
   matchType,
+  matchLength,
+  searchText,
 }: Contact) => {
   const styles = StyleSheet.create({
     container: {
@@ -41,13 +47,47 @@ const SearchListComponent = ({
     },
     subTestContainer: {
       flexDirection: 'row',
-      display: matchType === 'name' || matchType === 'none' ? 'none' : 'flex',
+      display:
+        matchType === 'contact_name' || matchType === 'none' ? 'none' : 'flex',
     },
     subtext: {
       color: colors['primary-text'],
       fontSize: 14,
     },
   });
+
+  const [maintext, setmaintext] = useState({
+    part1: contactName,
+    part2: '',
+    part3: '',
+  });
+  const [subtext, setsubtext] = useState({ part1: '', part2: '', part3: '' });
+
+  useEffect(() => {
+    if (searchText !== '') {
+      if (matchType == 'contact_name') {
+        setmaintext({
+          part1: contactName.slice(0, matchIndex),
+          part2: contactName.slice(matchIndex, matchIndex + matchLength - 1),
+          part3: contactName.slice(
+            matchIndex + matchLength,
+            matchString.length,
+          ),
+        });
+      } else {
+        setmaintext({ part1: contactName, part2: '', part3: '' });
+        setsubtext({
+          part1: matchString.slice(0, matchIndex),
+          part2: matchString.slice(matchIndex, matchIndex + matchLength),
+          part3: matchString.slice(
+            matchIndex + matchLength,
+            matchString.length,
+          ),
+        });
+      }
+    }
+    console.log(maintext, subtext);
+  }, [searchText]);
 
   return (
     <TouchableOpacity onPress={onPress}>
@@ -59,14 +99,18 @@ const SearchListComponent = ({
         </View>
         <View style={{ flexDirection: 'column' }}>
           <View style={{ flexDirection: 'row' }}>
-            <Text style={styles.nameText}>{contactName}</Text>
-            <Text style={[styles.nameText, { fontWeight: 'bold' }]}></Text>
-            <Text style={styles.nameText}></Text>
+            <Text style={styles.nameText}>{maintext.part1}</Text>
+            <Text style={[styles.nameText, { fontWeight: 'bold' }]}>
+              {maintext.part2}
+            </Text>
+            <Text style={styles.nameText}>{maintext.part3}</Text>
           </View>
           <View style={styles.subTestContainer}>
-            <Text style={styles.subtext}>342</Text>
-            <Text style={[styles.subtext, { fontWeight: 'bold' }]}>0987</Text>
-            <Text style={styles.subtext}>212</Text>
+            <Text style={styles.subtext}>{subtext.part1}</Text>
+            <Text style={[styles.subtext, { fontWeight: 'bold' }]}>
+              {subtext.part2}
+            </Text>
+            <Text style={styles.subtext}>{subtext.part3}</Text>
           </View>
         </View>
       </View>

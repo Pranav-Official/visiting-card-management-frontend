@@ -7,16 +7,18 @@ import SearchListComponent from '../../components/SearchListComponet';
 import { CardData, fetchSearchableList } from '../../hooks/searchListHook';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+
+type filteredList = {
+  matchIndex: number;
+  matchType: string;
+  matchString: string;
+  card_id: string;
+  contact_name: string;
+};
 
 function searchContacts(contacts: CardData[], searchText: string) {
-  const results: {
-    matchIndex: number;
-    matchType: string;
-    matchString: string;
-    card_id: string;
-    contact_name: string;
-  }[] = [];
-
+  const results: filteredList[] = [];
   contacts.forEach((contact) => {
     const match = {
       found: false,
@@ -106,11 +108,10 @@ function searchContacts(contacts: CardData[], searchText: string) {
 const SearchScreen = () => {
   const [searchableList, setSearchableList] = useState<CardData[]>([]);
   const [filteredSearchableList, setFilteredSearchableList] = useState<
-    CardData[]
+    filteredList[]
   >([]);
-  const [matchType, setMatchType] = useState<string>('');
-  const [matchIndex, setMatchIndex] = useState<number>(0);
   const [searchText, setSearchText] = useState<string>('');
+  const navigation = useNavigation<NavigationProp<any>>();
 
   useEffect(() => {
     const getSearchData = async () => {
@@ -120,11 +121,6 @@ const SearchScreen = () => {
       const response = await fetchSearchableList(user_id, token);
       if (response.statusCode === '200') {
         setSearchableList(
-          response.data.sort((a: CardData, b: CardData) =>
-            a.contact_name.localeCompare(b.contact_name),
-          ),
-        );
-        setFilteredSearchableList(
           response.data.sort((a: CardData, b: CardData) =>
             a.contact_name.localeCompare(b.contact_name),
           ),
@@ -139,13 +135,20 @@ const SearchScreen = () => {
   useEffect(() => {
     if (searchText.length > 2) {
       console.log(searchText);
-      const result = searchContacts(
-        filteredSearchableList,
-        searchText.toLowerCase(),
-      );
+      const result = searchContacts(searchableList, searchText.toLowerCase());
       console.log('search result =', result);
+      setFilteredSearchableList(result);
+    } else {
+      setFilteredSearchableList([]);
     }
   }, [searchText]);
+
+  const navigateToCardList = (card_id: string, contact_name: string) => {
+    navigation.navigate('CardStack', {
+      screen: 'CardListScreen',
+      params: { card_id: card_id, name: contact_name },
+    });
+  };
 
   return (
     <SafeAreaView style={styles.SafeAreaView}>
@@ -169,17 +172,43 @@ const SearchScreen = () => {
         />
       </View>
       <View style={{ marginTop: 30, marginLeft: 40 }}>
-        <FlatList
-          data={filteredSearchableList}
-          renderItem={({ item }) => (
-            <SearchListComponent
-              contactName={item.contact_name}
-              matchIndex={-1}
-              matchType={'none'}
-            />
-          )}
-          keyExtractor={(item) => item.card_id}
-        />
+        {filteredSearchableList.length > 0 || searchText.length > 2 ? (
+          <FlatList
+            data={filteredSearchableList}
+            renderItem={({ item }) => (
+              <SearchListComponent
+                contactName={item.contact_name}
+                matchIndex={item.matchIndex}
+                matchType={item.matchType}
+                matchString={item.matchString}
+                matchLength={searchText.length}
+                searchText={searchText}
+                onPress={() =>
+                  navigateToCardList(item.card_id, item.contact_name)
+                }
+              />
+            )}
+            keyExtractor={(item) => item.card_id}
+          />
+        ) : (
+          <FlatList
+            data={searchableList}
+            renderItem={({ item }) => (
+              <SearchListComponent
+                contactName={item.contact_name}
+                matchIndex={-1}
+                matchType={'none'}
+                matchString={''}
+                matchLength={0}
+                searchText={searchText}
+                onPress={() =>
+                  navigateToCardList(item.card_id, item.contact_name)
+                }
+              />
+            )}
+            keyExtractor={(item) => item.card_id}
+          />
+        )}
       </View>
     </SafeAreaView>
   );
