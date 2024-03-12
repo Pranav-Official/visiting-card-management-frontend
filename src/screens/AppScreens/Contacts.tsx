@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useState } from 'react';
 import {
   FlatList,
@@ -72,7 +71,7 @@ const ContactsPage = () => {
       return;
     } else {
       setContactList(
-        response.data.sort((a: any, b: any) =>
+        response.data.sort((a: Contact, b: Contact) =>
           a.contact_name.localeCompare(b.contact_name),
         ),
       );
@@ -168,16 +167,16 @@ const ContactsPage = () => {
     });
   };
 
+  const goToSearchScreen = () => {
+    navigation.navigate('SearchScreen');
+  };
+
   return (
     <SafeAreaView style={styles.SafeAreaView}>
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Contacts</Text>
       </View>
-      <TouchableOpacity
-        onPress={() => {
-          console.log('search');
-        }}
-      >
+      <TouchableOpacity onPress={goToSearchScreen}>
         <SearchBarComponent editable={false} />
       </TouchableOpacity>
 
