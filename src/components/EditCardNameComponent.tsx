@@ -32,14 +32,17 @@ const styles = StyleSheet.create({
   inputContainer: {
     paddingVertical: 0,
     paddingHorizontal: 0,
+    textDecorationLine: 'underline',
   },
   input: {
     textAlign: 'center',
     color: colors['primary-text'],
+    textDecorationLine: 'underline',
     fontSize: 35,
     paddingVertical: 0,
     fontWeight: '700',
     width: '100%',
+    color: colors['primary-text'],
   },
 });
 
