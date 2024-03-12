@@ -14,7 +14,12 @@ import RadioButton from '../../components/RadioButton';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import { overwriteExistingCard } from '../../hooks/overWriteCardHook';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import {
+  CommonActions,
+  NavigationProp,
+  StackActions,
+  useNavigation,
+} from '@react-navigation/native';
 import Toast from 'react-native-root-toast';
 
 type Card = {

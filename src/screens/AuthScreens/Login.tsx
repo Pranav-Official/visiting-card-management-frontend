@@ -35,6 +35,7 @@ type response = {
     user_id: string;
   };
 };
+type BorderTypes = 'Danger' | 'Auth' | 'Normal';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -42,6 +43,9 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
+  const [emailBorder, setEmailBorder] = useState<BorderTypes>('Normal');
+  const [passwordBorder, setPasswordBorder] = useState<BorderTypes>('Normal');
+  const [inputChanged, setInputChanged] = useState(false);
 
   const LoginMain = async () => {
     if (email === '' || password === '') {
@@ -50,6 +54,8 @@ const Login = () => {
         ToastAndroid.SHORT,
         ToastAndroid.CENTER,
       );
+      setEmailBorder('Danger');
+      setPasswordBorder('Danger');
       return;
     } else if (validateEmail(email) === false) {
       ToastAndroid.showWithGravity(
@@ -57,53 +63,71 @@ const Login = () => {
         ToastAndroid.SHORT,
         ToastAndroid.CENTER,
       );
+      setEmailBorder('Danger');
+      setLoading(false);
       return;
     }
 
     setLoading(true);
-    const response = await loginUser({
-      loginUsername: email,
-      loginPassword: password,
-    });
-    // console.log('LoginMain', response);
-    if (response && response.status === false) {
+
+    if (validateEmail(email)) {
+      const response = await loginUser({
+        loginUsername: email,
+        loginPassword: password,
+      });
+      // console.log('LoginMain', response);
+      if (response && response.status === false) {
+        setEmailBorder('Danger');
+        setPasswordBorder('Danger');
+        setLoading(false);
+        const message = 'Error while logging in: ' + response.message;
+        ToastAndroid.showWithGravity(
+          message,
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER,
+        );
+      }
+      if (response.status) {
+        setLocalItem(Constants.IS_LOGGED_IN, 'true');
+        dispatch(
+          userDetails({
+            token: response.data.token,
+            user_id: response.data.user_id,
+          }),
+        );
+        setLocalItem(Constants.USER_JWT, response.data.token);
+        setLocalItem(Constants.USER_ID, response.data.user_id);
+        dispatch(userLogin(true));
+        dispatch(
+          userDetails({
+            token: response.data.token,
+            user_id: response.data.user_id,
+          }),
+        );
+      } else if (response.status === false) {
+        const message = response.message;
+        ToastAndroid.showWithGravity(
+          message,
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER,
+        );
+        setEmailBorder('Danger');
+        setPasswordBorder('Danger');
+        setLoading(false);
+      }
+    } else {
+      // If the email format is invalid, reset the loading state
       setLoading(false);
-      const message = 'Error while logging in: ' + response.message;
-      ToastAndroid.showWithGravity(
-        message,
-        ToastAndroid.SHORT,
-        ToastAndroid.CENTER,
-      );
     }
-    if (response.status) {
-      setLocalItem(Constants.IS_LOGGED_IN, 'true');
-      dispatch(
-        userDetails({
-          token: response.data.token,
-          user_id: response.data.user_id,
-        }),
-      );
-      setLocalItem(Constants.USER_JWT, response.data.token);
-      setLocalItem(Constants.USER_ID, response.data.user_id);
-      dispatch(userLogin(true));
-      dispatch(
-        userDetails({
-          token: response.data.token,
-          user_id: response.data.user_id,
-        }),
-      );
-    } else if (response.status === false) {
-      const message = response.message;
-      ToastAndroid.showWithGravity(
-        message,
-        ToastAndroid.SHORT,
-        ToastAndroid.CENTER,
-      );
-      setLoading(false);
-    }
+    setInputChanged(false);
   };
 
-  useEffect(() => {});
+  useEffect(() => {
+    if (inputChanged) {
+      setEmailBorder('Normal');
+      setPasswordBorder('Normal');
+    }
+  }, [email, password]);
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
@@ -113,14 +137,22 @@ const Login = () => {
           hidden={false}
           header="Email"
           value={email}
-          setter={setEmail}
+          setter={(val) => {
+            setInputChanged(true);
+            setEmail(val);
+          }}
+          borderType={emailBorder}
           placeholder="Enter Email"
         />
         <InputComponent
           header="Password"
           hidden={true}
           value={password}
-          setter={setPassword}
+          setter={(val) => {
+            setInputChanged(true);
+            setPassword(val);
+          }}
+          borderType={passwordBorder}
           placeholder="Enter Password"
         />
         {!loading ? (
