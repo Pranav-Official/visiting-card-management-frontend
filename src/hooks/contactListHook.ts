@@ -14,6 +14,6 @@ export const getContactList = async (user_id: string, token: string) => {
     return response.data;
   } catch (error) {
     console.log(error);
+    return { status: false, message: error };
   }
-  return null;
 };
