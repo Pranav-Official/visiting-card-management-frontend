@@ -35,6 +35,8 @@ type Card = {
   job_title: string;
   company_name: string;
   company_website: string;
+  img_front_link: string;
+  img_back_link: string;
 };
 type ContactCards = {
   contact_name: string;
@@ -235,7 +237,10 @@ const EditCardDetails = ({ route }: any) => {
         <BackButtonIcon width={30} height={30} rotation={180} />
       </TouchableOpacity>
       <View style={styles.imageContainer}>
-        <CommonImageComponent />
+        <CommonImageComponent
+          frontImageUri={cardDetails.img_front_link}
+          backImageUri={cardDetails.img_back_link}
+        />
       </View>
       <View style={styles.cardNameHead}>
         <EditCardNameComponent

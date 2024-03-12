@@ -40,7 +40,11 @@ const CropConfirmationScreen = ({ route }) => {
     }
   };
 
-  const Predict = async (rawText: string) => {
+  const Predict = async (
+    rawText: string,
+    frontImgPath: string,
+    backImgPath?: string,
+  ) => {
     try {
       setIsModalVisible(true);
       startTimer(6);
@@ -56,6 +60,8 @@ const CropConfirmationScreen = ({ route }) => {
           company_name: response.data.company,
           company_website: response.data.website,
           phone: response.data.phone,
+          img_front_link: frontImgPath,
+          img_back_link: backImgPath,
         };
         console.log('object made', card_details);
         setIsModalVisible(false);
@@ -71,7 +77,13 @@ const CropConfirmationScreen = ({ route }) => {
         setTimeout(() => {
           navigation.navigate('CardStack', {
             screen: 'EditCardScreen',
-            params: { create: true, cardDetails: {} },
+            params: {
+              create: true,
+              cardDetails: {
+                img_front_link: frontImgPath,
+                img_back_link: backImgPath,
+              },
+            },
           });
         }, 6000);
       }
@@ -81,33 +93,33 @@ const CropConfirmationScreen = ({ route }) => {
   };
 
   const extractData = async () => {
-    const firstSideData =
-      prevImageData != undefined
-        ? await TextRecognition.recognize(
-            prevImageData.path,
-            TextRecognitionScript.JAPANESE,
-          )
-        : await TextRecognition.recognize(
-            imageData.path,
-            TextRecognitionScript.JAPANESE,
-          );
-    const secondSideData =
-      prevImageData != undefined
-        ? await TextRecognition.recognize(
-            imageData.path,
-            TextRecognitionScript.JAPANESE,
-          )
-        : undefined;
-
-    const ocrText =
-      secondSideData != undefined
-        ? firstSideData.text + secondSideData.text
-        : firstSideData.text;
-    Toast.show(ocrText, {
-      duration: Toast.durations.LONG,
-      position: Toast.positions.BOTTOM,
-    });
-    Predict(ocrText);
+    if (prevImageData != undefined) {
+      const firstSideData = await TextRecognition.recognize(
+        prevImageData.path,
+        TextRecognitionScript.JAPANESE,
+      );
+      const secondSideData = await TextRecognition.recognize(
+        imageData.path,
+        TextRecognitionScript.JAPANESE,
+      );
+      const ocrText = firstSideData.text + secondSideData.text;
+      Toast.show(ocrText, {
+        duration: Toast.durations.LONG,
+        position: Toast.positions.BOTTOM,
+      });
+      Predict(ocrText, prevImageData.path, imageData.path);
+    } else {
+      const firstSideData = await TextRecognition.recognize(
+        imageData.path,
+        TextRecognitionScript.JAPANESE,
+      );
+      const ocrText = firstSideData.text;
+      Toast.show(ocrText, {
+        duration: Toast.durations.LONG,
+        position: Toast.positions.BOTTOM,
+      });
+      Predict(ocrText, imageData.path);
+    }
   };
   const takeImage = async (prevImage) => {
     ImagePicker.openCamera({
