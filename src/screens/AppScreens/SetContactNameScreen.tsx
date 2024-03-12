@@ -8,6 +8,7 @@ import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import { newCardDetails } from '../../hooks/createCardHook';
 import { acceptNewCard } from '../../hooks/acceptCardHook';
+import Toast from 'react-native-root-toast';
 
 const SetContactNameScreen = ({ route }: any) => {
   const { cardDetails, pageType } = route.params;
@@ -18,6 +19,13 @@ const SetContactNameScreen = ({ route }: any) => {
   //Calling create card hook
   const createCard = async (acceptShared: boolean) => {
     try {
+      if (!newContactName.trim()) {
+        Toast.show('Please enter a name for the new contact', {
+          position: Toast.positions.BOTTOM,
+          duration: Toast.durations.LONG,
+        });
+        return;
+      }
       const user_id = (await getLocalItem(Constants.USER_ID)) ?? '{}';
       const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '{}';
 

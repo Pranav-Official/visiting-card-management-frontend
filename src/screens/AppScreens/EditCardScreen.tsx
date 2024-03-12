@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  FlatList,
-  KeyboardAvoidingView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import CompanyIcon from '../../assets/images/company.svg';
 import PhoneIcon from '../../assets/images/phone.svg';
 import MailIcon from '../../assets/images/mail.svg';
@@ -24,7 +16,7 @@ import Constants from '../../utils/Constants';
 import { getLocalItem } from '../../utils/Utils';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import BottomSheetComponent from '../../components/BottomSheetComponent';
-import CardComponent from '../../components/CardComponent';
+import SimilarCardsComponent from '../../components/SimilarCardsComponent';
 import { getSimilarCards } from '../../hooks/getSimilarCardsHook';
 
 type Card = {
@@ -111,30 +103,7 @@ const EditCardDetails = ({ route }: any) => {
     }
   };
 
-  const handleInputChange = (key: string, value: string) => {
-    setCardDetails({ ...cardDetails, [key]: value });
-  };
-
-  const renderItem = ({ item }: any) => (
-    <View style={[styles.similarCardsContainer]}>
-      <Text style={styles.contactNameInModal}>{item.contact_name}</Text>
-
-      {item.cards.map((card: any) => (
-        <View style={styles.singleCard}>
-          <CardComponent
-            key={card.card_id}
-            alignToSides={false}
-            job_position={card.job_title}
-            name={card.card_name}
-            email={card.email}
-            phone_number={card.phone}
-            company_name={card.company_name}
-          />
-        </View>
-      ))}
-    </View>
-  );
-
+  //Fetch Similar Cards
   const fetchSimilarCards = async () => {
     try {
       console.log('\n\nREACHED FETCH SIMILAR Cards\n\n');
@@ -162,12 +131,8 @@ const EditCardDetails = ({ route }: any) => {
     }
   };
 
-  const navigateToPage = async (pageToNavigate: string) => {
-    console.log(
-      '\n\nSIMILAR CARD LIST: from Edit Card Screen',
-      similarCardList,
-    );
-    navigation.navigate(pageToNavigate, { similarCardList, cardDetails });
+  const handleInputChange = (key: string, value: string) => {
+    setCardDetails({ ...cardDetails, [key]: value });
   };
 
   return (
@@ -279,32 +244,10 @@ const EditCardDetails = ({ route }: any) => {
         visibility={modalVisibility}
         visibilitySetter={setModalVisibility}
       >
-        <View style={styles.modalView}>
-          <Text style={styles.similarCardsText}>
-            Similar Cards Alredy Exists!
-          </Text>
-
-          <FlatList
-            data={similarCardList}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.cards}
-          />
-          <View style={styles.buttonContainer}>
-            <Text style={styles.similarCardsText}>Choose an Option</Text>
-            <MainButtonComponent
-              title="Overwrite Existing Card"
-              onPressing={() => navigateToPage('CardOverwriteScreen')}
-            ></MainButtonComponent>
-            <MainButtonComponent
-              title="Add to Existing Contacts"
-              onPressing={() => navigateToPage('AddToContactScreen')}
-            ></MainButtonComponent>
-            <MainButtonComponent
-              title="Add as a New Contact"
-              onPressing={() => navigateToPage('SetContactNameScreen')}
-            ></MainButtonComponent>
-          </View>
-        </View>
+        <SimilarCardsComponent
+          cardDetails={cardDetails}
+          similarCardList={similarCardList}
+        />
       </BottomSheetComponent>
     </ScrollView>
   );
@@ -364,42 +307,6 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 20,
     marginLeft: 20,
-  },
-
-  //Modal Stylings
-  modalView: {
-    marginHorizontal: 25,
-    height: '100%',
-  },
-  similarCardsText: {
-    textAlign: 'center',
-    color: colors['primary-text'],
-    fontSize: 26,
-    fontWeight: 'bold',
-    marginVertical: 10,
-  },
-  similarCardsContainer: {
-    borderWidth: 2,
-    borderRadius: 14,
-    paddingHorizontal: 10,
-    paddingBottom: 10,
-    marginBottom: 20,
-  },
-  contactNameInModal: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: colors['primary-text'],
-    paddingVertical: 10,
-    marginLeft: 10,
-  },
-  singleCard: {
-    paddingBottom: 15,
-  },
-  buttonContainer: {
-    flexDirection: 'column',
-    gap: 10,
-    height: 250,
-    marginBottom: 25,
   },
 });
 

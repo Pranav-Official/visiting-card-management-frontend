@@ -3,6 +3,7 @@ import colors from '../../utils/colorPallete';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import MainButtonComponent from '../../components/MainButtoncomponent';
 import { getLocalItem, setLocalItem } from '../../utils/Utils';
+import { getLocalItem, setLocalItem } from '../../utils/Utils';
 import { useDispatch } from 'react-redux';
 import { userLogin } from '../../context/userSlice';
 import Constants from '../../utils/Constants';
