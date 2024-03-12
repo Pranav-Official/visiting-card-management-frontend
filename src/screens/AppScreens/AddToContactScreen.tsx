@@ -15,6 +15,7 @@ import Constants from '../../utils/Constants';
 import { addToExistingContact } from '../../hooks/addToContactHook';
 import { getLocalItem } from '../../utils/Utils';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { addSharedCardToExistingContact } from '../../hooks/AddToExistingContact';
 
 const RenderItem = ({ item, selected, setter }) => (
   <View
@@ -43,9 +44,8 @@ const RenderItem = ({ item, selected, setter }) => (
     </View>
     {item.cards.map((card: any) => (
       <View style={{ flexDirection: 'row' }}>
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1 }} key={card.card_id}>
           <CardComponent
-            key={card.card_id}
             card_id={card.card_id}
             alignToSides={false}
             job_position={card.job_title}
@@ -63,6 +63,8 @@ const RenderItem = ({ item, selected, setter }) => (
 const AddToContact = ({ route }: any) => {
   const inputList = route.params.similarCardList;
   const cardDetails = route.params.cardDetails;
+  const sharing: boolean = route.params.sharing;
+  console.log('ADd to contact Screen: sharing page? :', sharing);
   const [cardList, setCardList] = useState(inputList);
   const [selected, setSelected] = useState('');
   const navigation = useNavigation<NavigationProp<any>>();
@@ -73,22 +75,41 @@ const AddToContact = ({ route }: any) => {
     console.log('\n\nUser Id from AddToContact: ', user_id);
     const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
     console.log('\n\nTHE CARD DETAILS IN AToC are: ', cardDetails);
+    console.log('\n\nSelected Card ID: ', selected);
 
-    const addToContactResponse = await addToExistingContact(
-      user_id,
-      jwtToken,
-      selected,
-      cardDetails,
-    );
-    console.log(
-      '\n\nADDD to contact Respone from SCREEN: ',
-      addToContactResponse?.addToContactData,
-    );
+    let addToContactResponse;
+    if (sharing == true) {
+      addToContactResponse = await addSharedCardToExistingContact(
+        user_id,
+        jwtToken,
+        selected,
+        cardDetails,
+      );
+      console.log(
+        '\n\nADDD to contact Respone from SCREEN: ',
+        addToContactResponse.addToExistingContactData,
+      );
+    } else {
+      addToContactResponse = await addToExistingContact(
+        user_id,
+        jwtToken,
+        selected,
+        cardDetails,
+      );
+      console.log(
+        '\n\nADDD to contact Respone from SCREEN: ',
+        addToContactResponse?.addToExistingContactData,
+      );
+    }
 
     if (addToContactResponse?.statusCode === 200) {
-      const createdCardId = addToContactResponse.addToContactData.data.cardId;
+      const createdCardId =
+        addToContactResponse.addToExistingContactData.data.cardId;
       console.log('\n\nNEWLY CREATED CARD ID: ', createdCardId);
-      navigation.navigate('CardDetailsScreen', { card_id: createdCardId });
+      navigation.navigate('CardStack', {
+        screen: 'CardDetailsScreen',
+        params: { card_id: createdCardId },
+      });
     } else console.log('\n\nError Navigating');
   };
 
@@ -119,7 +140,7 @@ const AddToContact = ({ route }: any) => {
         <View style={{ flex: 1 }}>
           <MainButtonComponent
             title="Add to contact"
-            onPressing={addToContactFunction}
+            onPressing={() => addToContactFunction()}
             children={<></>}
           />
         </View>

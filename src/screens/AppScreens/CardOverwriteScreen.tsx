@@ -21,6 +21,7 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import Toast from 'react-native-root-toast';
+import { overwriteSharedCard } from '../../hooks/overwriteSharedCard';
 
 type Card = {
   card_id: string;
@@ -71,9 +72,8 @@ const RenderItem = ({ item, selected, setter }: renderItemType) => (
             <RadioButton />
           )}
         </TouchableOpacity>
-        <View style={{ flex: 6 }}>
+        <View style={{ flex: 6 }} key={card.card_id}>
           <CardComponent
-            key={card.card_id}
             alignToSides={false}
             job_position={card.job_title}
             name={card.card_name}
@@ -90,6 +90,8 @@ const RenderItem = ({ item, selected, setter }: renderItemType) => (
 const CardOverwriteScreen = ({ route }: any) => {
   const inputList = route.params.similarCardList;
   const cardDetails = route.params.cardDetails;
+  const sharing: boolean = route.params.sharing;
+  console.log('\n\nOverWrite Screen sharingStatus: ', sharing);
   const [cardList] = useState(inputList);
   const navigation = useNavigation<NavigationProp<routeParams>>();
 
@@ -99,12 +101,22 @@ const CardOverwriteScreen = ({ route }: any) => {
     console.log('\n\nUser Id from OverWritecard: ', user_id);
     const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
 
-    const overwriteResponse = await overwriteExistingCard(
-      user_id,
-      jwtToken,
-      selected,
-      cardDetails,
-    );
+    let overwriteResponse;
+    if (sharing === true) {
+      overwriteResponse = await overwriteSharedCard(
+        user_id,
+        jwtToken,
+        selected,
+        cardDetails,
+      );
+    } else {
+      overwriteResponse = await overwriteExistingCard(
+        user_id,
+        jwtToken,
+        selected,
+        cardDetails,
+      );
+    }
 
     console.log('\n\nOverWrite Response: ', overwriteResponse);
     if (overwriteResponse?.statusCode === '200') {

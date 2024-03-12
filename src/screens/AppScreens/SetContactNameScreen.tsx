@@ -11,13 +11,13 @@ import { acceptNewCard } from '../../hooks/acceptCardHook';
 import Toast from 'react-native-root-toast';
 
 const SetContactNameScreen = ({ route }: any) => {
-  const { cardDetails, pageType } = route.params;
-  console.log('\n\npageType = ', pageType);
+  const { cardDetails, sharing } = route.params;
+  console.log('\n\nSharing Status = ', sharing);
   const navigation = useNavigation<NavigationProp<any>>();
   const [newContactName, setNewContactName] = useState('');
 
   //Calling create card hook
-  const createCard = async (acceptShared: boolean) => {
+  const createCard = async (sharing: boolean) => {
     try {
       if (!newContactName.trim()) {
         Toast.show('Please enter a name for the new contact', {
@@ -37,7 +37,7 @@ const SetContactNameScreen = ({ route }: any) => {
 
       // calling createNewCard Hook
       let response;
-      if (acceptShared == true) {
+      if (sharing == true) {
         response = await acceptNewCard({
           user_id,
           jwtToken,
@@ -81,7 +81,7 @@ const SetContactNameScreen = ({ route }: any) => {
         <MainButtonComponent
           title="Save"
           onPressing={() =>
-            pageType === 'acceptCard' ? createCard(true) : createCard(false)
+            sharing === true ? createCard(true) : createCard(false)
           }
         />
       </View>
