@@ -1,11 +1,21 @@
 import api from './api';
 
+type Card = {
+  card_id: string;
+  card_name: string;
+  email: string;
+  phone: string;
+  job_title: string;
+  company_name: string;
+  company_website: string;
+};
+
 //Add To Existing Contact Hook
 export async function addToExistingContact(
   user_id: string,
   jwtToken: string,
   parent_card_id: string,
-  cardDetails: any,
+  cardDetails: Card,
 ) {
   let addToContactData: any;
   let statusCode: number;
