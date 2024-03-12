@@ -267,7 +267,7 @@ const CardDetailPage = ({ route }: any) => {
           visibility = {ShareModalVisible}
           visibilitySetter= {setShareModalVisible}
           >
-            <ShareCardScreen user_id={''} jwt_token={''} card_id={route.params.card_id} receiver_user_ids={[]} />
+            <ShareCardScreen user_id={''} jwt_token={''} card_id={route.params.card_id} receiver_user_ids={[]} visibilitySetter={toggleShareModal} />
           </BottomSheetComponent>
           
         </View>
