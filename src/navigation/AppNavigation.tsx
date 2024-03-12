@@ -10,6 +10,10 @@ import ContactsPage from '../screens/AppScreens/Contacts';
 import CardListScreen from '../screens/AppScreens/CardListScreen';
 import CardDetailsScreen from '../screens/AppScreens/CardDetailsScreen';
 import EditCardScreen from '../screens/AppScreens/EditCardScreen';
+import SetContactNameScreen from '../screens/AppScreens/SetContactNameScreen';
+import AddToContactScreen from '../screens/AppScreens/AddToContactScreen';
+import CardOverwriteScreen from '../screens/AppScreens/CardOverwriteScreen';
+import CropConfirmationScreen from '../screens/AppScreens/CropConfirmationScreen';
 import SearchScreen from '../screens/AppScreens/SearchScreen';
 const StackNav = createNativeStackNavigator();
 const HomeStackNavigation = () => {
@@ -100,6 +104,22 @@ const CardStackNavigation = () => {
       <StackNav.Screen name="CardListScreen" component={CardListScreen} />
       <StackNav.Screen name="CardDetailsScreen" component={CardDetailsScreen} />
       <StackNav.Screen name="EditCardScreen" component={EditCardScreen} />
+      <StackNav.Screen
+        name="CardOverwriteScreen"
+        component={CardOverwriteScreen}
+      />
+      <StackNav.Screen
+        name="SetContactNameScreen"
+        component={SetContactNameScreen}
+      />
+      <StackNav.Screen
+        name="AddToContactScreen"
+        component={AddToContactScreen}
+      />
+      <StackNav.Screen
+        name="CropConfirmationScreen"
+        component={CropConfirmationScreen}
+      />
     </CardStackNav.Navigator>
   );
 };

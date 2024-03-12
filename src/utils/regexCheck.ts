@@ -5,4 +5,11 @@ function validateEmail(email: string): boolean {
   return emailRegex.test(email);
 }
 
-export { validateEmail };
+const isValidWebsiteUrl = (url: string): boolean => {
+  const websiteUrlRegex =
+    /^((https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?)$/;
+
+  return websiteUrlRegex.test(url);
+};
+
+export { validateEmail, isValidWebsiteUrl };

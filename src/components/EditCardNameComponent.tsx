@@ -6,9 +6,15 @@ type InputProps = {
   placeholder: string;
   value: string;
   setter: (value: string) => void;
+  readonly?: boolean;
 };
 
-const EditCardNameComponent = ({ placeholder, value, setter }: InputProps) => {
+const EditCardNameComponent = ({
+  placeholder,
+  value,
+  setter,
+  readonly = true,
+}: InputProps) => {
   return (
     <View style={styles.inputContainer}>
       <TextInput
@@ -17,6 +23,7 @@ const EditCardNameComponent = ({ placeholder, value, setter }: InputProps) => {
         value={value}
         onChangeText={(val) => setter(val)}
         underlineColorAndroid="transparent"
+        readOnly={readonly}
       />
     </View>
   );
@@ -31,6 +38,7 @@ const styles = StyleSheet.create({
   input: {
     textAlign: 'center',
     color: colors['primary-text'],
+    textDecorationLine: 'underline',
     fontSize: 35,
     paddingVertical: 0,
     fontWeight: '700',

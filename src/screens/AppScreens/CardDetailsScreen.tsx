@@ -1,6 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import colors from '../../utils/colorPallete';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Alert,
+  Linking,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import CompanyName from '../../assets/images/organisation.svg';
 import CommonImageComponent from '../../components/CommonImageComponent';
 import CardDetailComponent from '../../components/CardDetailComponent';
@@ -15,13 +23,45 @@ import BackButtonIcon from '../../assets/images/Arrow.svg';
 import { listCardDetails } from '../../hooks/CardDetailHook';
 import Constants from '../../utils/Constants';
 import { getLocalItem } from '../../utils/Utils';
-import { useNavigation } from '@react-navigation/native';
+import {
+  NavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
+import Clipboard from '@react-native-clipboard/clipboard';
+import { isValidWebsiteUrl } from '../../utils/regexCheck';
+import BottomSheetComponent from '../../components/BottomSheetComponent';
+import { deleteCard } from '../../hooks/deleteCardHook';
+
+type CardDetails = {
+  card_name: string;
+  img_front_link?: string;
+  img_back_link?: string;
+  job_title?: string;
+  email?: string;
+  phone?: string;
+  company_name?: string;
+  company_website?: string;
+  description?: string | null;
+};
+import CardDetailsShimmer from '../../components/Shimmers/CardDetailsShimmer';
+import ShareCardScreen from './ShareCardPage';
 
 const CardDetailPage = ({ route }: any) => {
-  const [cardDetail, setCardDetail] = useState({});
-  const navigation = useNavigation();
-  const [key, setKey] = useState(0);
+  const [cardDetail, setCardDetail] = useState<CardDetails>({});
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const navigation = useNavigation<NavigationProp<any>>();
+  const [ShareModalVisible, setShareModalVisible] = useState(false);
 
+  const toggleShareModal = () => {
+    setShareModalVisible(!ShareModalVisible);
+  };
+  //Function to toggle delete modal visibility
+  const toggleDeleteModal = () => {
+    setIsDeleteModalVisible(!isDeleteModalVisible);
+  };
+  //Function to fetch card details
   const fetchData = async () => {
     try {
       const userId = (await getLocalItem(Constants.USER_ID)) ?? '{}';
@@ -35,14 +75,81 @@ const CardDetailPage = ({ route }: any) => {
       });
 
       setCardDetail(cardDetailsResp.data);
+      setIsLoading(false);
     } catch (error) {
-      console.error('Error fetching contacts:', error);
+      console.log('Error fetching contacts:', error);
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [key]);
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, []),
+  );
+  // Function to handle deletion of card
+  const handleDeleteCard = async () => {
+    try {
+      const userId = (await getLocalItem(Constants.USER_ID)) ?? '';
+      const userToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
+
+      const { statusCode, deleteCardResp } = await deleteCard({
+        user_id: userId,
+        jwtToken: userToken,
+        card_id: route.params.card_id,
+      });
+      console.log('DeleteCard Resp', statusCode, deleteCardResp);
+
+      if (statusCode === '200') {
+        navigation.goBack();
+      } else {
+        console.log('Delete card failed:', deleteCardResp);
+      }
+    } catch (error) {
+      console.error('Error deleting card:', error);
+    }
+  };
+  //function to handle phone number press
+  const phonePress = (phoneNumber: string) => {
+    if (phoneNumber === '') return;
+    const url = `tel:${phoneNumber}`;
+    Linking.openURL(url).catch((err) => console.log('An error occurred', err));
+  };
+  //function to handle email press
+  const emailPress = (emailAddress: string) => {
+    if (emailAddress === '') return;
+    const url = `mailto:${emailAddress}`;
+    Linking.openURL(url).catch((err) => console.log('An error occurred', err));
+  };
+  //function to handle website press
+  const websitePress = (webUrl: string) => {
+    if (webUrl === '') return;
+    const webUrlSplit = webUrl.split('.');
+
+    if (!isValidWebsiteUrl(webUrl)) return;
+
+    if (webUrlSplit[0] === 'www') {
+      webUrl = 'https://' + webUrl;
+    } else {
+      webUrl = 'https://www.' + webUrl;
+    }
+
+    Linking.openURL(webUrl).catch((err) =>
+      console.log('An error occurred', err),
+    );
+  };
+
+  // Function to copy text to clipboard
+  const longPressToCopy = async (string: string) => {
+    try {
+      await Clipboard.setString(string);
+      Alert.alert(
+        'Copied to Clipboard',
+        `Content "${string}" copied to clipboard successfully.`,
+      );
+    } catch (error) {
+      console.error('Error copying to clipboard:', error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -58,10 +165,22 @@ const CardDetailPage = ({ route }: any) => {
       <View style={styles.imageContainer}>
         <CommonImageComponent />
       </View>
-
       <View style={styles.conatctHead}>
-        <Text style={styles.cardName}>{cardDetail.card_name}</Text>
-        <Text style={styles.jobTitle}>{cardDetail.job_title}</Text>
+        {isLoading ? (
+          <>
+            <View style={styles.shimmerContainer}>
+              <CardDetailsShimmer />
+            </View>
+            <View style={styles.shimmerContainer}>
+              <CardDetailsShimmer />
+            </View>
+          </>
+        ) : (
+          <>
+            <Text style={styles.cardName}>{cardDetail.card_name}</Text>
+            <Text style={styles.jobTitle}>{cardDetail.job_title}</Text>
+          </>
+        )}
       </View>
 
       <View style={styles.headerStyle}>
@@ -74,8 +193,6 @@ const CardDetailPage = ({ route }: any) => {
             navigation.navigate('EditCardScreen', {
               cardDetails: cardDetail,
               card_id: route.params.card_id,
-              cardListScreenUpdater: route.params.cardListScreenUpdater,
-              cardDetailsScreenUpdater: setKey,
             });
           }}
         >
@@ -83,45 +200,109 @@ const CardDetailPage = ({ route }: any) => {
         </TouchableOpacity>
       </View>
 
+      {/* Card details display */}
       <View style={styles.cardDetailsContainer}>
-        <CardDetailComponent card_detail={cardDetail.company_name || ''}>
+        <CardDetailComponent
+          onLongPress={() => {
+            longPressToCopy(cardDetail.company_name || '');
+          }}
+          card_detail={cardDetail.company_name || ''}
+          isLoading={isLoading}
+        >
           <CompanyName width={20} height={20} color={'primary-text'} />
         </CardDetailComponent>
 
-        <CardDetailComponent card_detail={cardDetail.phone || ''}>
+        <CardDetailComponent
+          onLongPress={() => {
+            longPressToCopy(cardDetail.phone || '');
+          }}
+          onPress={() => phonePress(cardDetail.phone || '')}
+          card_detail={cardDetail.phone || ''}
+          isLoading={isLoading}
+        >
           <Phone width={20} height={20} color={'primary-text'} />
         </CardDetailComponent>
 
-        <CardDetailComponent card_detail={cardDetail.email || ''}>
+        <CardDetailComponent
+          onLongPress={() => {
+            longPressToCopy(cardDetail.email || '');
+          }}
+          onPress={() => emailPress(cardDetail.email || '')}
+          card_detail={cardDetail.email || ''}
+          isLoading={isLoading}
+        >
           <Email width={20} height={20} color={'primary-text'} />
         </CardDetailComponent>
 
-        <CardDetailComponent card_detail={cardDetail.company_website || ''}>
+        <CardDetailComponent
+          onLongPress={() => {
+            longPressToCopy(cardDetail.company_website || '');
+          }}
+          onPress={() => websitePress(cardDetail.company_website || '')}
+          card_detail={cardDetail.company_website || ''}
+          isLoading={isLoading}
+        >
           <Website width={20} height={20} color={'primary-text'} />
         </CardDetailComponent>
       </View>
 
       <View style={styles.editButtons}>
         <View style={styles.profileButton}>
-          <ProfileButtonComponent
-            children={<DeleteIcon width={40} height={24} />}
-            title={'Delete'}
-            danger={true}
-            onPressing={function () {
-              throw new Error('Function not implemented.');
-            }}
-          ></ProfileButtonComponent>
+          <TouchableOpacity style={styles.delete}>
+            <ProfileButtonComponent
+              children={<DeleteIcon width={40} height={24} />}
+              title={'Delete'}
+              danger={true}
+              onPressing={toggleDeleteModal}
+            ></ProfileButtonComponent>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.mainButton}>
           <MainButtonComponent
             children={<ShareIcon width={40} height={24} />}
             title={'Share'}
-            onPressing={function () {
-              throw new Error('Function not implemented.');
-            }}
+            onPressing={toggleShareModal}
           ></MainButtonComponent>
+          <BottomSheetComponent
+            visibility={ShareModalVisible}
+            visibilitySetter={setShareModalVisible}
+          >
+            <ShareCardScreen
+              user_id={''}
+              jwt_token={''}
+              card_id={route.params.card_id}
+              receiver_user_ids={[]}
+            />
+          </BottomSheetComponent>
         </View>
+
+        {/* Modal for delete a card confirmation */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isDeleteModalVisible}
+          onRequestClose={toggleDeleteModal}
+        >
+          <View style={styles.centeredDeleteView}>
+            <View style={styles.deleteModalView}>
+              <Text style={styles.deleteModalText}>
+                Are you sure you want to delete this card?
+              </Text>
+              <View style={styles.deleteButtonContainer}>
+                <ProfileButtonComponent
+                  title={'Delete'}
+                  danger={true}
+                  onPressing={handleDeleteCard}
+                ></ProfileButtonComponent>
+                <MainButtonComponent
+                  title={'Cancel'}
+                  onPressing={toggleDeleteModal}
+                ></MainButtonComponent>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </View>
     </View>
   );
@@ -139,7 +320,6 @@ const styles = StyleSheet.create({
   },
   conatctHead: {
     flexDirection: 'column',
-    // marginTop: '3%',
     marginBottom: '5%',
     justifyContent: 'center',
     alignItems: 'center',
@@ -152,6 +332,9 @@ const styles = StyleSheet.create({
   jobTitle: {
     color: colors['accent-grey'],
     fontSize: 24,
+  },
+  shimmerContainer: {
+    marginBottom: 10,
   },
   cardButton: {
     alignItems: 'center',
@@ -215,6 +398,40 @@ const styles = StyleSheet.create({
   mainButton: {
     flex: 1,
     height: 50,
+  },
+  delete: {
+    height: '100%',
+  },
+  centeredDeleteView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  deleteModalView: {
+    backgroundColor: colors['accent-white'],
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: colors['primary-text'],
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  deleteModalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    color: colors['primary-text'],
+    fontSize: 20,
+  },
+  deleteButtonContainer: {
+    flexDirection: 'row',
+    marginTop: 20,
+    gap: 20,
   },
 });
 
