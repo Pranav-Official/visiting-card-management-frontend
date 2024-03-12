@@ -202,7 +202,17 @@ const ContactsPage = () => {
         onLongPress={() => {
           navigation.navigate('CardStack', {
             screen: 'EditCardScreen',
-            params: { create: true, cardDetails: {} },
+            params: {
+              create: true,
+              cardDetails: {
+                card_name: '',
+                job_title: '',
+                email: '',
+                phone: '',
+                company_name: '',
+                company_website: '',
+              },
+            },
           });
         }}
         style={{

@@ -157,7 +157,6 @@ const CardListScreen = ({ route }: any) => {
                 value={temporaryContactName}
                 onChangeText={(val) => setTemporaryContactName(val)}
                 underlineColorAndroid="transparent"
-                //readOnly={readonly}
               />
               <View style={styles.headerStyle}>
                 <TouchableOpacity
