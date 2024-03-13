@@ -7,13 +7,18 @@ import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import MainButtonComponent from '../../components/MainButtoncomponent';
 import { ShareCard, ShareCardProp } from '../../hooks/ShareCardHook';
+import Share from 'react-native-share';
 
-interface ShareProp {
+type ShareProp = {
   user_fullname: string;
   user_id: string;
-}
+};
 
-const ShareCardScreen = ({ card_id, visibilitySetter }: ShareCardProp) => {
+const ShareCardScreen = ({
+  card_id,
+  visibilitySetter,
+  cardDetails,
+}: ShareCardProp) => {
   console.log('card_id in beginning', card_id);
   const [shareList, setShareList] = useState<ShareProp[]>([]);
   const [filteredShareList, setFilteredShareList] = useState<ShareProp[]>([]); //new
@@ -34,7 +39,7 @@ const ShareCardScreen = ({ card_id, visibilitySetter }: ShareCardProp) => {
       }
     };
     fetchData();
-  }, []); 
+  }, []);
 
   useEffect(() => {
     const filteredList = shareList.filter((item) =>
@@ -104,7 +109,20 @@ const ShareCardScreen = ({ card_id, visibilitySetter }: ShareCardProp) => {
         ></MainButtonComponent>
       </View>
       <View style={styles.main_button_container}>
-        <MainButtonComponent title={'Share Externally'}></MainButtonComponent>
+        <MainButtonComponent
+          title={'Share Externally'}
+          onPressing={() => {
+            Share.open({
+              message: JSON.stringify(cardDetails),
+            })
+              .then((res) => {
+                console.log(res);
+              })
+              .catch((err) => {
+                err && console.log(err);
+              });
+          }}
+        ></MainButtonComponent>
       </View>
     </View>
   );

@@ -277,6 +277,7 @@ const CardDetailPage = ({ route }: any) => {
               card_id={route.params.card_id}
               receiver_user_ids={[]}
               visibilitySetter={toggleShareModal}
+              cardDetails={cardDetail}
             />
           </BottomSheetComponent>
         </View>
