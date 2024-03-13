@@ -15,18 +15,24 @@ type Card = {
   job_title?: string;
   company_name?: string;
   company_website?: string;
+  card_id: string;
 };
 
-export async function overwriteExistingCard(
+export async function overwriteSharedCard(
   user_id: string,
   jwtToken: string,
   card_id: string,
   cardDetails: Card,
 ) {
-  const overWriteCardPayload = {
-    user_id,
+  console.log(
+    '\n\nCard Details from overwriteSharedCard: ',
+    cardDetails,
     card_id,
-    ...cardDetails,
+  );
+  const overWriteCardPayload = {
+    shared_card_id: cardDetails.card_id,
+    card_to_overWrite: card_id,
+    user_id,
   };
   let statusCode = '';
   let responseBody: OWCBodyType;
@@ -34,7 +40,7 @@ export async function overwriteExistingCard(
     console.log('\n\nREACHED OWC', card_id);
     console.log('\n\noverWriteCardPayload: ', overWriteCardPayload);
     const overwriteResponse = await api.patch(
-      '/api/v1/editCard',
+      '/api/v1/overwriteExistingCard',
       overWriteCardPayload,
       {
         headers: {

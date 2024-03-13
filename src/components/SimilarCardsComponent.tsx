@@ -22,7 +22,13 @@ type ContactCards = {
 const SimilarCardsComponent = (props) => {
   const cardDetails = props.cardDetails;
   const similarCardList: ContactCards = props.similarCardList;
-  //Setting SimilarCardList
+  const sharing: boolean = props.sharing;
+
+  const navigation = useNavigation<NavigationProp<any>>();
+  console.log(
+    '\n\nCONSOLE FOR similarCardList from Component: ',
+    similarCardList,
+  );
 
   //Render Item
   const renderItem = ({ item }: any) => (
@@ -30,9 +36,8 @@ const SimilarCardsComponent = (props) => {
       <Text style={styles.contactNameInModal}>{item.contact_name}</Text>
 
       {item.cards.map((card: any) => (
-        <View style={styles.singleCard}>
+        <View style={styles.singleCard} key={card.card_id}>
           <CardComponent
-            key={card.card_id}
             alignToSides={false}
             job_position={card.job_title}
             name={card.card_name}
@@ -44,16 +49,6 @@ const SimilarCardsComponent = (props) => {
       ))}
     </View>
   );
-
-  //Navigation
-  const navigation = useNavigation<NavigationProp<any>>();
-  const navigateToPage = async (pageToNavigate: string) => {
-    console.log(
-      '\n\nSIMILAR CARD LIST: from Edit Card Screen',
-      similarCardList,
-    );
-    navigation.navigate(pageToNavigate, { similarCardList, cardDetails });
-  };
 
   return (
     <View style={styles.modalView}>
@@ -68,15 +63,31 @@ const SimilarCardsComponent = (props) => {
         <Text style={styles.similarCardsText}>Choose an Option</Text>
         <MainButtonComponent
           title="Overwrite Existing Card"
-          onPressing={() => navigateToPage('CardOverwriteScreen')}
+          onPressing={() => {
+            navigation.navigate('CardOverwriteScreen', {
+              similarCardList,
+              cardDetails,
+              sharing,
+            });
+          }}
         ></MainButtonComponent>
         <MainButtonComponent
           title="Add to Existing Contacts"
-          onPressing={() => navigateToPage('AddToContactScreen')}
+          onPressing={() => {
+            navigation.navigate('CardStack', {
+              screen: 'AddToContactScreen',
+              params: { similarCardList, cardDetails, sharing },
+            });
+          }}
         ></MainButtonComponent>
         <MainButtonComponent
           title="Add as a New Contact"
-          onPressing={() => navigateToPage('SetContactNameScreen')}
+          onPressing={() => {
+            navigation.navigate('CardStack', {
+              screen: 'SetContactNameScreen',
+              params: { cardDetails, sharing },
+            });
+          }}
         ></MainButtonComponent>
       </View>
     </View>

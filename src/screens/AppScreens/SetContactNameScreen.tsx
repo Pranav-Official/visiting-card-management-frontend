@@ -3,19 +3,25 @@ import colors from '../../utils/colorPallete';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import MainButtonComponent from '../../components/MainButtoncomponent';
 import ProfileButtonComponent from '../../components/ProfileButtonComponent';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import {
+  CommonActions,
+  NavigationProp,
+  useNavigation,
+} from '@react-navigation/native';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import { newCardDetails } from '../../hooks/createCardHook';
+import { acceptNewCard } from '../../hooks/acceptCardHook';
 import Toast from 'react-native-root-toast';
 
 const SetContactNameScreen = ({ route }: any) => {
-  const { cardDetails } = route.params;
+  const { cardDetails, sharing } = route.params;
+  console.log('\n\nSharing Status = ', sharing);
   const navigation = useNavigation<NavigationProp<any>>();
   const [newContactName, setNewContactName] = useState('');
 
   //Calling create card hook
-  const createCard = async () => {
+  const createCard = async (sharing: boolean) => {
     try {
       if (!newContactName.trim()) {
         Toast.show('Please enter a name for the new contact', {
@@ -34,17 +40,33 @@ const SetContactNameScreen = ({ route }: any) => {
       };
 
       // calling createNewCard Hook
-      const response = await newCardDetails({
-        user_id,
-        jwtToken,
-        card_id: route.params.card_id,
-        newData: updatedCardDetails,
-      });
+      let response;
+      if (sharing == true) {
+        response = await acceptNewCard({
+          user_id,
+          jwtToken,
+          card_id: route.params.card_id,
+          newData: updatedCardDetails,
+        });
+      } else {
+        response = await newCardDetails({
+          user_id,
+          jwtToken,
+          card_id: route.params.card_id,
+          newData: updatedCardDetails,
+        });
+      }
 
       const newStatus = response.statusCode;
 
       // if save successful, navigating to home screen
       if (newStatus === '200') {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 1,
+            routes: [{ name: 'Home' }],
+          }),
+        );
         navigation.navigate('Home', {});
       }
     } catch (error) {
@@ -66,7 +88,12 @@ const SetContactNameScreen = ({ route }: any) => {
       </View>
       <View style={styles.buttonContainer}>
         <ProfileButtonComponent title={'Go Back'} danger={true} />
-        <MainButtonComponent title="Save" onPressing={createCard} />
+        <MainButtonComponent
+          title="Save"
+          onPressing={() =>
+            sharing === true ? createCard(true) : createCard(false)
+          }
+        />
       </View>
     </View>
   );

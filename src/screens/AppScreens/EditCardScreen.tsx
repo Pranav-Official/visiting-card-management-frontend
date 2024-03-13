@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-  FlatList,
   ScrollView,
   StyleSheet,
   Text,
@@ -178,28 +177,6 @@ const EditCardDetails = ({ route }: any) => {
       setPhoneBorder('Normal');
     }
   };
-
-  //Rendering similar cards
-  const renderItem = ({ item }: any) => (
-    <View style={[styles.similarCardsContainer]}>
-      <Text style={styles.contactNameInModal}>{item.contact_name}</Text>
-
-      {item.cards.map((card: any) => (
-        <View style={styles.singleCard}>
-          <CardComponent
-            key={card.card_id}
-            alignToSides={false}
-            job_position={card.job_title}
-            name={card.card_name}
-            email={card.email}
-            phone_number={card.phone}
-            company_name={card.company_name}
-          />
-        </View>
-      ))}
-    </View>
-  );
-
   //function to fetch similar cards from user's contacts
   const fetchSimilarCards = async () => {
     try {
@@ -223,10 +200,6 @@ const EditCardDetails = ({ route }: any) => {
     } catch (error) {
       console.log('\n\nCatch Error\n\n', error);
     }
-  };
-  //Setting navgation from similarCards to cardDetails page
-  const navigateToPage = async (pageToNavigate: string) => {
-    navigation.navigate(pageToNavigate, { similarCardList, cardDetails });
   };
 
   return (
