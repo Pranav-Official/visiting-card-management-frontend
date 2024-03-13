@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   FlatList,
   Image,
@@ -7,10 +7,12 @@ import {
   View,
 } from 'react-native';
 import colors from '../utils/colorPallete';
+import ImageView from 'react-native-image-viewing';
 
 type ImgContainer = {
   Image: string;
-  onPress: (text: string) => void;
+  onPress: () => void;
+  indexSetter: () => void;
 };
 
 const CommonImage = (props: ImgContainer) => {
@@ -18,7 +20,10 @@ const CommonImage = (props: ImgContainer) => {
     <View style={styles.CommonImagecontainer}>
       <TouchableOpacity
         style={styles.cardContainer}
-        onPress={() => props.onPress('Tapped Front')}
+        onPress={() => {
+          props.onPress();
+          props.indexSetter();
+        }}
       >
         <View style={styles.imageContainer}>
           <Image
@@ -41,16 +46,18 @@ const CommonImageComponent = ({ frontImageUri, backImageUri }: imageURI) => {
   // Sample data for FlatList
   const imageData = [
     {
-      Image: frontImageUri
+      uri: frontImageUri
         ? frontImageUri
         : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEXptu3jFyRY50KKSUvX0iKJ7f2zxNPNsMwA&usqp=CAU',
     },
     {
-      Image: backImageUri
+      uri: backImageUri
         ? backImageUri
         : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEXptu3jFyRY50KKSUvX0iKJ7f2zxNPNsMwA&usqp=CAU',
     },
   ];
+  const [isImageVisible, setIsImageVisible] = useState(false);
+  const [imageIndex, setImageIndex] = useState(0);
 
   const itemSeparator = () => <View style={styles.separator} />;
 
@@ -60,16 +67,22 @@ const CommonImageComponent = ({ frontImageUri, backImageUri }: imageURI) => {
         data={imageData}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <CommonImage
-            Image={item.Image}
-            onPress={() => {
-              console.log('cisin');
-            }}
+            Image={item.uri}
+            indexSetter={() => setImageIndex(index)}
+            onPress={() => setIsImageVisible(true)}
           />
         )}
         keyExtractor={(_, index) => index.toString()}
         ItemSeparatorComponent={itemSeparator}
+      />
+      <ImageView
+        images={imageData}
+        imageIndex={imageIndex}
+        keyExtractor={(_, index) => index.toString()}
+        visible={isImageVisible}
+        onRequestClose={() => setIsImageVisible(false)}
       />
     </View>
   );
