@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import CompanyIcon from '../../assets/images/company.svg';
 import PhoneIcon from '../../assets/images/phone.svg';
 import MailIcon from '../../assets/images/mail.svg';
@@ -18,6 +25,7 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import BottomSheetComponent from '../../components/BottomSheetComponent';
 import SimilarCardsComponent from '../../components/SimilarCardsComponent';
 import { getSimilarCards } from '../../hooks/getSimilarCardsHook';
+import { isValidPhoneNumber, validateEmail } from '../../utils/regexCheck';
 
 type Card = {
   card_id: string;
@@ -32,25 +40,32 @@ type ContactCards = {
   contact_name: string;
   cards: Card[];
 };
+//To set border color for  mandatory fields
+type BorderTypes = 'Danger' | 'Auth' | 'Normal';
 
 //Edit Card Details Screen
 const EditCardDetails = ({ route }: any) => {
   const [cardDetails, setCardDetails] = useState(route.params.cardDetails);
   const navigation = useNavigation<NavigationProp<any>>();
 
+  const [emailBorder, setEmailBorder] = useState<BorderTypes>('Normal');
+  const [phoneBorder, setPhoneBorder] = useState<BorderTypes>('Normal');
+  const [mandatoryFieldsEmpty, setMandatoryFieldsEmpty] = useState(false);
+
   const [similarCardList, setSimilarCardList] = React.useState<ContactCards>({
     contact_name: '',
     cards: [],
   });
+  //To set similar card modal visibility state
   const [modalVisibility, setModalVisibility] = React.useState(false);
-
+  //Pre-filling edit page card details
   useEffect(() => {
-    if (route.params.cardDetail) {
+    if (route.params.cardDetails) {
       setCardDetails(route.params.cardDetails);
     }
   }, [route.params.cardDetails]);
-  //If flag is false, function to save the edits
-  const saveChanges = async () => {
+  //If create flag is false, function to save the edits(Function for edit card page)
+  const saveEditChanges = async () => {
     try {
       const user_id = (await getLocalItem(Constants.USER_ID)) ?? '{}';
       const token = (await getLocalItem(Constants.USER_JWT)) ?? '{}';
@@ -83,30 +98,109 @@ const EditCardDetails = ({ route }: any) => {
       console.error('Error editing card:', error);
     }
   };
+  // function called when a newly created card or edited card is saved
+  const handleSavePress = async () => {
+    if (cardDetails.phone != undefined && !cardDetails.phone.trim()) {
+      setPhoneBorder('Danger');
+    }
+    if (cardDetails.email != undefined && !cardDetails.email.trim()) {
+      setEmailBorder('Danger');
+    }
+    if (
+      (cardDetails.email != undefined && !cardDetails.email.trim()) ||
+      (cardDetails.phone != undefined && !cardDetails.phone.trim())
+    ) {
+      setMandatoryFieldsEmpty(true);
+      return;
+    }
+    if (!isValidPhoneNumber(cardDetails.phone)) {
+      setPhoneBorder('Danger');
+      setMandatoryFieldsEmpty(true);
+    }
+    if (!validateEmail(cardDetails.email)) {
+      setEmailBorder('Danger');
+      setMandatoryFieldsEmpty(true);
+      return;
+    }
 
-  const handleSave = async () => {
+    // checking whether edits are for creating a card
     if (route.params.create) {
-      //calls the fetchSimilarCards api hook
-      const SimilarCardsCheck = await fetchSimilarCards();
+      //Card name editable only on create a new card page
+      if (!cardDetails.card_name.trim()) {
+        setMandatoryFieldsEmpty(true);
+        return;
+      }
+      if (!mandatoryFieldsEmpty) {
+        //calls the fetchSimilarCards api hook
+        const SimilarCardsCheck = await fetchSimilarCards();
 
-      //if similar cards exist, show the modal, else go to add contact screen
-      if (SimilarCardsCheck) {
-        setModalVisibility(true);
-      } else {
-        navigation.navigate('SetContactNameScreen', {
-          cardDetails: cardDetails,
-        });
+        //if similar cards exist, show the modal, else go to add contact screen
+        if (SimilarCardsCheck) {
+          setModalVisibility(true);
+        } else {
+          navigation.navigate('SetContactNameScreen', {
+            cardDetails: cardDetails,
+          });
+        }
       }
     } else {
       // If create flag is false, call saveChanges function
-      await saveChanges();
+      await saveEditChanges();
     }
   };
 
-  //Fetch Similar Cards
+  const handleInputChange = (key: string, value: string) => {
+    setCardDetails({ ...cardDetails, [key]: value });
+    //setting non empty states for mandatory fields for entries
+    if (key === 'card_name') {
+      if (!cardDetails.card_name.trim()) {
+        setPhoneBorder('Danger');
+        setMandatoryFieldsEmpty(true);
+      }
+      setMandatoryFieldsEmpty(false);
+    }
+    if (key === 'email') {
+      if (!cardDetails.email.trim()) {
+        setEmailBorder('Danger');
+        setMandatoryFieldsEmpty(true);
+      }
+      setMandatoryFieldsEmpty(false);
+      setEmailBorder('Normal');
+    }
+    if (key === 'phone') {
+      if (!cardDetails.phone.trim()) {
+        setPhoneBorder('Danger');
+        setMandatoryFieldsEmpty(true);
+      }
+      setMandatoryFieldsEmpty(false);
+      setPhoneBorder('Normal');
+    }
+  };
+
+  //Rendering similar cards
+  const renderItem = ({ item }: any) => (
+    <View style={[styles.similarCardsContainer]}>
+      <Text style={styles.contactNameInModal}>{item.contact_name}</Text>
+
+      {item.cards.map((card: any) => (
+        <View style={styles.singleCard}>
+          <CardComponent
+            key={card.card_id}
+            alignToSides={false}
+            job_position={card.job_title}
+            name={card.card_name}
+            email={card.email}
+            phone_number={card.phone}
+            company_name={card.company_name}
+          />
+        </View>
+      ))}
+    </View>
+  );
+
+  //function to fetch similar cards from user's contacts
   const fetchSimilarCards = async () => {
     try {
-      console.log('\n\nREACHED FETCH SIMILAR Cards\n\n');
       const user_id = (await getLocalItem(Constants.USER_ID)) ?? '';
       const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
       const result = await getSimilarCards({
@@ -116,10 +210,8 @@ const EditCardDetails = ({ route }: any) => {
         email: cardDetails.email,
         jwtToken,
       });
-      console.log('Result Is: ', result);
 
       setSimilarCardList(result.similarCardList);
-      console.log('\n\nSimilar Card Data = ', result.similarCardList);
 
       if (result.statusCode === '200') {
         return true;
@@ -127,12 +219,12 @@ const EditCardDetails = ({ route }: any) => {
         return false;
       }
     } catch (error) {
-      console.log('\n\nCatch Error\n\n');
+      console.log('\n\nCatch Error\n\n', error);
     }
   };
-
-  const handleInputChange = (key: string, value: string) => {
-    setCardDetails({ ...cardDetails, [key]: value });
+  //Setting navgation from similarCards to cardDetails page
+  const navigateToPage = async (pageToNavigate: string) => {
+    navigation.navigate(pageToNavigate, { similarCardList, cardDetails });
   };
 
   return (
@@ -150,7 +242,7 @@ const EditCardDetails = ({ route }: any) => {
       </View>
       <View style={styles.cardNameHead}>
         <EditCardNameComponent
-          placeholder={'Card Name'}
+          placeholder={'Enter Card Name'}
           value={cardDetails.card_name}
           setter={(value: string) => handleInputChange('card_name', value)}
           readonly={!route.params.create}
@@ -198,6 +290,7 @@ const EditCardDetails = ({ route }: any) => {
               hidden={false}
               value={cardDetails.phone}
               setter={(value: string) => handleInputChange('phone', value)}
+              borderType={phoneBorder}
             />
           </View>
         </View>
@@ -212,6 +305,7 @@ const EditCardDetails = ({ route }: any) => {
               hidden={false}
               value={cardDetails.email}
               setter={(value: string) => handleInputChange('email', value)}
+              borderType={emailBorder}
             />
           </View>
         </View>
@@ -233,13 +327,23 @@ const EditCardDetails = ({ route }: any) => {
         </View>
       </View>
       <View style={styles.save}>
+        <View>
+          {/* toggle indicating mandatory fields are empty or invalid data in fields*/}
+          {mandatoryFieldsEmpty && (
+            <View style={styles.toggleContainer}>
+              <Text style={styles.toggleMessage}>
+                Please fill the above fields with valid data.
+              </Text>
+            </View>
+          )}
+        </View>
         <MainButtonComponent
           children={undefined}
           title={'Save'}
-          onPressing={handleSave}
+          onPressing={handleSavePress}
         />
       </View>
-
+      {/* Similar Cards displaying modal */}
       <BottomSheetComponent
         visibility={modalVisibility}
         visibilitySetter={setModalVisibility}
@@ -292,7 +396,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
   save: {
-    height: 120,
+    height: 170,
     padding: 30,
   },
   cardNameHead: {
@@ -307,6 +411,20 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 20,
     marginLeft: 20,
+  },
+  //mandatory fields -toggle styling
+  toggleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: 10,
+    marginBottom: 10,
+    backgroundColor: colors['secondary-grey'],
+  },
+  toggleMessage: {
+    color: colors['primary-danger'],
+    fontSize: 15,
+    marginTop: 10,
   },
 });
 

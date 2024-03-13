@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import colors from '../../utils/colorPallete';
 import {
   Alert,
@@ -81,11 +81,14 @@ const CardDetailPage = ({ route }: any) => {
     }
   };
 
+  // useEffect hook to fetch data when component mounts or key changes
+
   useFocusEffect(
-    useCallback(() => {
+    React.useCallback(() => {
       fetchData();
     }, []),
   );
+
   // Function to handle deletion of card
   const handleDeleteCard = async () => {
     try {
@@ -268,7 +271,13 @@ const CardDetailPage = ({ route }: any) => {
             visibility={ShareModalVisible}
             visibilitySetter={setShareModalVisible}
           >
-            <ShareCardScreen user_id={''} jwt_token={''} card_id={route.params.card_id} receiver_user_ids={[]} visibilitySetter={toggleShareModal} />
+            <ShareCardScreen
+              user_id={''}
+              jwt_token={''}
+              card_id={route.params.card_id}
+              receiver_user_ids={[]}
+              visibilitySetter={toggleShareModal}
+            />
           </BottomSheetComponent>
         </View>
 

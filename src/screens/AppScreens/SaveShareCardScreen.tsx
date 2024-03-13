@@ -191,7 +191,7 @@ const SaveShareCardScreen = ({ route }: any) => {
       return false;
     }
   };
-
+  const navigation = useNavigation();
   return (
     <View style={{ padding: 18, flex: 1 }}>
       <Text
@@ -220,7 +220,10 @@ const SaveShareCardScreen = ({ route }: any) => {
           <MainButtonComponent title="Save" onPressing={handleSave} />
         </View>
         <View style={{ flex: 1 }}>
-          <ProfileButtonComponent title="Later" />
+          <ProfileButtonComponent
+            title="Later"
+            onPressing={() => navigation.goBack()}
+          />
         </View>
       </View>
 

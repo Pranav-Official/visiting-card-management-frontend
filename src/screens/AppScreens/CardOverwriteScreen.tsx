@@ -50,7 +50,8 @@ type renderItemType = {
 //   };
 // };
 type routeParams = {
-  CardDetailsScreen: { card_id: string };
+  CardDetailsScreen?: { card_id: string };
+  CardStack?: { screen: string; params: { card_id: string } };
 };
 const RenderItem = ({ item, selected, setter }: renderItemType) => (
   <View
@@ -121,7 +122,17 @@ const CardOverwriteScreen = ({ route }: any) => {
     console.log('\n\nOverWrite Response: ', overwriteResponse);
     if (overwriteResponse?.statusCode === '200') {
       Toast.show('Card Overwritten Successfully');
-      navigation.navigate('CardDetailsScreen', { card_id: selected });
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [{ name: 'Home' }],
+        }),
+      );
+      navigation.navigate('CardStack', {
+        screen: 'CardDetailsScreen',
+        params: { card_id: selected },
+      });
+      // navigation.navigate('CardDetailsScreen', { card_id: selected });
     } else {
       Toast.show('Error Overwriting Card');
       console.log('\n\nError Navigating');

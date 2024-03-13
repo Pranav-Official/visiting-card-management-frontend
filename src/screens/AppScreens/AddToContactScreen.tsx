@@ -14,7 +14,11 @@ import ProfileButtonComponent from '../../components/ProfileButtonComponent';
 import Constants from '../../utils/Constants';
 import { addToExistingContact } from '../../hooks/addToContactHook';
 import { getLocalItem } from '../../utils/Utils';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import {
+  CommonActions,
+  NavigationProp,
+  useNavigation,
+} from '@react-navigation/native';
 import { addSharedCardToExistingContact } from '../../hooks/AddToExistingContact';
 
 const RenderItem = ({ item, selected, setter }) => (
@@ -106,6 +110,12 @@ const AddToContact = ({ route }: any) => {
       const createdCardId =
         addToContactResponse.addToExistingContactData.data.cardId;
       console.log('\n\nNEWLY CREATED CARD ID: ', createdCardId);
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [{ name: 'Home' }],
+        }),
+      );
       navigation.navigate('CardStack', {
         screen: 'CardDetailsScreen',
         params: { card_id: createdCardId },
