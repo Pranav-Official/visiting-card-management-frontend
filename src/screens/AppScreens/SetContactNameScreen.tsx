@@ -65,30 +65,6 @@ const SetContactNameScreen = ({ route }: any) => {
         ...cardDetails,
         contact_name: newContactName,
       };
-      if (cardDetails.img_front_link) {
-        const frontImgURL = await cloudinaryUpload({
-          uri: cardDetails.img_front_link,
-          type: 'image/jpeg',
-          name: 'frontImg.jpg',
-        });
-
-        updatedCardDetails = {
-          ...updatedCardDetails,
-          img_front_link: frontImgURL,
-        };
-      }
-      if (cardDetails.img_back_link) {
-        const backImgURL = await cloudinaryUpload({
-          uri: cardDetails.img_back_link,
-          type: 'image/jpeg',
-          name: 'backImg.jpg',
-        });
-
-        updatedCardDetails = {
-          ...updatedCardDetails,
-          img_back_link: backImgURL,
-        };
-      }
 
       // calling createNewCard Hook
       let response;
@@ -100,6 +76,30 @@ const SetContactNameScreen = ({ route }: any) => {
           newData: updatedCardDetails,
         });
       } else {
+        if (cardDetails.img_front_link) {
+          const frontImgURL = await cloudinaryUpload({
+            uri: cardDetails.img_front_link,
+            type: 'image/jpeg',
+            name: 'frontImg.jpg',
+          });
+
+          updatedCardDetails = {
+            ...updatedCardDetails,
+            img_front_link: frontImgURL,
+          };
+        }
+        if (cardDetails.img_back_link) {
+          const backImgURL = await cloudinaryUpload({
+            uri: cardDetails.img_back_link,
+            type: 'image/jpeg',
+            name: 'backImg.jpg',
+          });
+
+          updatedCardDetails = {
+            ...updatedCardDetails,
+            img_back_link: backImgURL,
+          };
+        }
         response = await newCardDetails({
           user_id,
           jwtToken,
@@ -138,7 +138,11 @@ const SetContactNameScreen = ({ route }: any) => {
         />
       </View>
       <View style={styles.buttonContainer}>
-        <ProfileButtonComponent title={'Go Back'} danger={true} />
+        <ProfileButtonComponent
+          title={'Go Back'}
+          onPressing={() => navigation.goBack()}
+          danger={true}
+        />
         <MainButtonComponent
           title="Save"
           onPressing={() =>
