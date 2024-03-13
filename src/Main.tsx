@@ -8,7 +8,7 @@ import Constants from './utils/Constants';
 import { getLocalItem, setLocalItem } from './utils/Utils';
 import AuthNavigationStack from './navigation/AuthNavigation';
 import { RootSiblingParent } from 'react-native-root-siblings';
-import SplashScreen from './screens/SplashScreen';
+import SplashScreen from './screens/Splash_Screen';
 
 const Main = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -44,6 +44,7 @@ const Main = () => {
         ) : (
           <AuthNavigationStack />
         )}
+
       </RootSiblingParent>
     </NavigationContainer>
   );
