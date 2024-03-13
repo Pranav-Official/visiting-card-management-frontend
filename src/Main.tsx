@@ -5,7 +5,7 @@ import HomeStackNavigation from './navigation/AppNavigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { userLogin } from './context/userSlice';
 import Constants from './utils/Constants';
-import { getLocalItem } from './utils/Utils';
+import { getLocalItem, setLocalItem } from './utils/Utils';
 import AuthNavigationStack from './navigation/AuthNavigation';
 import { RootSiblingParent } from 'react-native-root-siblings';
 
@@ -23,6 +23,8 @@ const Main = () => {
       } else {
         dispatch(userLogin(false));
       }
+
+      await setLocalItem(Constants.SAVE_SHARES_LATER, 'false');
     })();
   }, []);
 
