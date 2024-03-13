@@ -166,7 +166,10 @@ const CardDetailPage = ({ route }: any) => {
       </TouchableOpacity>
 
       <View style={styles.imageContainer}>
-        <CommonImageComponent />
+        <CommonImageComponent
+          frontImageUri={cardDetail.img_front_link}
+          backImageUri={cardDetail.img_back_link}
+        />
       </View>
       <View style={styles.conatctHead}>
         {isLoading ? (
