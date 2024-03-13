@@ -1,12 +1,25 @@
 import axios from 'axios';
 import api from './api';
 
+type CardDetails = {
+  card_name: string;
+  img_front_link?: string;
+  img_back_link?: string;
+  job_title?: string;
+  email?: string;
+  phone?: string;
+  company_name?: string;
+  company_website?: string;
+  description?: string | null;
+};
+
 export interface ShareCardProp {
   user_id: string;
   jwt_token: string;
   card_id: string;
   receiver_user_ids: string[];
   visibilitySetter?: () => void;
+  cardDetails?: CardDetails;
 }
 
 interface ShareCardResponse {
@@ -30,7 +43,7 @@ export async function ShareCard({
   };
 
   try {
-    const ShareCardResponse = await api.post("api/v1/shareCard", shareParams, {
+    const ShareCardResponse = await api.post('api/v1/shareCard', shareParams, {
       headers: { Authorization: `Bearer ${jwt_token}` },
     });
 
@@ -40,12 +53,12 @@ export async function ShareCard({
   } catch (error) {
     console.error('Error sharing card:', error);
     if (axios.isAxiosError(error)) {
-        console.log('Axios Error while sharing card:', error);
-        shareCardResp = error.response?.data;
-      } else {
-        console.log('Error while sharing card ', error);
-        shareCardResp = { status: false, message: 'Error while signing in' };
-      }
+      console.log('Axios Error while sharing card:', error);
+      shareCardResp = error.response?.data;
+    } else {
+      console.log('Error while sharing card ', error);
+      shareCardResp = { status: false, message: 'Error while signing in' };
+    }
     return { statusCode, shareCardResp };
   }
 }

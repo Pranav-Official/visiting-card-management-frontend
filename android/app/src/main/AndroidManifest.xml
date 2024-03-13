@@ -23,4 +23,11 @@
         </intent-filter>
       </activity>
     </application>
+    <queries>
+        <package android:name="com.example.store" />
+        <package android:name="com.example.services" />
+
+        <!--for example, to share via instagram -->
+        <package android:name="com.instagram.android" />
+    </queries>
 </manifest>
