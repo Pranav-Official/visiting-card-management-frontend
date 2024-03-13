@@ -19,7 +19,8 @@ import { useDispatch } from 'react-redux';
 import { userLogin } from '../../context/userSlice';
 import { userDetails } from '../../context/userDetailsSlice';
 import colors from '../../utils/colorPallete';
-import { validateEmail } from '../../utils/regexCheck';
+import { isValidPassword, validateEmail } from '../../utils/regexCheck';
+
 
 // type response = {
 //   status: boolean;
@@ -44,16 +45,18 @@ const SignUp = () => {
   const [loading, setLoading] = useState(false);
 
   const SignUpMain = async () => {
-    if (email === '' || password === '' || fullname === '') {
+    let isEmailValid = true;
+    let isPasswordValid = true;
+    let isFullNameValid = true;
+    
+    if (email === '') {
       ToastAndroid.showWithGravity(
-        'Please enter fullname,email and password',
+        'Please enter email',
         ToastAndroid.SHORT,
         ToastAndroid.CENTER,
       );
       setEmailBorder('Danger');
-      setPasswordBorder('Danger');
-      setNameBorder('Danger');
-      return;
+      isEmailValid = false;
     } else if (validateEmail(email) === false) {
       ToastAndroid.showWithGravity(
         'Please enter valid email',
@@ -61,9 +64,42 @@ const SignUp = () => {
         ToastAndroid.CENTER,
       );
       setEmailBorder('Danger');
-      return;
+      isEmailValid = false;
     }
-
+    
+    if (password === '') {
+      ToastAndroid.showWithGravity(
+        'Please enter password',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
+      setPasswordBorder('Danger');
+      isPasswordValid = false;
+    } else if (isValidPassword(password) === false) {
+      ToastAndroid.showWithGravity(
+        'Please enter valid password',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
+      setPasswordBorder('Danger');
+      isPasswordValid = false;
+    }
+    
+    
+    if (fullname === '') {
+      ToastAndroid.showWithGravity(
+        'Please enter fullname',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
+      setNameBorder('Danger');
+      isFullNameValid = false;
+    }
+    
+    if (isEmailValid && isPasswordValid && isFullNameValid) {
+      // All validations passed, continue with your logic here
+    }
+    
     setLoading(true);
     const response = await SignUpUser({
       signUpUsername: fullname,
@@ -212,3 +248,5 @@ const styles = StyleSheet.create({
 });
 
 export default SignUp;
+
+
