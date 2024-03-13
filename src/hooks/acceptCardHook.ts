@@ -57,12 +57,12 @@ export async function acceptNewCard({
     );
 
     statusCode = CardDetailsResponse.status.toString();
-
-    newCardResp = CardDetailsResponse.data;
     // console.log('New card response------>', newCardResp);
   } catch (error) {
+    statusCode = '400';
     console.log('Error while logging in:', error);
+    return { statusCode };
   }
 
-  return { statusCode, newCardResp };
+  return { statusCode };
 }
