@@ -8,6 +8,7 @@ import Constants from './utils/Constants';
 import { getLocalItem, setLocalItem } from './utils/Utils';
 import AuthNavigationStack from './navigation/AuthNavigation';
 import { RootSiblingParent } from 'react-native-root-siblings';
+import SplashScreen from './screens/SplashScreen';
 
 const Main = () => {
   const isLoggedIn = useSelector((state: any) => state.userReducer.isLoggedIn);
@@ -32,6 +33,7 @@ const Main = () => {
     <NavigationContainer>
       <RootSiblingParent>
         {isLoggedIn ? <HomeStackNavigation /> : <AuthNavigationStack />}
+        {!isLoggedIn && <SplashScreen />}
       </RootSiblingParent>
     </NavigationContainer>
   );
