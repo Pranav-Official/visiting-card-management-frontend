@@ -50,8 +50,9 @@ const styles = StyleSheet.create({
   main_container: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 10,
-    paddingLeft: 50,
+    marginVertical: 4,
+    paddingTop: 6,
+    paddingLeft: 30,
     height: 68,
     justifyContent: 'center',
   },
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
   contact_container: {
     flex: 1,
     marginTop: 9,
-    paddingLeft: 30,
+    paddingLeft: 20,
   },
 });
 
