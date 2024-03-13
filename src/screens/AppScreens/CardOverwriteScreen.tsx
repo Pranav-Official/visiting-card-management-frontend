@@ -62,7 +62,7 @@ const RenderItem = ({ item, selected, setter }: renderItemType) => (
   >
     <Text style={styles.contactName}>{item.contact_name}</Text>
     {item.cards.map((card: Card) => (
-      <View style={{ flexDirection: 'row' }}>
+      <View style={{ flexDirection: 'row' }} key={card.card_id}>
         <TouchableOpacity
           style={{ flex: 1, paddingTop: 5 }}
           onPress={() => setter(card.card_id)}
@@ -73,7 +73,7 @@ const RenderItem = ({ item, selected, setter }: renderItemType) => (
             <RadioButton />
           )}
         </TouchableOpacity>
-        <View style={{ flex: 6 }} key={card.card_id}>
+        <View style={{ flex: 6 }}>
           <CardComponent
             alignToSides={false}
             job_position={card.job_title}
@@ -173,7 +173,7 @@ const CardOverwriteScreen = ({ route }: any) => {
         <View style={{ flex: 1 }}>
           <ProfileButtonComponent
             title="Cancel"
-            onPressing={() => console.log('Hii')}
+            onPressing={() => navigation.goBack()}
           />
         </View>
       </View>

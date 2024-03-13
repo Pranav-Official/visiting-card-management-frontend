@@ -17,6 +17,7 @@ import { getLocalItem } from '../../utils/Utils';
 import {
   CommonActions,
   NavigationProp,
+  StackActions,
   useNavigation,
 } from '@react-navigation/native';
 import { addSharedCardToExistingContact } from '../../hooks/AddToExistingContact';
@@ -47,8 +48,8 @@ const RenderItem = ({ item, selected, setter }) => (
       </View>
     </View>
     {item.cards.map((card: any) => (
-      <View style={{ flexDirection: 'row' }}>
-        <View style={{ flex: 1 }} key={card.card_id}>
+      <View style={{ flexDirection: 'row' }} key={card.card_id}>
+        <View style={{ flex: 1 }}>
           <CardComponent
             card_id={card.card_id}
             alignToSides={false}
@@ -157,7 +158,7 @@ const AddToContact = ({ route }: any) => {
         <View style={{ flex: 1 }}>
           <ProfileButtonComponent
             title="Cancel"
-            onPressing={() => navigation.goBack()}
+            onPressing={() => navigation.dispatch(StackActions.pop(1))}
             // proButtonBgColor={colors['accent-white']}
             // proButtonTextColor={colors['primary-danger']}
             children={<></>}

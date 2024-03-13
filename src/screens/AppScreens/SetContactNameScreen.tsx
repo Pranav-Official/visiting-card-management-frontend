@@ -3,7 +3,11 @@ import colors from '../../utils/colorPallete';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import MainButtonComponent from '../../components/MainButtoncomponent';
 import ProfileButtonComponent from '../../components/ProfileButtonComponent';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import {
+  CommonActions,
+  NavigationProp,
+  useNavigation,
+} from '@react-navigation/native';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import { newCardDetails } from '../../hooks/createCardHook';
@@ -57,6 +61,12 @@ const SetContactNameScreen = ({ route }: any) => {
 
       // if save successful, navigating to home screen
       if (newStatus === '200') {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 1,
+            routes: [{ name: 'Home' }],
+          }),
+        );
         navigation.navigate('Home', {});
       }
     } catch (error) {

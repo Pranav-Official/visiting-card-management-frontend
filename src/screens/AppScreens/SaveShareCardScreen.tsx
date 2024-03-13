@@ -191,7 +191,6 @@ const SaveShareCardScreen = ({ route }: any) => {
       return false;
     }
   };
-  const navigation = useNavigation();
   return (
     <View style={{ padding: 18, flex: 1 }}>
       <Text
