@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-  FlatList,
   ScrollView,
   StyleSheet,
   Text,
@@ -35,6 +34,8 @@ type Card = {
   job_title: string;
   company_name: string;
   company_website: string;
+  img_front_link: string;
+  img_back_link: string;
 };
 type ContactCards = {
   contact_name: string;
@@ -153,14 +154,14 @@ const EditCardDetails = ({ route }: any) => {
     setCardDetails({ ...cardDetails, [key]: value });
     //setting non empty states for mandatory fields for entries
     if (key === 'card_name') {
-      if (!cardDetails.card_name.trim()) {
+      if (cardDetails.card_name && !cardDetails.card_name.trim()) {
         setPhoneBorder('Danger');
         setMandatoryFieldsEmpty(true);
       }
       setMandatoryFieldsEmpty(false);
     }
     if (key === 'email') {
-      if (!cardDetails.email.trim()) {
+      if (cardDetails.email && !cardDetails.email.trim()) {
         setEmailBorder('Danger');
         setMandatoryFieldsEmpty(true);
       }
@@ -168,7 +169,7 @@ const EditCardDetails = ({ route }: any) => {
       setEmailBorder('Normal');
     }
     if (key === 'phone') {
-      if (!cardDetails.phone.trim()) {
+      if (cardDetails.phone && !cardDetails.phone.trim()) {
         setPhoneBorder('Danger');
         setMandatoryFieldsEmpty(true);
       }
@@ -176,28 +177,6 @@ const EditCardDetails = ({ route }: any) => {
       setPhoneBorder('Normal');
     }
   };
-
-  //Rendering similar cards
-  const renderItem = ({ item }: any) => (
-    <View style={[styles.similarCardsContainer]}>
-      <Text style={styles.contactNameInModal}>{item.contact_name}</Text>
-
-      {item.cards.map((card: any) => (
-        <View style={styles.singleCard}>
-          <CardComponent
-            key={card.card_id}
-            alignToSides={false}
-            job_position={card.job_title}
-            name={card.card_name}
-            email={card.email}
-            phone_number={card.phone}
-            company_name={card.company_name}
-          />
-        </View>
-      ))}
-    </View>
-  );
-
   //function to fetch similar cards from user's contacts
   const fetchSimilarCards = async () => {
     try {
@@ -222,10 +201,6 @@ const EditCardDetails = ({ route }: any) => {
       console.log('\n\nCatch Error\n\n', error);
     }
   };
-  //Setting navgation from similarCards to cardDetails page
-  const navigateToPage = async (pageToNavigate: string) => {
-    navigation.navigate(pageToNavigate, { similarCardList, cardDetails });
-  };
 
   return (
     <ScrollView style={styles.editContainer}>
@@ -238,7 +213,10 @@ const EditCardDetails = ({ route }: any) => {
         <BackButtonIcon width={30} height={30} rotation={180} />
       </TouchableOpacity>
       <View style={styles.imageContainer}>
-        <CommonImageComponent />
+        <CommonImageComponent
+          frontImageUri={cardDetails.img_front_link}
+          backImageUri={cardDetails.img_back_link}
+        />
       </View>
       <View style={styles.cardNameHead}>
         <EditCardNameComponent

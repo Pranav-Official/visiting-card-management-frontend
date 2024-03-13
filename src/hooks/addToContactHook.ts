@@ -17,7 +17,7 @@ export async function addToExistingContact(
   parent_card_id: string,
   cardDetails: Card,
 ) {
-  let addToContactData: any;
+  let addToExistingContactData: any;
   let statusCode: number;
   const addToContactPayload = {
     user_id,
@@ -42,10 +42,10 @@ export async function addToExistingContact(
       addToExistingContactResponse.data,
     );
 
-    addToContactData = addToExistingContactResponse.data;
+    addToExistingContactData = addToExistingContactResponse.data;
     statusCode = addToExistingContactResponse.status;
 
-    return { addToContactData, statusCode };
+    return { addToExistingContactData, statusCode };
   } catch (error) {
     console.log(error.response.data);
   }

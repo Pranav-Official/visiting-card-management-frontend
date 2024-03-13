@@ -32,16 +32,23 @@ const CommonImage = (props: ImgContainer) => {
   );
 };
 
-const CommonImageComponent = () => {
+type imageURI = {
+  frontImageUri?: string;
+  backImageUri?: string;
+};
+
+const CommonImageComponent = ({ frontImageUri, backImageUri }: imageURI) => {
   // Sample data for FlatList
   const imageData = [
     {
-      Image:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEXptu3jFyRY50KKSUvX0iKJ7f2zxNPNsMwA&usqp=CAU',
+      Image: frontImageUri
+        ? frontImageUri
+        : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEXptu3jFyRY50KKSUvX0iKJ7f2zxNPNsMwA&usqp=CAU',
     },
     {
-      Image:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEXptu3jFyRY50KKSUvX0iKJ7f2zxNPNsMwA&usqp=CAU',
+      Image: backImageUri
+        ? backImageUri
+        : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEXptu3jFyRY50KKSUvX0iKJ7f2zxNPNsMwA&usqp=CAU',
     },
   ];
 
