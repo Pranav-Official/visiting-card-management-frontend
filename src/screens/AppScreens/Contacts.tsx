@@ -26,6 +26,8 @@ import BottomSheetComponent from '../../components/BottomSheetComponent';
 import MainButtonComponent from '../../components/MainButtoncomponent';
 import ProfileButtonComponent from '../../components/ProfileButtonComponent';
 import CardComponent from '../../components/CardComponent';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type Contact = {
   card_id: string;
@@ -54,7 +56,8 @@ type UserData = {
 };
 
 const ContactsPage = () => {
-  const [cardDetail] = useState({});
+  const [secondaryButtonVisibility, setSecondaryButtonVisibility] =
+    useState(false);
   const navigation = useNavigation<NavigationProp<any>>();
   const [contactList, setContactList] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
@@ -151,6 +154,7 @@ const ContactsPage = () => {
 
   useFocusEffect(
     React.useCallback(() => {
+      setSecondaryButtonVisibility(false);
       const fetchData = async () => {
         try {
           await get();
@@ -201,36 +205,63 @@ const ContactsPage = () => {
           scrollEventThrottle={16}
         />
       )}
-      <TouchableOpacity
-        onPress={takeImage}
-        onLongPress={() => {
-          navigation.navigate('CardStack', {
-            screen: 'EditCardScreen',
-            params: {
-              create: true,
-              cardDetails: {
-                card_name: '',
-                job_title: '',
-                email: '',
-                phone: '',
-                company_name: '',
-                company_website: '',
+      <View style={styles.ActionButtonsContainer}>
+        <TouchableOpacity
+          style={[
+            styles.secondaryButtons,
+            { display: secondaryButtonVisibility ? 'flex' : 'none' },
+          ]}
+          onPress={() => {
+            navigation.navigate('CardStack', {
+              screen: 'EditCardScreen',
+              params: {
+                create: true,
+                cardDetails: {
+                  card_name: '',
+                  job_title: '',
+                  email: '',
+                  phone: '',
+                  company_name: '',
+                  company_website: '',
+                },
               },
-            },
-          });
-        }}
-        style={{
-          position: 'absolute',
-          bottom: 50,
-          right: 30,
-          backgroundColor: colors['primary-accent'],
-          borderRadius: 18,
-          padding: 9,
-          paddingTop: 7,
-        }}
-      >
-        <Ionicons name="camera" size={48} color={colors['secondary-accent']} />
-      </TouchableOpacity>
+            });
+          }}
+        >
+          <MaterialCommunityIcons
+            style={{ alignSelf: 'center' }}
+            name="file-document-edit-outline"
+            size={35}
+            color={colors['secondary-accent']}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.secondaryButtons,
+            { display: secondaryButtonVisibility ? 'flex' : 'none' },
+          ]}
+        >
+          <MaterialIcons
+            style={{ alignSelf: 'center' }}
+            name="photo-library"
+            size={35}
+            color={colors['secondary-accent']}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={takeImage}
+          onLongPress={() => {
+            setSecondaryButtonVisibility(!secondaryButtonVisibility);
+          }}
+          style={styles.cameraButton}
+        >
+          <Ionicons
+            name="camera"
+            size={48}
+            color={colors['secondary-accent']}
+          />
+        </TouchableOpacity>
+      </View>
 
       <BottomSheetComponent
         visibility={modalVisibility}
@@ -285,6 +316,30 @@ const styles = StyleSheet.create({
     fontSize: 50,
     marginTop: 60,
     color: colors['primary-text'],
+  },
+  ActionButtonsContainer: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 14,
+    position: 'absolute',
+    bottom: 0,
+    marginBottom: 70,
+    right: 30,
+  },
+  cameraButton: {
+    backgroundColor: colors['primary-accent'],
+    borderRadius: 18,
+    padding: 9,
+    paddingTop: 7,
+  },
+  secondaryButtons: {
+    height: 50,
+    width: 50,
+    backgroundColor: colors['primary-accent'],
+    borderRadius: 18,
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   //Modal Stylings
   modalView: {
