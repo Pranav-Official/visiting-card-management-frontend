@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import colors from '../../utils/colorPallete';
 import Phone from '../../assets/images/phone.svg';
 import Company from '../../assets/images/company.svg';
@@ -56,7 +56,7 @@ const ProfileScreen = () => {
     dispatch(userLogin(false));
   };
   return (
-    <View style={styles.profileMainContainer}>
+    <ScrollView style={styles.profileMainContainer}>
       <View style={styles.profileContainer}>
         <View style={styles.profileDetailsContainer}>
           <View style={styles.profileImageContainer}>
@@ -101,7 +101,8 @@ const ProfileScreen = () => {
           <MainButtonComponent title={'Logout'} onPressing={Logout} />
         </View>
       </View>
-    </View>
+    </ScrollView>
+    
   );
 };
 
