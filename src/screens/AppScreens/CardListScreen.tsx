@@ -30,7 +30,7 @@ const CardListScreen = ({ route }: any) => {
   const arr = [1, 2, 3, 4, 5, 6];
   const [changeContactName, setChangeContactName] = useState(false);
   const [contactName, setContactName] = useState(route.params.name ?? '');
-  const [temporaryContactName, setTemporaryContactName] = useState('');
+  const [temporaryContactName, setTemporaryContactName] = useState(contactName);
   const changeContactNameFunction = () => {
     setChangeContactName(true);
   };
@@ -52,7 +52,7 @@ const CardListScreen = ({ route }: any) => {
         if (contactNameSetStatus == '200') {
           setContactName(temporaryContactName);
           setChangeContactName(false);
-          setTemporaryContactName('');
+          setTemporaryContactName(temporaryContactName);
         } else {
           console.log('Error in editing contact name');
         }
