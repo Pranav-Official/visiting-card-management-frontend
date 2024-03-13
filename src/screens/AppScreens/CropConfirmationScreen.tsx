@@ -80,6 +80,12 @@ const CropConfirmationScreen = ({ route }) => {
             params: {
               create: true,
               cardDetails: {
+                card_name: '',
+                job_title: '',
+                email: '',
+                company_name: '',
+                company_website: '',
+                phone: '',
                 img_front_link: frontImgPath,
                 img_back_link: backImgPath,
               },
