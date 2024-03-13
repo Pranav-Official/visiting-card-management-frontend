@@ -102,6 +102,7 @@ const ShareCardScreen = ({
           keyExtractor={(item) => item.user_id}
         />
       </View>
+      <View style ={styles.button_container}>
       <View style={styles.profile_button_container}>
         <MainButtonComponent
           title={'Share Internally'}
@@ -124,6 +125,7 @@ const ShareCardScreen = ({
           }}
         ></MainButtonComponent>
       </View>
+      </View>
     </View>
   );
 };
@@ -132,8 +134,9 @@ const styles = StyleSheet.create({
   main_container: {
     width: '100%',
     flexDirection: 'column',
-    height: 400,
+    height: '100%',
     marginTop: 20,
+    paddingBottom:5,
   },
   search_bar_container: {
     width: '100%',
@@ -141,18 +144,26 @@ const styles = StyleSheet.create({
     marginTop: 0,
   },
   flatListStyle: {
-    padding: 10,
+    padding: 5,
     marginTop: 10,
-    marginBottom: 40,
+    marginBottom: 30,
   },
   contact_area: {
     width: '100%',
     paddingHorizontal: 10,
+    height:450,
+  },
+  button_container:{
+    position:'absolute',
+    width:'100%',
+    height:120,
+    bottom:50,
   },
   profile_button_container: {
     marginBottom: 10,
     height: 60,
     paddingHorizontal: 20,
+    // top:500,
   },
   main_button_container: {
     marginBottom: 0,
