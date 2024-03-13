@@ -25,7 +25,9 @@ const SetContactNameScreen = ({ route }: any) => {
   const [imageUploadProcessing, setImageUploadProcessing] = useState(false);
   console.log('\n\nSharing Status = ', sharing);
   const navigation = useNavigation<NavigationProp<any>>();
-  const [newContactName, setNewContactName] = useState('');
+  const [newContactName, setNewContactName] = useState(
+    route.params.cardDetails.card_name,
+  );
 
   const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
   const unsignedUploadPreset = process.env.CLOUDINARY_PRESET;

@@ -65,46 +65,57 @@ const SignUp = () => {
     }
 
     setLoading(true);
-    const response = await SignUpUser({
-      signUpUsername: fullname,
-      signUpPassword: password,
-      signUpEmail: email,
-    });
-    // console.log('LoginMain', response);
-    if (Object.prototype.hasOwnProperty.call(response, 'status') === false) {
+    try {
+      const response = await SignUpUser({
+        signUpUsername: fullname,
+        signUpPassword: password,
+        signUpEmail: email,
+      });
+      // console.log('LoginMain', response);
+      if (Object.prototype.hasOwnProperty.call(response, 'status') === false) {
+        setLoading(false);
+        const message = 'Error while signing in: ' + response.message;
+        ToastAndroid.showWithGravity(
+          message,
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER,
+        );
+      }
+      if (response.status) {
+        setLocalItem(Constants.IS_LOGGED_IN, 'true');
+        dispatch(
+          userDetails({
+            token: response.data?.token ?? '',
+            user_id: response.data?.user_id ?? '',
+          }),
+        );
+        setLocalItem(Constants.USER_JWT, response.data?.token ?? '');
+        setLocalItem(Constants.USER_ID, response.data?.user_id ?? '');
+        await setLocalItem(Constants.SAVE_SHARES_LATER, 'false');
+        dispatch(userLogin(true));
+        dispatch(
+          userDetails({
+            token: response.data?.token ?? '',
+            user_id: response.data?.user_id ?? '',
+          }),
+        );
+      } else if (response.status === false) {
+        const message = response.message;
+        ToastAndroid.showWithGravity(
+          message,
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER,
+        );
+        setLoading(false);
+      }
+    } catch (e) {
       setLoading(false);
-      const message = 'Error while signing in: ' + response.message;
+      const message = 'Error while signing in: ' + 'Network error';
       ToastAndroid.showWithGravity(
         message,
         ToastAndroid.SHORT,
         ToastAndroid.CENTER,
       );
-    }
-    if (response.status) {
-      setLocalItem(Constants.IS_LOGGED_IN, 'true');
-      dispatch(
-        userDetails({
-          token: response.data?.token ?? '',
-          user_id: response.data?.user_id ?? '',
-        }),
-      );
-      setLocalItem(Constants.USER_JWT, response.data?.token ?? '');
-      setLocalItem(Constants.USER_ID, response.data?.user_id ?? '');
-      dispatch(userLogin(true));
-      dispatch(
-        userDetails({
-          token: response.data?.token ?? '',
-          user_id: response.data?.user_id ?? '',
-        }),
-      );
-    } else if (response.status === false) {
-      const message = response.message;
-      ToastAndroid.showWithGravity(
-        message,
-        ToastAndroid.SHORT,
-        ToastAndroid.CENTER,
-      );
-      setLoading(false);
     }
     setInputChanged(false);
   };

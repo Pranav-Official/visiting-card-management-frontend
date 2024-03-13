@@ -64,6 +64,7 @@ const SimilarCardsComponent = (props) => {
         <MainButtonComponent
           title="Overwrite Existing Card"
           onPressing={() => {
+            props.modalVisibilitySetter(false);
             navigation.navigate('CardOverwriteScreen', {
               similarCardList,
               cardDetails,
@@ -74,6 +75,7 @@ const SimilarCardsComponent = (props) => {
         <MainButtonComponent
           title="Add to Existing Contacts"
           onPressing={() => {
+            props.modalVisibilitySetter(false);
             navigation.navigate('CardStack', {
               screen: 'AddToContactScreen',
               params: { similarCardList, cardDetails, sharing },
@@ -83,6 +85,7 @@ const SimilarCardsComponent = (props) => {
         <MainButtonComponent
           title="Add as a New Contact"
           onPressing={() => {
+            props.modalVisibilitySetter(false);
             navigation.navigate('CardStack', {
               screen: 'SetContactNameScreen',
               params: { cardDetails, sharing },

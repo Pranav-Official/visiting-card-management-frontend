@@ -329,6 +329,7 @@ const EditCardDetails = ({ route }: any) => {
         <SimilarCardsComponent
           cardDetails={cardDetails}
           similarCardList={similarCardList}
+          modalVisibilitySetter={setModalVisibility}
         />
       </BottomSheetComponent>
     </ScrollView>
