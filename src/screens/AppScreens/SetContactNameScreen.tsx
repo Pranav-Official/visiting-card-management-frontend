@@ -14,6 +14,33 @@ const SetContactNameScreen = ({ route }: any) => {
   const navigation = useNavigation<NavigationProp<any>>();
   const [newContactName, setNewContactName] = useState('');
 
+  const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+  const unsignedUploadPreset = process.env.CLOUDINARY_PRESET;
+
+  const cloudinaryUpload = async (photo) => {
+    console.log('reached upload', photo);
+    const data = new FormData();
+    data.append('file', photo);
+    data.append('upload_preset', unsignedUploadPreset);
+    data.append('cloud_name', cloudName);
+
+    try {
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudName}/upload`,
+        {
+          method: 'post',
+          body: data,
+        },
+      );
+      const responseData = await response.json();
+      console.log('secure URL', responseData.secure_url);
+      return responseData.secure_url;
+    } catch (err) {
+      console.log('An Error Occurred While Uploading', err);
+      throw err;
+    }
+  };
+
   //Calling create card hook
   const createCard = async () => {
     try {
@@ -28,10 +55,34 @@ const SetContactNameScreen = ({ route }: any) => {
       const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '{}';
 
       // Set the new contact name in the cardDetails
-      const updatedCardDetails = {
+      let updatedCardDetails = {
         ...cardDetails,
         contact_name: newContactName,
       };
+      if (cardDetails.img_front_link) {
+        const frontImgURL = await cloudinaryUpload({
+          uri: cardDetails.img_front_link,
+          type: 'image/jpeg',
+          name: 'frontImg.jpg',
+        });
+
+        updatedCardDetails = {
+          ...updatedCardDetails,
+          img_front_link: frontImgURL,
+        };
+      }
+      if (cardDetails.img_back_link) {
+        const backImgURL = await cloudinaryUpload({
+          uri: cardDetails.img_back_link,
+          type: 'image/jpeg',
+          name: 'backImg.jpg',
+        });
+
+        updatedCardDetails = {
+          ...updatedCardDetails,
+          img_back_link: backImgURL,
+        };
+      }
 
       // calling createNewCard Hook
       const response = await newCardDetails({

@@ -103,10 +103,6 @@ const CropConfirmationScreen = ({ route }) => {
         TextRecognitionScript.JAPANESE,
       );
       const ocrText = firstSideData.text + secondSideData.text;
-      Toast.show(ocrText, {
-        duration: Toast.durations.LONG,
-        position: Toast.positions.BOTTOM,
-      });
       Predict(ocrText, prevImageData.path, imageData.path);
     } else {
       const firstSideData = await TextRecognition.recognize(
@@ -114,10 +110,6 @@ const CropConfirmationScreen = ({ route }) => {
         TextRecognitionScript.JAPANESE,
       );
       const ocrText = firstSideData.text;
-      Toast.show(ocrText, {
-        duration: Toast.durations.LONG,
-        position: Toast.positions.BOTTOM,
-      });
       Predict(ocrText, imageData.path);
     }
   };
