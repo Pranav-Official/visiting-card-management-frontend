@@ -4,12 +4,11 @@ import colors from '../utils/colorPallete';
 import nameToColor from '../hooks/nameToHex';
 type Contact = { contactName: string; onPress?: () => void };
 
-
 const ContactListComponent = ({ contactName, onPress }: Contact) => {
   // Function to truncate the contact name to a maximum of 14 characters
   const truncateContactName = (name: string) => {
-    if (name.length > 14) {
-      return name.substring(0, 14) + '..'; // Add '..' if name exceeds 14 characters
+    if (name.length > 22) {
+      return name.substring(0, 22) + '..'; // Add '..' if name exceeds 14 characters
     }
     return name;
   };
@@ -23,13 +22,15 @@ const ContactListComponent = ({ contactName, onPress }: Contact) => {
           <Text style={styles.alphabet}>{contactName[0]}</Text>
         </View>
         <View>
-          <Text style={styles.nameText}>{truncateContactName(contactName)}</Text>
+          <Text style={styles.nameText}>
+            {truncateContactName(contactName)}
+          </Text>
         </View>
       </View>
     </TouchableOpacity>
   );
 };
- 
+
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
@@ -56,6 +57,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
- 
+
 export default ContactListComponent;
- 
