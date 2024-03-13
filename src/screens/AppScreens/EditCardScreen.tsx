@@ -153,14 +153,14 @@ const EditCardDetails = ({ route }: any) => {
     setCardDetails({ ...cardDetails, [key]: value });
     //setting non empty states for mandatory fields for entries
     if (key === 'card_name') {
-      if (!cardDetails.card_name.trim()) {
+      if (cardDetails.card_name && !cardDetails.card_name.trim()) {
         setPhoneBorder('Danger');
         setMandatoryFieldsEmpty(true);
       }
       setMandatoryFieldsEmpty(false);
     }
     if (key === 'email') {
-      if (!cardDetails.email.trim()) {
+      if (cardDetails.email && !cardDetails.email.trim()) {
         setEmailBorder('Danger');
         setMandatoryFieldsEmpty(true);
       }
@@ -168,7 +168,7 @@ const EditCardDetails = ({ route }: any) => {
       setEmailBorder('Normal');
     }
     if (key === 'phone') {
-      if (!cardDetails.phone.trim()) {
+      if (cardDetails.phone && !cardDetails.phone.trim()) {
         setPhoneBorder('Danger');
         setMandatoryFieldsEmpty(true);
       }
