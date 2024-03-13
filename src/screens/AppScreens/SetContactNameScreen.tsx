@@ -138,7 +138,11 @@ const SetContactNameScreen = ({ route }: any) => {
         />
       </View>
       <View style={styles.buttonContainer}>
-        <ProfileButtonComponent title={'Go Back'} danger={true} />
+        <ProfileButtonComponent
+          title={'Go Back'}
+          onPressing={() => navigation.goBack()}
+          danger={true}
+        />
         <MainButtonComponent
           title="Save"
           onPressing={() =>
