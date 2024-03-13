@@ -60,7 +60,7 @@ const ShareCardScreen = ({ card_id, visibilitySetter }: ShareCardProp) => {
     const shareCardProps: ShareCardProp = {
       user_id,
       jwt_token,
-      card_id: card_id, // Replace with the actual card ID
+      card_id: card_id, 
       receiver_user_ids: selectedUserIds,
     };
     console.log('card_id handle press', card_id),
