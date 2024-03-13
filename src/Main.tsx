@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import HomeStackNavigation from './navigation/AppNavigation';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,10 +11,15 @@ import { RootSiblingParent } from 'react-native-root-siblings';
 import SplashScreen from './screens/SplashScreen';
 
 const Main = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const isLoggedIn = useSelector((state: any) => state.userReducer.isLoggedIn);
   const dispatch = useDispatch();
 
   useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+
     (async () => {
       const isLogin = await getLocalItem(Constants.IS_LOGGED_IN);
       // console.log('isLogin', isLogin);
@@ -32,8 +37,13 @@ const Main = () => {
   return (
     <NavigationContainer>
       <RootSiblingParent>
-        {isLoggedIn ? <HomeStackNavigation /> : <AuthNavigationStack />}
-        {!isLoggedIn && <SplashScreen />}
+      {isLoading ? (
+          <SplashScreen />
+        ) : isLoggedIn ? (
+          <HomeStackNavigation />
+        ) : (
+          <AuthNavigationStack />
+        )}
       </RootSiblingParent>
     </NavigationContainer>
   );
