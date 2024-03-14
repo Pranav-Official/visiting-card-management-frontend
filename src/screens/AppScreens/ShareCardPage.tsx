@@ -94,7 +94,6 @@ const ShareCardScreen = ({
       .catch((err) => {
         err && console.log(err);
       });
-      console.log('external sharing:',formattedDetails);
   };
  
 
