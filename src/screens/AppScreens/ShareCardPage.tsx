@@ -8,6 +8,7 @@ import Constants from '../../utils/Constants';
 import MainButtonComponent from '../../components/MainButtoncomponent';
 import { ShareCard, ShareCardProp } from '../../hooks/ShareCardHook';
 import Share from 'react-native-share';
+import { formatCardDetails } from '../../hooks/externalShare';
 
 type ShareProp = {
   user_fullname: string;
@@ -82,6 +83,21 @@ const ShareCardScreen = ({
     }
   };
 
+  const handleShareExternally = () => {
+    const formattedDetails = formatCardDetails(cardDetails); // Use the formatCardDetails function
+    Share.open({
+      message: formattedDetails,
+    })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        err && console.log(err);
+      });
+      console.log('external sharing:',formattedDetails);
+  };
+ 
+
   return (
     <View style={styles.main_container}>
       <View style={styles.search_bar_container}>
@@ -112,17 +128,7 @@ const ShareCardScreen = ({
       <View style={styles.main_button_container}>
         <MainButtonComponent
           title={'Share Externally'}
-          onPressing={() => {
-            Share.open({
-              message: JSON.stringify(cardDetails),
-            })
-              .then((res) => {
-                console.log(res);
-              })
-              .catch((err) => {
-                err && console.log(err);
-              });
-          }}
+          onPressing={handleShareExternally}
         ></MainButtonComponent>
       </View>
       </View>
