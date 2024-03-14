@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+  ActivityIndicator,
   FlatList,
   StyleSheet,
   Text,
@@ -21,8 +22,28 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import { addSharedCardToExistingContact } from '../../hooks/AddToExistingContact';
+import cloudinaryUpload from '../../hooks/cloudinaryUpload';
 
-const RenderItem = ({ item, selected, setter }) => (
+type Card = {
+  card_id: string;
+  card_name: string;
+  email: string;
+  phone: string;
+  job_title: string;
+  company_name: string;
+  company_website: string;
+};
+type ContactCard = {
+  contact_name: string;
+  parent_card_id: string;
+  cards: Card[];
+};
+type renderItemType = {
+  item: ContactCard;
+  selected: string;
+  setter: (cardId: string) => void;
+};
+const RenderItem = ({ item, selected, setter }: renderItemType) => (
   <View
     style={[
       styles.similarCardsContainer,
@@ -47,11 +68,10 @@ const RenderItem = ({ item, selected, setter }) => (
         <Text style={styles.contactName}>{item.contact_name}</Text>
       </View>
     </View>
-    {item.cards.map((card: any) => (
+    {item.cards.map((card: Card) => (
       <View style={{ flexDirection: 'row' }} key={card.card_id}>
         <View style={{ flex: 1 }}>
           <CardComponent
-            card_id={card.card_id}
             alignToSides={false}
             job_position={card.job_title}
             name={card.card_name}
@@ -67,11 +87,12 @@ const RenderItem = ({ item, selected, setter }) => (
 
 const AddToContact = ({ route }: any) => {
   const inputList = route.params.similarCardList;
-  const cardDetails = route.params.cardDetails;
+  let cardDetails = route.params.cardDetails;
   const sharing: boolean = route.params.sharing;
   console.log('ADd to contact Screen: sharing page? :', sharing);
-  const [cardList, setCardList] = useState(inputList);
+  const [cardList] = useState(inputList);
   const [selected, setSelected] = useState('');
+  const [imageUploadProcessing, setImageUploadProcessing] = useState(false);
   const navigation = useNavigation<NavigationProp<any>>();
 
   const addToContactFunction = async () => {
@@ -95,6 +116,31 @@ const AddToContact = ({ route }: any) => {
         addToContactResponse.addToExistingContactData,
       );
     } else {
+      if (cardDetails.img_front_link) {
+        setImageUploadProcessing(true);
+        const frontImgURL = await cloudinaryUpload({
+          uri: cardDetails.img_front_link,
+          type: 'image/jpeg',
+          name: 'frontImg.jpg',
+        });
+
+        cardDetails = {
+          ...cardDetails,
+          img_front_link: frontImgURL,
+        };
+      }
+      if (cardDetails.img_back_link) {
+        const backImgURL = await cloudinaryUpload({
+          uri: cardDetails.img_back_link,
+          type: 'image/jpeg',
+          name: 'backImg.jpg',
+        });
+
+        cardDetails = {
+          ...cardDetails,
+          img_back_link: backImgURL,
+        };
+      }
       addToContactResponse = await addToExistingContact(
         user_id,
         jwtToken,
@@ -149,19 +195,23 @@ const AddToContact = ({ route }: any) => {
       />
       <View style={styles.buttonContainer}>
         <View style={{ flex: 1 }}>
-          <MainButtonComponent
-            title="Add to contact"
-            onPressing={() => addToContactFunction()}
-            children={<></>}
-          />
+          {!imageUploadProcessing ? (
+            <MainButtonComponent
+              title="Add to contact"
+              onPressing={() => addToContactFunction()}
+            />
+          ) : (
+            <ActivityIndicator
+              style={styles.loading}
+              size="large"
+              color={colors['secondary-light']}
+            />
+          )}
         </View>
         <View style={{ flex: 1 }}>
           <ProfileButtonComponent
             title="Cancel"
             onPressing={() => navigation.dispatch(StackActions.pop(1))}
-            // proButtonBgColor={colors['accent-white']}
-            // proButtonTextColor={colors['primary-danger']}
-            children={<></>}
           />
         </View>
       </View>
@@ -209,6 +259,13 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 100,
     paddingHorizontal: 10,
+  },
+  loading: {
+    backgroundColor: colors['primary-accent'],
+    width: '100%',
+    height: 50,
+    borderRadius: 5,
+    marginTop: 15,
   },
 });
 

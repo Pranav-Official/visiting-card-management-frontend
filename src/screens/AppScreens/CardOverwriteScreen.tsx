@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+  ActivityIndicator,
   FlatList,
   StyleSheet,
   Text,
@@ -17,11 +18,11 @@ import { overwriteExistingCard } from '../../hooks/overWriteCardHook';
 import {
   CommonActions,
   NavigationProp,
-  StackActions,
   useNavigation,
 } from '@react-navigation/native';
 import Toast from 'react-native-root-toast';
 import { overwriteSharedCard } from '../../hooks/overwriteSharedCard';
+import cloudinaryUpload from '../../hooks/cloudinaryUpload';
 
 type Card = {
   card_id: string;
@@ -90,11 +91,12 @@ const RenderItem = ({ item, selected, setter }: renderItemType) => (
 
 const CardOverwriteScreen = ({ route }: any) => {
   const inputList = route.params.similarCardList;
-  const cardDetails = route.params.cardDetails;
+  let cardDetails = route.params.cardDetails;
   const sharing: boolean = route.params.sharing;
   console.log('\n\nOverWrite Screen sharingStatus: ', sharing);
   const [cardList] = useState(inputList);
   const navigation = useNavigation<NavigationProp<routeParams>>();
+  const [imageUploadProcessing, setImageUploadProcessing] = useState(false);
 
   const overwriteFunction = async () => {
     console.log('hello');
@@ -111,6 +113,31 @@ const CardOverwriteScreen = ({ route }: any) => {
         cardDetails,
       );
     } else {
+      if (cardDetails.img_front_link) {
+        setImageUploadProcessing(true);
+        const frontImgURL = await cloudinaryUpload({
+          uri: cardDetails.img_front_link,
+          type: 'image/jpeg',
+          name: 'frontImg.jpg',
+        });
+
+        cardDetails = {
+          ...cardDetails,
+          img_front_link: frontImgURL,
+        };
+      }
+      if (cardDetails.img_back_link) {
+        const backImgURL = await cloudinaryUpload({
+          uri: cardDetails.img_back_link,
+          type: 'image/jpeg',
+          name: 'backImg.jpg',
+        });
+
+        cardDetails = {
+          ...cardDetails,
+          img_back_link: backImgURL,
+        };
+      }
       overwriteResponse = await overwriteExistingCard(
         user_id,
         jwtToken,
@@ -165,10 +192,18 @@ const CardOverwriteScreen = ({ route }: any) => {
       />
       <View style={styles.buttonContainer}>
         <View style={{ flex: 1 }}>
-          <MainButtonComponent
-            title="Overwrite"
-            onPressing={overwriteFunction}
-          />
+          {!imageUploadProcessing ? (
+            <MainButtonComponent
+              title="Overwrite"
+              onPressing={overwriteFunction}
+            />
+          ) : (
+            <ActivityIndicator
+              style={styles.loading}
+              size="large"
+              color={colors['secondary-light']}
+            />
+          )}
         </View>
         <View style={{ flex: 1 }}>
           <ProfileButtonComponent
@@ -221,6 +256,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     width: '100%',
     paddingHorizontal: 10,
+  },
+  loading: {
+    backgroundColor: colors['primary-accent'],
+    width: '100%',
+    height: 50,
+    borderRadius: 5,
+    marginTop: 15,
   },
 });
 
