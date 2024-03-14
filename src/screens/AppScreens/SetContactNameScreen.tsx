@@ -19,6 +19,7 @@ import Constants from '../../utils/Constants';
 import { newCardDetails } from '../../hooks/createCardHook';
 import { acceptNewCard } from '../../hooks/acceptCardHook';
 import Toast from 'react-native-root-toast';
+import cloudinaryUpload from '../../hooks/cloudinaryUpload';
 
 const SetContactNameScreen = ({ route }: any) => {
   const { cardDetails, sharing } = route.params;
@@ -28,33 +29,6 @@ const SetContactNameScreen = ({ route }: any) => {
   const [newContactName, setNewContactName] = useState(
     route.params.cardDetails.card_name,
   );
-
-  const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
-  const unsignedUploadPreset = process.env.CLOUDINARY_PRESET;
-
-  const cloudinaryUpload = async (photo) => {
-    console.log('reached upload', photo);
-    const data = new FormData();
-    data.append('file', photo);
-    data.append('upload_preset', unsignedUploadPreset);
-    data.append('cloud_name', cloudName);
-
-    try {
-      const response = await fetch(
-        `https://api.cloudinary.com/v1_1/${cloudName}/upload`,
-        {
-          method: 'post',
-          body: data,
-        },
-      );
-      const responseData = await response.json();
-      console.log('secure URL', responseData.secure_url);
-      return responseData.secure_url;
-    } catch (err) {
-      console.log('An Error Occurred While Uploading', err);
-      throw err;
-    }
-  };
 
   //Calling create card hook
   const createCard = async (sharing: boolean) => {
