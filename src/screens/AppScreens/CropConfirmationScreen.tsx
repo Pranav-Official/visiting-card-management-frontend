@@ -29,6 +29,7 @@ const CropConfirmationScreen = ({ route }) => {
 
   const imageData = route.params.image;
   const prevImageData = route.params.prevImage ?? undefined;
+  const isComingFromCamera: boolean = route.params.isComingFromCamera ?? true;
 
   // console.log(imageData);
   const navigation = useNavigation<NavigationProp<any>>();
@@ -119,18 +120,41 @@ const CropConfirmationScreen = ({ route }) => {
       Predict(ocrText, imageData.path);
     }
   };
+
   const takeImage = async (prevImage) => {
     ImagePicker.openCamera({
       cropping: true,
       width: 3000,
       height: 1500,
       freeStyleCropEnabled: true,
-    }).then(async (image) => {
-      navigation.navigate('CardStack', {
-        screen: 'CropConfirmationScreen',
-        params: { image, prevImage },
+    })
+      .then(async (image) => {
+        navigation.navigate('CardStack', {
+          screen: 'CropConfirmationScreen',
+          params: { image, prevImage },
+        });
+      })
+      .catch((err) => {
+        console.log('Error occured', err);
       });
-    });
+  };
+
+  const chooseImage = async (prevImage) => {
+    ImagePicker.openPicker({
+      cropping: true,
+      width: 3000,
+      height: 1500,
+      freeStyleCropEnabled: true,
+    })
+      .then(async (image) => {
+        navigation.navigate('CardStack', {
+          screen: 'CropConfirmationScreen',
+          params: { image, prevImage },
+        });
+      })
+      .catch((err) => {
+        console.log('Error occured', err);
+      });
   };
 
   return (
@@ -147,12 +171,21 @@ const CropConfirmationScreen = ({ route }) => {
           style={styles.image}
         />
         {prevImageData == undefined ? (
-          <TouchableOpacity style={{}} onPress={() => takeImage(imageData)}>
-            <Image
-              style={{ width: '100%', objectFit: 'contain' }}
-              source={require('../../assets/images/addNewImage.png')}
-            />
-          </TouchableOpacity>
+          isComingFromCamera === true ? (
+            <TouchableOpacity style={{}} onPress={() => takeImage(imageData)}>
+              <Image
+                style={{ width: '100%', objectFit: 'contain' }}
+                source={require('../../assets/images/addNewImage.png')}
+              />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={{}} onPress={() => chooseImage(imageData)}>
+              <Image
+                style={{ width: '100%', objectFit: 'contain' }}
+                source={require('../../assets/images/addNewImage.png')}
+              />
+            </TouchableOpacity>
+          )
         ) : (
           <Image
             source={
