@@ -19,5 +19,17 @@ const isValidPhoneNumber = (phoneNumber: string): boolean => {
 
   return phoneRegex.test(phoneNumber);
 };
+const isValidPassword = (password: string): boolean => {
+  // Regular expression to check password validity
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?#&]{8,}$/;
+  
+  return passwordRegex.test(password);
+};
 
-export { validateEmail, isValidWebsiteUrl, isValidPhoneNumber };
+export {
+  validateEmail,
+  isValidWebsiteUrl,
+  isValidPhoneNumber,
+  isValidPassword,
+};

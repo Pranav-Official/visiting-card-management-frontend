@@ -19,7 +19,7 @@ import { useDispatch } from 'react-redux';
 import { userLogin } from '../../context/userSlice';
 import { userDetails } from '../../context/userDetailsSlice';
 import colors from '../../utils/colorPallete';
-import { validateEmail } from '../../utils/regexCheck';
+import { isValidPassword, validateEmail } from '../../utils/regexCheck';
 
 // type response = {
 //   status: boolean;
@@ -40,82 +40,89 @@ const SignUp = () => {
   const [emailBorder, setEmailBorder] = useState<BorderTypes>('Normal');
   const [fullnameBorder, setNameBorder] = useState<BorderTypes>('Normal');
   const [passwordBorder, setPasswordBorder] = useState<BorderTypes>('Normal');
-  const [inputChanged, setInputChanged] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const SignUpMain = async () => {
     if (email === '' || password === '' || fullname === '') {
+      // If any of the fields are empty, set their respective borders to 'Danger'
+      if (email === '') setEmailBorder('Danger');
+      if (password === '') setPasswordBorder('Danger');
+      if (fullname === '') setNameBorder('Danger');
       ToastAndroid.showWithGravity(
-        'Please enter fullname,email and password',
+        'Please enter all fields',
         ToastAndroid.SHORT,
         ToastAndroid.CENTER,
       );
+      return;
+    }
+    // Validate email
+    if (!validateEmail(email)) {
       setEmailBorder('Danger');
+      ToastAndroid.showWithGravity(
+        'Please enter a valid email',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
+      return;
+    }
+
+    // Validate password
+    if (!isValidPassword(password)) {
       setPasswordBorder('Danger');
-      setNameBorder('Danger');
-      return;
-    } else if (validateEmail(email) === false) {
       ToastAndroid.showWithGravity(
-        'Please enter valid email',
+        'Password must be atleast 8 characters with uppercase, lowercase, digit, and special character.',
         ToastAndroid.SHORT,
         ToastAndroid.CENTER,
       );
-      setEmailBorder('Danger');
       return;
     }
-
+    setNameBorder('Normal');
+    setEmailBorder('Normal');
+    setPasswordBorder('Normal');
     setLoading(true);
-    const response = await SignUpUser({
-      signUpUsername: fullname,
-      signUpPassword: password,
-      signUpEmail: email,
-    });
-    // console.log('LoginMain', response);
-    if (Object.prototype.hasOwnProperty.call(response, 'status') === false) {
-      setLoading(false);
-      const message = 'Error while signing in: ' + response.message;
-      ToastAndroid.showWithGravity(
-        message,
-        ToastAndroid.SHORT,
-        ToastAndroid.CENTER,
-      );
-    }
-    if (response.status) {
-      setLocalItem(Constants.IS_LOGGED_IN, 'true');
-      dispatch(
-        userDetails({
-          token: response.data?.token ?? '',
-          user_id: response.data?.user_id ?? '',
-        }),
-      );
-      setLocalItem(Constants.USER_JWT, response.data?.token ?? '');
-      setLocalItem(Constants.USER_ID, response.data?.user_id ?? '');
-      dispatch(userLogin(true));
-      dispatch(
-        userDetails({
-          token: response.data?.token ?? '',
-          user_id: response.data?.user_id ?? '',
-        }),
-      );
-    } else if (response.status === false) {
-      const message = response.message;
-      ToastAndroid.showWithGravity(
-        message,
-        ToastAndroid.SHORT,
-        ToastAndroid.CENTER,
-      );
-      setLoading(false);
-    }
-    setInputChanged(false);
-  };
 
-  useEffect(() => {
-    if (inputChanged) {
-      setEmailBorder('Normal');
-      setPasswordBorder('Normal');
-      setNameBorder('Normal');
+    try {
+      const response = await SignUpUser({
+        signUpUsername: fullname,
+        signUpPassword: password,
+        signUpEmail: email,
+      });
+
+      if (response.status) {
+        setLocalItem(Constants.IS_LOGGED_IN, 'true');
+        dispatch(
+          userDetails({
+            token: response.data?.token ?? '',
+            user_id: response.data?.user_id ?? '',
+          }),
+        );
+        setLocalItem(Constants.USER_JWT, response.data?.token ?? '');
+        setLocalItem(Constants.USER_ID, response.data?.user_id ?? '');
+        dispatch(userLogin(true));
+        dispatch(
+          userDetails({
+            token: response.data?.token ?? '',
+            user_id: response.data?.user_id ?? '',
+          }),
+        );
+      } else {
+        const message = response.message || 'Unknown error occurred';
+        ToastAndroid.showWithGravity(
+          message,
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER,
+        );
+      }
+    } catch (error) {
+      ToastAndroid.showWithGravity(
+        'Error occurred during signup',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
+    } finally {
+      setLoading(false);
     }
-  }, [email, password, fullname]);
+  };
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
@@ -126,8 +133,8 @@ const SignUp = () => {
           header="Fullname"
           value={fullname}
           setter={(val) => {
-            setInputChanged(true);
             setFullname(val);
+            setNameBorder('Normal'); // Set border to 'Normal' when user starts entering input
           }}
           borderType={fullnameBorder}
           placeholder="Enter full Name"
@@ -137,8 +144,8 @@ const SignUp = () => {
           header="Email"
           value={email}
           setter={(val) => {
-            setInputChanged(true);
             setEmail(val);
+            setEmailBorder('Normal'); // Set border to 'Normal' when user starts entering input
           }}
           borderType={emailBorder}
           placeholder="Enter Email"
@@ -148,8 +155,8 @@ const SignUp = () => {
           hidden={true}
           value={password}
           setter={(val) => {
-            setInputChanged(true);
             setPassword(val);
+            setPasswordBorder('Normal'); // Set border to 'Normal' when user starts entering input
           }}
           borderType={passwordBorder}
           placeholder="Enter Password"
