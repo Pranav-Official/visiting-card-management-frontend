@@ -8,7 +8,7 @@ import Constants from '../../utils/Constants';
 import MainButtonComponent from '../../components/MainButtoncomponent';
 import { ShareCard, ShareCardProp } from '../../hooks/ShareCardHook';
 import Share from 'react-native-share';
-import { formatCardDetails } from '../../hooks/externalShare';
+import { shareCardDetails, shareExternally } from '../../hooks/externalShare';
 
 type ShareProp = {
   user_fullname: string;
@@ -82,21 +82,30 @@ const ShareCardScreen = ({
       // Handle errors
     }
   };
-
   
+
   const handleShareExternally = () => {
-    const formattedDetails = formatCardDetails(cardDetails);
-    Share.open({
-      message: formattedDetails,
-    })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        err && console.log(err);
-      });
+    const filteredDetails: any = {};
+    for (const key in cardDetails) {
+      if (
+        key !== 'img_front_link' &&
+        key !== 'img_back_link' &&
+        cardDetails[key] !== null &&
+        cardDetails[key] !== ""
+      ) {
+        const formattedKey = key
+          .replace(/_/g, ' ')
+          .replace(/\b\w/g, (char) => char.toUpperCase());
+        filteredDetails[formattedKey] = cardDetails[key];
+      }
+    }
+  
+    let formattedDetails = '';
+    for (const key in filteredDetails) {
+      formattedDetails += `${key}: ${filteredDetails[key]},\n`;
+    }
+    shareExternally(formattedDetails);
   };
- 
 
   return (
     <View style={styles.main_container}>

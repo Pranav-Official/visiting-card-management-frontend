@@ -1,24 +1,16 @@
-// type CardDetails = {
-//     [key: string]: string | null | undefined; 
-//     img_front_link?: string | null | undefined; 
-//     img_back_link?: string | null | undefined; 
-//   }
 
-const formatCardDetails = (details: any) => {
+import Share from 'react-native-share';
 
-   const filteredDetails: any = {};
-   for (const key in details) {
-    if (key !== 'img_front_link' && key !== 'img_back_link' && details[key] !== null) {
-      const formattedKey = key.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
-      filteredDetails[formattedKey] = details[key];
-    }
-  }
+const shareExternally = (formattedDetails: string) => {
+  Share.open({
+    message: formattedDetails,
+  })
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((err) => {
+      err && console.log(err);
+    });
+};
 
-  let formattedDetails = '';
-  for (const key in filteredDetails) {
-    formattedDetails += `${key}: ${filteredDetails[key]},\n`;
-  }
-   return formattedDetails;
-  };
-  
-  export { formatCardDetails };
+export { shareExternally };
