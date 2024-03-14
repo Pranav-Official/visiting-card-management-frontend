@@ -23,6 +23,7 @@ import {
 } from '@react-navigation/native';
 import { addSharedCardToExistingContact } from '../../hooks/addSharedToExistingContact';
 import Toast from 'react-native-root-toast';
+import cloudinaryUpload from '../../hooks/cloudinaryUpload';
 
 type Card = {
   card_id: string;
@@ -75,7 +76,7 @@ const RenderItem = ({ item, selected, setter }: renderItemType) => {
           <Text style={styles.contactName}>{item.contact_name}</Text>
         </View>
       </View>
-      {item.cards.map((card: any) => (
+      {item.cards.map((card: Card) => (
         <View style={{ flexDirection: 'row' }} key={card.card_id}>
           <View style={{ flex: 1 }}>
             <CardComponent
