@@ -78,6 +78,16 @@ const EditCardDetails = ({ route }: any) => {
           obj[key] = cardDetails[key];
           return obj;
         }, {});
+
+      if (Object.keys(editedData).length === 0) {
+        // If no edits, navigate back to card details
+        navigation.navigate('CardStack', {
+          screen: 'CardDetailsScreen',
+          params: { card_id: route.params.card_id },
+        });
+        return;
+      }
+
       //calling editCardDetails Hook
       const response = await editCardDetails({
         user_id,
