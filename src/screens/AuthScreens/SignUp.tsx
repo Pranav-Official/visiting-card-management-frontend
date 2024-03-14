@@ -81,6 +81,7 @@ const SignUp = () => {
         ToastAndroid.SHORT,
         ToastAndroid.CENTER,
       );
+     
       setPasswordBorder('Danger');
       isPasswordValid = false;
     }
@@ -97,8 +98,8 @@ const SignUp = () => {
     }
     
     if (isEmailValid && isPasswordValid && isFullNameValid) {
-      // All validations passed, continue with your logic here
-    }
+      
+    
     
     setLoading(true);
     const response = await SignUpUser({
@@ -152,7 +153,7 @@ const SignUp = () => {
       setNameBorder('Normal');
     }
   }, [email, password, fullname]);
-
+  }
   return (
     <SafeAreaView style={styles.safeAreaView}>
       <MainLogoComponent />
