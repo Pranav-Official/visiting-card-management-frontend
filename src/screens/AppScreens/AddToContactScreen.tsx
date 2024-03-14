@@ -12,7 +12,7 @@ import RadioButton from '../../components/RadioButton';
 import MainButtonComponent from '../../components/MainButtoncomponent';
 import ProfileButtonComponent from '../../components/ProfileButtonComponent';
 import Constants from '../../utils/Constants';
-import { addToExistingContact } from '../../hooks/addToContactHook';
+import { addToExistingContact } from '../../hooks/addToExistingContact';
 import { getLocalItem } from '../../utils/Utils';
 import {
   CommonActions,
@@ -20,10 +20,31 @@ import {
   StackActions,
   useNavigation,
 } from '@react-navigation/native';
-import { addSharedCardToExistingContact } from '../../hooks/AddToExistingContact';
+import { addSharedCardToExistingContact } from '../../hooks/addSharedToExistingContact';
 import Toast from 'react-native-root-toast';
 
-const RenderItem = ({ item, selected, setter }) => {
+type Card = {
+  card_id: string;
+  card_name: string;
+  email: string;
+  phone: string;
+  job_title: string;
+  company_name: string;
+  company_website: string;
+};
+type ContactCard = {
+  contact_name: string;
+  parent_card_id: string;
+  cards: Card[];
+};
+
+type renderItemType = {
+  item: ContactCard;
+  selected: string;
+  setter: any;
+};
+
+const RenderItem = ({ item, selected, setter }: renderItemType) => {
   const handlePress = () => {
     if (selected === item.parent_card_id) {
       setter('');
