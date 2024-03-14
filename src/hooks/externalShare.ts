@@ -1,7 +1,11 @@
-
+// type CardDetails = {
+//     [key: string]: string | null | undefined; 
+//     img_front_link?: string | null | undefined; 
+//     img_back_link?: string | null | undefined; 
+//   }
 
 const formatCardDetails = (details: any) => {
-   // let formattedDetails = 'You got a message:\n';
+
    const filteredDetails: any = {};
    for (const key in details) {
     if (key !== 'img_front_link' && key !== 'img_back_link' && details[key] !== null) {

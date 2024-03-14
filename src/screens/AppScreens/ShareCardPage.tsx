@@ -83,8 +83,9 @@ const ShareCardScreen = ({
     }
   };
 
+  
   const handleShareExternally = () => {
-    const formattedDetails = formatCardDetails(cardDetails); // Use the formatCardDetails function
+    const formattedDetails = formatCardDetails(cardDetails);
     Share.open({
       message: formattedDetails,
     })
