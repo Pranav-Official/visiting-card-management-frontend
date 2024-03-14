@@ -137,12 +137,33 @@ const ContactsPage = () => {
       width: 1600,
       height: 900,
       freeStyleCropEnabled: true,
-    }).then(async (image) => {
-      navigation.navigate('CardStack', {
-        screen: 'CropConfirmationScreen',
-        params: { image },
+    })
+      .then(async (image) => {
+        navigation.navigate('CardStack', {
+          screen: 'CropConfirmationScreen',
+          params: { image },
+        });
+      })
+      .catch((err) => {
+        console.log('Error occured', err);
       });
-    });
+  };
+  const chooseImage = async () => {
+    ImagePicker.openPicker({
+      cropping: true,
+      width: 3000,
+      height: 1500,
+      freeStyleCropEnabled: true,
+    })
+      .then(async (image) => {
+        navigation.navigate('CardStack', {
+          screen: 'CropConfirmationScreen',
+          params: { image, isComingFromCamera: false },
+        });
+      })
+      .catch((err) => {
+        console.log('Error occured', err);
+      });
   };
   useEffect(() => {
     try {
@@ -240,6 +261,7 @@ const ContactsPage = () => {
             styles.secondaryButtons,
             { display: secondaryButtonVisibility ? 'flex' : 'none' },
           ]}
+          onPress={chooseImage}
         >
           <MaterialIcons
             style={{ alignSelf: 'center' }}
