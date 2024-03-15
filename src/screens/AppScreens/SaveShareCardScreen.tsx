@@ -69,7 +69,7 @@ const RenderItem = ({ item, selected, setter }: renderItemType) => {
         { flexDirection: 'column', marginBottom: 20, gap: 20 },
       ]}
     >
-      <Text style={styles.contactName}>{item.user_fullname}</Text>
+      <Text style={styles.contactName}> From User: {item.user_fullname}</Text>
       {item.cards.map((card: Card) => (
         <View style={{ flexDirection: 'row' }} key={card.card_id}>
           <TouchableOpacity
@@ -202,7 +202,7 @@ const SaveShareCardScreen = ({ route }: any) => {
           textAlign: 'center',
         }}
       >
-        Save the Cards
+        Choose the cards to save
       </Text>
       <FlatList
         data={cardList}
@@ -234,6 +234,7 @@ const SaveShareCardScreen = ({ route }: any) => {
           similarCardList={similarCardList}
           cardDetails={cardDetails}
           sharing={true}
+          modalVisibilitySetter={setSimilarModalVisibility}
         ></SimilarCardsComponent>
       </BottomSheetComponent>
     </View>
@@ -269,7 +270,7 @@ const styles = StyleSheet.create({
   contactName: {
     paddingStart: 10,
     fontSize: 24,
-    color: colors['primary-text'],
+    color: colors['secondary-accent'],
     fontWeight: 'bold',
   },
   buttonContainer: {
