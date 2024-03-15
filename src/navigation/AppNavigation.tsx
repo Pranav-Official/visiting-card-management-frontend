@@ -91,24 +91,7 @@ const HomeBottomBarNavigation = () => {
             />
           ),
         }}
-      />
-        {/* <BottomBarNavigation.Screen
-        name="changePassword"
-        component={ChangePassword}
-        options={{
-          tabBarIcon: () => (
-            <Ionicons
-              name="person-circle-outline"
-              size={36}
-              color={
-                useIsFocused()
-                  ? colors['secondary-accent']
-                  : colors['accent-grey']
-              }
-            />
-          ),
-        }}
-      /> */}
+      />       
     </BottomBarNavigation.Navigator>
   );
 };
