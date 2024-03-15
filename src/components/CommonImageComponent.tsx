@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import colors from '../utils/colorPallete';
 import ImageView from 'react-native-image-viewing';
+import defaultImage from '../assets/images/Defaultcard.png'
 
 type ImgContainer = {
   Image: string;
@@ -43,19 +44,20 @@ type imageURI = {
 };
 
 const CommonImageComponent = ({ frontImageUri, backImageUri }: imageURI) => {
-  // Sample data for FlatList
-  const imageData = [
-    {
-      uri: frontImageUri
-        ? frontImageUri
-        : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEXptu3jFyRY50KKSUvX0iKJ7f2zxNPNsMwA&usqp=CAU',
-    },
-    {
-      uri: backImageUri
-        ? backImageUri
-        : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEXptu3jFyRY50KKSUvX0iKJ7f2zxNPNsMwA&usqp=CAU',
-    },
-  ];
+  const imageData = [];
+
+  if (frontImageUri) {
+    imageData.push({ uri: frontImageUri });
+  }
+  if (backImageUri) {
+    imageData.push({ uri: backImageUri });
+  }
+  if (!frontImageUri && !backImageUri) {
+    imageData.push({
+      uri: defaultImage,
+    });
+  }
+
   const [isImageVisible, setIsImageVisible] = useState(false);
   const [imageIndex, setImageIndex] = useState(0);
 
@@ -76,6 +78,9 @@ const CommonImageComponent = ({ frontImageUri, backImageUri }: imageURI) => {
         )}
         keyExtractor={(_, index) => index.toString()}
         ItemSeparatorComponent={itemSeparator}
+        contentContainerStyle={
+          imageData.length === 1 ? styles.CommonImagecontainer2 : null
+        }
       />
       <ImageView
         images={imageData}
@@ -98,6 +103,10 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     flex: 1,
     gap: 10,
+  },
+  CommonImagecontainer2: {
+    paddingLeft: 25,
+    width:'100%'
   },
   separator: {
     width: 0, // Adjust the width based on your desired spacing
