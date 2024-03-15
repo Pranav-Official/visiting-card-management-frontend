@@ -131,9 +131,7 @@ const SetContactNameScreen = ({ route }: any) => {
         {!imageUploadProcessing ? (
           <PrimaryButtonComponent
             title="Save"
-            onPressing={() =>
-              sharing === true ? createCard(true) : createCard(false)
-            }
+            onPressing={() => (sharing ? createCard(true) : createCard(false))}
           />
         ) : (
           <ActivityIndicator

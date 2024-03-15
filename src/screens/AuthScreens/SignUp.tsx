@@ -21,15 +21,6 @@ import { userDetails } from '../../context/userDetailsSlice';
 import colors from '../../utils/colorPallete';
 import { isValidPassword, validateEmail } from '../../utils/regexCheck';
 
-// type response = {
-//   status: boolean;
-//   message: string;
-//   data: {
-//     token: string;
-//     user_id: string;
-//   };
-// };
-
 type BorderTypes = 'Danger' | 'Auth' | 'Normal';
 
 const SignUp = () => {

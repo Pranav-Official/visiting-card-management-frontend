@@ -1,7 +1,7 @@
 import React from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 
-// Define the type for the navigation object
+// Defining the type for the navigation object
 const MainLogoComponent = (props: any) => {
   return (
     <View style={styles.view}>

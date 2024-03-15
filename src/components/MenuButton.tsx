@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import {
@@ -71,12 +70,12 @@ const styles = StyleSheet.create({
   },
   icon: {
     color: colors['secondary-light'],
-    zIndex: 1, // Ensure the icon is above the modal
+    zIndex: 1,
   },
   modal: {
     position: 'absolute',
-    top:10,
-    left: 190, // Adjust this value to position the modal closer or further from the icon
+    top: 10,
+    left: 190,
     right: 5,
     justifyContent: 'center',
     alignItems: 'center',
@@ -86,15 +85,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors['secondary-light'],
     padding: 10,
     borderRadius: 10,
-
-  
   },
   optionButton: {
     marginBottom: 8,
   },
   optionText: {
-    
-    color:colors['primary-text'],
+    color: colors['primary-text'],
     fontSize: 20,
   },
 });

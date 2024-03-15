@@ -139,7 +139,7 @@ const HomeScreen = () => {
               title="I'll do it later"
               onPressing={() => setModalVisibility(false)}
               backgroundColor={colors['accent-white']}
-              textColor={colors['primary-danger']}
+              textColor={colors['primary-text']}
             ></PrimaryButtonComponent>
           </View>
         </View>

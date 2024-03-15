@@ -99,7 +99,6 @@ const CardDetailPage = ({ route }: any) => {
         jwtToken: userToken,
         card_id: route.params.card_id,
       });
-      console.log('DeleteCard Resp', statusCode, deleteCardResp);
 
       if (statusCode === '200') {
         navigation.goBack();

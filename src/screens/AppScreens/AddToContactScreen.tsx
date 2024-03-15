@@ -54,7 +54,6 @@ const RenderItem = ({ item, selected, setter }: renderItemType) => (
         style={{ flex: 1, paddingTop: 5 }}
         onPress={() => {
           setter(item.parent_card_id);
-          console.log('\n\nTHE SETTER IS: ', item.parent_card_id);
         }}
       >
         {selected == item.parent_card_id ? (
@@ -88,20 +87,14 @@ const AddToContact = ({ route }: any) => {
   const inputList = route.params.similarCardList;
   let cardDetails = route.params.cardDetails;
   const sharing: boolean = route.params.sharing;
-  console.log('ADd to contact Screen: sharing page? :', sharing);
   const [cardList] = useState(inputList);
   const [selected, setSelected] = useState('');
   const [imageUploadProcessing, setImageUploadProcessing] = useState(false);
   const navigation = useNavigation<NavigationProp<any>>();
 
   const addToContactFunction = async () => {
-    console.log('\n\nADD TO CONTACTS REACHED!!!!!\n\n');
     const user_id = (await getLocalItem(Constants.USER_ID)) ?? '';
-    console.log('\n\nUser Id from AddToContact: ', user_id);
     const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
-    console.log('\n\nTHE CARD DETAILS IN AToC are: ', cardDetails);
-    console.log('\n\nSelected Card ID: ', selected);
-
     let addToContactResponse;
     if (sharing == true) {
       addToContactResponse = await addSharedCardToExistingContact(
@@ -109,10 +102,6 @@ const AddToContact = ({ route }: any) => {
         jwtToken,
         selected,
         cardDetails,
-      );
-      console.log(
-        '\n\nADDD to contact Respone from SCREEN: ',
-        addToContactResponse.addToExistingContactData,
       );
     } else {
       if (cardDetails.img_front_link) {
@@ -146,16 +135,11 @@ const AddToContact = ({ route }: any) => {
         selected,
         cardDetails,
       );
-      console.log(
-        '\n\nADDD to contact Respone from SCREEN: ',
-        addToContactResponse?.addToExistingContactData,
-      );
     }
 
     if (addToContactResponse?.statusCode === 200) {
       const createdCardId =
         addToContactResponse.addToExistingContactData.data.cardId;
-      console.log('\n\nNEWLY CREATED CARD ID: ', createdCardId);
       navigation.dispatch(
         CommonActions.reset({
           index: 1,
@@ -211,6 +195,7 @@ const AddToContact = ({ route }: any) => {
           <PrimaryButtonComponent
             title="Cancel"
             onPressing={() => navigation.dispatch(StackActions.pop(1))}
+            backgroundColor={colors['secondary-grey']}
           />
         </View>
       </View>

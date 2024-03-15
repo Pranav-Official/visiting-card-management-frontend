@@ -20,7 +20,6 @@ const ShareCardScreen = ({
   visibilitySetter,
   cardDetails,
 }: ShareCardProp) => {
-  console.log('card_id in beginning', card_id);
   const [shareList, setShareList] = useState<ShareProp[]>([]);
   const [filteredShareList, setFilteredShareList] = useState<ShareProp[]>([]); //new
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
@@ -50,7 +49,6 @@ const ShareCardScreen = ({
   }, [searchQuery, shareList]);
 
   const handleCardPress = (user_id: string) => {
-    console.log('clicked');
     if (selectedUserIds.includes(user_id)) {
       setSelectedUserIds(selectedUserIds.filter((id) => id !== user_id));
     } else {
@@ -60,9 +58,7 @@ const ShareCardScreen = ({
 
   const handleShareInternally = async () => {
     const user_id = (await getLocalItem(Constants.USER_ID)) ?? '';
-    console.log('handleshare user_id', user_id);
     const jwt_token = (await getLocalItem(Constants.USER_JWT)) ?? '';
-    console.log('handleshare jwt_token', jwt_token);
     const shareCardProps: ShareCardProp = {
       user_id,
       jwt_token,
@@ -115,7 +111,7 @@ const ShareCardScreen = ({
         <FlatList
           contentContainerStyle={styles.flatListStyle}
           showsVerticalScrollIndicator={true}
-          data={filteredShareList} //chnaged
+          data={filteredShareList}
           renderItem={({ item }) => (
             <ShareCardComponent
               user_fullname={item.user_fullname}

@@ -315,8 +315,9 @@ const ContactsPage = () => {
                 setModalVisibility(false);
                 await setLocalItem(Constants.SAVE_SHARES_LATER, 'true');
               }}
-              textColor={colors['primary-danger']}
+              textColor={colors['primary-text']}
               backgroundColor={colors['accent-white']}
+              isHighlighted={true}
             ></PrimaryButtonComponent>
           </View>
         </View>

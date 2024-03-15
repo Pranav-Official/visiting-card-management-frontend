@@ -147,7 +147,6 @@ const CardOverwriteScreen = ({ route }: any) => {
         screen: 'CardDetailsScreen',
         params: { card_id: selected },
       });
-      // navigation.navigate('CardDetailsScreen', { card_id: selected });
     } else {
       Toast.show('Error Overwriting Card');
       console.log('\n\nError Navigating');
@@ -197,6 +196,7 @@ const CardOverwriteScreen = ({ route }: any) => {
           <PrimaryButtonComponent
             title="Cancel"
             onPressing={() => navigation.goBack()}
+            backgroundColor={colors['secondary-grey']}
           />
         </View>
       </View>
