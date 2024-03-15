@@ -11,6 +11,7 @@ import { getLocalItem, setLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import { userLogin } from '../../context/userSlice';
 import { useDispatch } from 'react-redux';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 type UserData = {
   email: string;
@@ -55,6 +56,13 @@ const ProfileScreen = () => {
     setLocalItem(Constants.USER_ID, '');
     dispatch(userLogin(false));
   };
+  const navigation = useNavigation<NavigationProp<any>>();
+  const handlePress = () => {
+    navigation.navigate('CardStack', {
+      screen: 'ViewSharedContactsScreen',
+      
+    });
+  };
   return (
     <ScrollView style={styles.profileMainContainer}>
       <View style={styles.profileContainer}>
@@ -96,7 +104,7 @@ const ProfileScreen = () => {
         </View>
 
         <View style={styles.buttonsContainer}>
-          <ProfileButtonComponent title={'View Shared Contacts'} />
+          <ProfileButtonComponent title={'View Shared Contacts'} onPressing={() =>handlePress()}/>
           <ProfileButtonComponent title={'Change Password'} danger={true} />
           <MainButtonComponent title={'Logout'} onPressing={Logout} />
         </View>
