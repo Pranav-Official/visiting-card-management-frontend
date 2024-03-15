@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import colors from '../utils/colorPallete';
 import ImageView from 'react-native-image-viewing';
-import defaultImage from '../assets/images/Defaultcard.png'
 
 type ImgContainer = {
   Image: string;
@@ -52,45 +51,53 @@ const CommonImageComponent = ({ frontImageUri, backImageUri }: imageURI) => {
   if (backImageUri) {
     imageData.push({ uri: backImageUri });
   }
-  if (!frontImageUri && !backImageUri) {
-    imageData.push({
-      uri: defaultImage,
-    });
-  }
 
   const [isImageVisible, setIsImageVisible] = useState(false);
   const [imageIndex, setImageIndex] = useState(0);
 
   const itemSeparator = () => <View style={styles.separator} />;
-
-  return (
-    <View style={styles.mainStyle}>
-      <FlatList
-        data={imageData}
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-        renderItem={({ item, index }) => (
-          <CommonImage
-            Image={item.uri}
-            indexSetter={() => setImageIndex(index)}
-            onPress={() => setIsImageVisible(true)}
+  if (!frontImageUri && !backImageUri) {
+    return (
+      <TouchableOpacity>
+        <View style={styles.mainStyle}>
+          <Image
+            source={require('../assets/images/DefaultCard.png')}
+            style={styles.singleImage}
+            resizeMode="cover"
           />
-        )}
-        keyExtractor={(_, index) => index.toString()}
-        ItemSeparatorComponent={itemSeparator}
-        contentContainerStyle={
-          imageData.length === 1 ? styles.CommonImagecontainer2 : null
-        }
-      />
-      <ImageView
-        images={imageData}
-        imageIndex={imageIndex}
-        keyExtractor={(_, index) => index.toString()}
-        visible={isImageVisible}
-        onRequestClose={() => setIsImageVisible(false)}
-      />
-    </View>
-  );
+        </View>
+      </TouchableOpacity>
+    );
+  } else {
+    return (
+      <View style={styles.mainStyle}>
+        <FlatList
+          data={imageData}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          renderItem={({ item, index }) => (
+            <CommonImage
+              Image={item.uri}
+              indexSetter={() => setImageIndex(index)}
+              onPress={() => setIsImageVisible(true)}
+            />
+          )}
+          keyExtractor={(_, index) => index.toString()}
+          ItemSeparatorComponent={itemSeparator}
+          contentContainerStyle={
+            imageData.length === 1 ? styles.CommonImagecontainer2 : null
+          }
+        />
+        <ImageView
+          images={imageData}
+          imageIndex={imageIndex}
+          keyExtractor={(_, index) => index.toString()}
+          visible={isImageVisible}
+          onRequestClose={() => setIsImageVisible(false)}
+        />
+      </View>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
@@ -106,7 +113,7 @@ const styles = StyleSheet.create({
   },
   CommonImagecontainer2: {
     paddingLeft: 25,
-    width:'100%'
+    width: '100%',
   },
   separator: {
     width: 0, // Adjust the width based on your desired spacing
@@ -136,6 +143,20 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: 'cover',
     width: '100%',
+  },
+  singleImage: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: colors['accent-white'],
+    marginLeft: 45,
+    borderRadius: 20,
+    height: 200,
+    width: 320,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.38,
+    shadowRadius: 4.84,
+    elevation: 5,
   },
 });
 
