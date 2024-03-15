@@ -17,6 +17,7 @@ import ProfileScreen from '../screens/AppScreens/ProfileScreen';
 import CropConfirmationScreen from '../screens/AppScreens/CropConfirmationScreen';
 import SaveShareCardScreen from '../screens/AppScreens/SaveShareCardScreen';
 import SearchScreen from '../screens/AppScreens/SearchScreen';
+import ChangePassword from '../screens/AuthScreens/ChangePassword';
 const StackNav = createNativeStackNavigator();
 const HomeStackNavigation = () => {
   return (
@@ -28,6 +29,7 @@ const HomeStackNavigation = () => {
       <StackNav.Screen name="Home" component={HomeBottomBarNavigation} />
       <StackNav.Screen name="SearchScreen" component={SearchScreen} />
       <StackNav.Screen name="CardStack" component={CardStackNavigation} />
+      <StackNav.Screen name="ChangePassword" component={ChangePassword}/>
     </StackNav.Navigator>
   );
 };
@@ -90,6 +92,23 @@ const HomeBottomBarNavigation = () => {
           ),
         }}
       />
+        {/* <BottomBarNavigation.Screen
+        name="changePassword"
+        component={ChangePassword}
+        options={{
+          tabBarIcon: () => (
+            <Ionicons
+              name="person-circle-outline"
+              size={36}
+              color={
+                useIsFocused()
+                  ? colors['secondary-accent']
+                  : colors['accent-grey']
+              }
+            />
+          ),
+        }}
+      /> */}
     </BottomBarNavigation.Navigator>
   );
 };
