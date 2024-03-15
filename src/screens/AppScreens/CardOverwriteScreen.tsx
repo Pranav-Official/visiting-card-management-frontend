@@ -9,8 +9,7 @@ import {
 } from 'react-native';
 import colors from '../../utils/colorPallete';
 import CardComponent from '../../components/CardComponent';
-import MainButtonComponent from '../../components/MainButtoncomponent';
-import ProfileButtonComponent from '../../components/ProfileButtonComponent';
+import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import RadioButton from '../../components/RadioButton';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
@@ -42,14 +41,7 @@ type renderItemType = {
   selected: string;
   setter: (cardId: string) => void;
 };
-// type ScreenProps = {
-//   route: {
-//     params: {
-//       similarCardList: ContactCard[];
-//       cardDetails: Card;
-//     };
-//   };
-// };
+
 type routeParams = {
   CardDetailsScreen?: { card_id: string };
   CardStack?: { screen: string; params: { card_id: string } };
@@ -93,15 +85,12 @@ const CardOverwriteScreen = ({ route }: any) => {
   const inputList = route.params.similarCardList;
   let cardDetails = route.params.cardDetails;
   const sharing: boolean = route.params.sharing;
-  console.log('\n\nOverWrite Screen sharingStatus: ', sharing);
   const [cardList] = useState(inputList);
   const navigation = useNavigation<NavigationProp<routeParams>>();
   const [imageUploadProcessing, setImageUploadProcessing] = useState(false);
 
   const overwriteFunction = async () => {
-    console.log('hello');
     const user_id = (await getLocalItem(Constants.USER_ID)) ?? '';
-    console.log('\n\nUser Id from OverWritecard: ', user_id);
     const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
 
     let overwriteResponse;
@@ -146,7 +135,6 @@ const CardOverwriteScreen = ({ route }: any) => {
       );
     }
 
-    console.log('\n\nOverWrite Response: ', overwriteResponse);
     if (overwriteResponse?.statusCode === '200') {
       Toast.show('Card Overwritten Successfully');
       navigation.dispatch(
@@ -193,7 +181,7 @@ const CardOverwriteScreen = ({ route }: any) => {
       <View style={styles.buttonContainer}>
         <View style={{ flex: 1 }}>
           {!imageUploadProcessing ? (
-            <MainButtonComponent
+            <PrimaryButtonComponent
               title="Overwrite"
               onPressing={overwriteFunction}
             />
@@ -206,7 +194,7 @@ const CardOverwriteScreen = ({ route }: any) => {
           )}
         </View>
         <View style={{ flex: 1 }}>
-          <ProfileButtonComponent
+          <PrimaryButtonComponent
             title="Cancel"
             onPressing={() => navigation.goBack()}
           />

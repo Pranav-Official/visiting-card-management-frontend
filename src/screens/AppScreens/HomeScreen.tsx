@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import colors from '../../utils/colorPallete';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
-import MainButtonComponent from '../../components/MainButtoncomponent';
+import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import { getLocalItem, setLocalItem } from '../../utils/Utils';
 import { useDispatch } from 'react-redux';
 import { userLogin } from '../../context/userSlice';
@@ -9,7 +9,6 @@ import Constants from '../../utils/Constants';
 import { getPendingCards } from '../../hooks/getPendingCardsHook';
 import BottomSheetComponent from '../../components/BottomSheetComponent';
 import CardComponent from '../../components/CardComponent';
-import ProfileButtonComponent from '../../components/ProfileButtonComponent';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 type Card = {
@@ -114,7 +113,7 @@ const HomeScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Home Screen</Text>
-      <MainButtonComponent title="Logout" onPressing={Logout} />
+      <PrimaryButtonComponent title="Logout" onPressing={Logout} />
 
       <BottomSheetComponent
         visibility={modalVisibility}
@@ -132,15 +131,16 @@ const HomeScreen = () => {
           />
           <View style={styles.buttonContainer}>
             <Text style={styles.pendingCardsText}>Choose an Option</Text>
-            <MainButtonComponent
+            <PrimaryButtonComponent
               title="Save shared cards"
               onPressing={() => handleSave()}
-            ></MainButtonComponent>
-            <ProfileButtonComponent
+            ></PrimaryButtonComponent>
+            <PrimaryButtonComponent
               title="I'll do it later"
               onPressing={() => setModalVisibility(false)}
-              danger={true}
-            ></ProfileButtonComponent>
+              backgroundColor={colors['accent-white']}
+              textColor={colors['primary-danger']}
+            ></PrimaryButtonComponent>
           </View>
         </View>
       </BottomSheetComponent>

@@ -5,7 +5,7 @@ import ShareCardComponent from '../../components/ShareCardContactComponent';
 import { listUsers } from '../../hooks/GetUserHook';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
-import MainButtonComponent from '../../components/MainButtoncomponent';
+import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import { ShareCard, ShareCardProp } from '../../hooks/ShareCardHook';
 import Share from 'react-native-share';
 import { shareCardDetails, shareExternally } from '../../hooks/externalShare';
@@ -82,7 +82,6 @@ const ShareCardScreen = ({
       // Handle errors
     }
   };
-  
 
   const handleShareExternally = () => {
     const filteredDetails: any = {};
@@ -91,7 +90,7 @@ const ShareCardScreen = ({
         key !== 'img_front_link' &&
         key !== 'img_back_link' &&
         cardDetails[key] !== null &&
-        cardDetails[key] !== ""
+        cardDetails[key] !== ''
       ) {
         const formattedKey = key
           .replace(/_/g, ' ')
@@ -99,7 +98,7 @@ const ShareCardScreen = ({
         filteredDetails[formattedKey] = cardDetails[key];
       }
     }
-  
+
     let formattedDetails = '';
     for (const key in filteredDetails) {
       formattedDetails += `${key}: ${filteredDetails[key]},\n`;
@@ -127,19 +126,19 @@ const ShareCardScreen = ({
           keyExtractor={(item) => item.user_id}
         />
       </View>
-      <View style ={styles.button_container}>
-      <View style={styles.profile_button_container}>
-        <MainButtonComponent
-          title={'Share Internally'}
-          onPressing={handleShareInternally}
-        ></MainButtonComponent>
-      </View>
-      <View style={styles.main_button_container}>
-        <MainButtonComponent
-          title={'Share Externally'}
-          onPressing={handleShareExternally}
-        ></MainButtonComponent>
-      </View>
+      <View style={styles.button_container}>
+        <View style={styles.profile_button_container}>
+          <PrimaryButtonComponent
+            title={'Share Internally'}
+            onPressing={handleShareInternally}
+          ></PrimaryButtonComponent>
+        </View>
+        <View style={styles.main_button_container}>
+          <PrimaryButtonComponent
+            title={'Share Externally'}
+            onPressing={handleShareExternally}
+          ></PrimaryButtonComponent>
+        </View>
       </View>
     </View>
   );
@@ -151,7 +150,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     height: '100%',
     marginTop: 20,
-    paddingBottom:5,
+    paddingBottom: 5,
   },
   search_bar_container: {
     width: '100%',
@@ -166,13 +165,13 @@ const styles = StyleSheet.create({
   contact_area: {
     width: '100%',
     paddingHorizontal: 10,
-    height:450,
+    height: 450,
   },
-  button_container:{
-    position:'absolute',
-    width:'100%',
-    height:120,
-    bottom:50,
+  button_container: {
+    position: 'absolute',
+    width: '100%',
+    height: 120,
+    bottom: 50,
   },
   profile_button_container: {
     marginBottom: 10,

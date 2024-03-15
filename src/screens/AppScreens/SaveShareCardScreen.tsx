@@ -8,8 +8,7 @@ import {
 } from 'react-native';
 import colors from '../../utils/colorPallete';
 import CardComponent from '../../components/CardComponent';
-import MainButtonComponent from '../../components/MainButtoncomponent';
-import ProfileButtonComponent from '../../components/ProfileButtonComponent';
+import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import RadioButton from '../../components/RadioButton';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
@@ -216,11 +215,13 @@ const SaveShareCardScreen = ({ route }: any) => {
       />
       <View style={styles.buttonContainer}>
         <View style={{ flex: 1 }}>
-          <MainButtonComponent title="Save" onPressing={handleSave} />
+          <PrimaryButtonComponent title="Save" onPressing={handleSave} />
         </View>
         <View style={{ flex: 1 }}>
-          <ProfileButtonComponent
+          <PrimaryButtonComponent
             title="Later"
+            backgroundColor={colors['accent-white']}
+            textColor={colors['primary-danger']}
             onPressing={() => navigation.goBack()}
           />
         </View>

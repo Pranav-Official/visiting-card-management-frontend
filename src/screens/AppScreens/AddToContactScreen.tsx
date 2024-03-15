@@ -10,8 +10,7 @@ import {
 import colors from '../../utils/colorPallete';
 import CardComponent from '../../components/CardComponent';
 import RadioButton from '../../components/RadioButton';
-import MainButtonComponent from '../../components/MainButtoncomponent';
-import ProfileButtonComponent from '../../components/ProfileButtonComponent';
+import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import Constants from '../../utils/Constants';
 import { addToExistingContact } from '../../hooks/addToContactHook';
 import { getLocalItem } from '../../utils/Utils';
@@ -196,7 +195,7 @@ const AddToContact = ({ route }: any) => {
       <View style={styles.buttonContainer}>
         <View style={{ flex: 1 }}>
           {!imageUploadProcessing ? (
-            <MainButtonComponent
+            <PrimaryButtonComponent
               title="Add to contact"
               onPressing={() => addToContactFunction()}
             />
@@ -209,7 +208,7 @@ const AddToContact = ({ route }: any) => {
           )}
         </View>
         <View style={{ flex: 1 }}>
-          <ProfileButtonComponent
+          <PrimaryButtonComponent
             title="Cancel"
             onPressing={() => navigation.dispatch(StackActions.pop(1))}
           />
