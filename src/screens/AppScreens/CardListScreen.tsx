@@ -181,8 +181,10 @@ const CardListScreen = ({ route }: any) => {
           <Text style={styles.cardHeading}>Cards</Text>
           {!isLoading ? (
             <FlatList
+            
               contentContainerStyle={styles.flatListStyle}
               showsVerticalScrollIndicator={false}
+              
               data={cardList}
               renderItem={({ item }) => (
                 <CardComponent
