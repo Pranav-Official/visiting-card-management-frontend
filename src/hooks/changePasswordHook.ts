@@ -56,7 +56,7 @@ export async function changePassword({
         user_email: '',
         status: false,
         message: 'Error while changing password',
-      };
+      }; 
     }
     return { changePasswordResp };
   }

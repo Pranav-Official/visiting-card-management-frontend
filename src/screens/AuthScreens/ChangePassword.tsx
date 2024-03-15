@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+    ScrollView,
   StyleSheet,
   ToastAndroid,
   View,
@@ -13,6 +14,8 @@ import {
 } from '../../hooks/changePasswordHook';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import TopBackButton from '../../components/BackButton';
+import { isValidPassword } from '../../utils/regexCheck';
+import colors from '../../utils/colorPallete';
 
 type ChangePasswordRouteProps = {
   ChangePassword: {
@@ -31,6 +34,7 @@ const ChangePassword: React.FC<Props> = ({ route }) => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordMatch, setPasswordMatch] = useState(true);
+  const [passwordBorder, setPasswordBorder] = useState<BorderTypes>('Normal');
   const navigation = useNavigation();
 
   const handlePasswordChange = (value: string) => {
@@ -45,13 +49,27 @@ const ChangePassword: React.FC<Props> = ({ route }) => {
     setPasswordMatch(value === newPassword);
   };
 
-  const passwordBorder: BorderTypes = passwordMatch ? 'Normal' : 'Danger';
+//   const passwordBorder: BorderTypes = passwordMatch ? 'Normal' : 'Danger';
 
   const handleChangePassword = async () => {
+    
     if (!passwordMatch) {
       ToastAndroid.show('Passwords do not match!', ToastAndroid.SHORT);
+      setPasswordBorder('Danger');
       return;
     }
+    if(!isValidPassword(newPassword)){
+        ToastAndroid.showWithGravity(
+            'Password must be at least 8 characters with uppercase, lowercase, digit, and special character.',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+          setPasswordBorder('Danger');
+          return;
+    }
+    // if(passwordMatch && isValidPassword(newPassword)){
+    //     setPasswordBorder('Danger');
+    // }
 
     // Call your changePassword hook here
     const changePasswordProps: changePasswordProp = {
@@ -70,6 +88,9 @@ const ChangePassword: React.FC<Props> = ({ route }) => {
       if(response.statusCode == '200'){
         navigation.goBack();
       }
+    //   if(!passwordMatch && !isValidPassword(newPassword)){
+    //     setPasswordBorder('Danger');
+    // }
       
     } catch (error) {
       console.error('Error changing password:', error);
@@ -79,7 +100,7 @@ const ChangePassword: React.FC<Props> = ({ route }) => {
   };
 
   return (
-    <View style={styles.main_container}>
+    <ScrollView style={styles.main_container}>
       <View style={styles.back_button_container}>
         <TopBackButton color="black"></TopBackButton>
       </View>
@@ -113,7 +134,7 @@ const ChangePassword: React.FC<Props> = ({ route }) => {
           onPressing={handleChangePassword}
         ></MainButtonComponent>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -121,6 +142,7 @@ const styles = StyleSheet.create({
   main_container: {
     width: '100%',
     height: 1500,
+    backgroundColor:colors['secondary-light']
   },
   logo_container: {
     alignItems: 'center',
