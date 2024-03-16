@@ -61,7 +61,7 @@ const CommonImageComponent = ({ frontImageUri, backImageUri }: imageURI) => {
       <TouchableOpacity>
         <View style={styles.mainStyle}>
           <Image
-            source={require('../assets/images/DefaultCard.png')}
+            source={require('../assets/images/Defaultcard.png')}
             style={styles.singleImage}
             resizeMode="cover"
           />
