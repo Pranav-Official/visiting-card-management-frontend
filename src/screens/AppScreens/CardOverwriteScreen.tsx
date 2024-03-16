@@ -23,6 +23,13 @@ import {
 import Toast from 'react-native-root-toast';
 import { overwriteSharedCard } from '../../hooks/overwriteSharedCard';
 import cloudinaryUpload from '../../hooks/cloudinaryUpload';
+import { useDispatch } from 'react-redux';
+import {
+  removeAllSelectedCards,
+  removeSelectedCardId,
+} from '../../context/selectedCardsSlice';
+import { removeCardById } from '../../context/pendingCardsSlice';
+import { setSharingProcess } from '../../context/sharingProcessSlice';
 
 type Card = {
   card_id: string;
@@ -95,6 +102,7 @@ const RenderItem = ({ item, selected, setter }: renderItemType) => {
 };
 
 const CardOverwriteScreen = ({ route }: any) => {
+  const dispatch = useDispatch();
   const inputList = route.params.similarCardList;
   let cardDetails = route.params.cardDetails;
   const sharing: boolean = route.params.sharing;
@@ -153,6 +161,8 @@ const CardOverwriteScreen = ({ route }: any) => {
 
       if (sharing === true) {
         navigation.dispatch(StackActions.pop(1));
+        dispatch(removeSelectedCardId(cardDetails.card_id));
+        dispatch(removeCardById(cardDetails.card_id));
       } else {
         navigation.dispatch(
           CommonActions.reset({
@@ -213,7 +223,7 @@ const CardOverwriteScreen = ({ route }: any) => {
         <View style={styles.buttonContainer}>
           <View style={{ flex: 1 }}>
             {!imageUploadProcessing ? (
-              <MainButtonComponent
+              <PrimaryButtonComponent
                 title="Overwrite"
                 onPressing={overwriteFunction}
               />
@@ -226,9 +236,14 @@ const CardOverwriteScreen = ({ route }: any) => {
             )}
           </View>
           <View style={{ flex: 1 }}>
-            <ProfileButtonComponent
+            <PrimaryButtonComponent
               title="Cancel"
-              onPressing={() => navigation.goBack()}
+              onPressing={() => {
+                dispatch(setSharingProcess(false));
+                dispatch(removeAllSelectedCards());
+                navigation.dispatch(StackActions.pop(1));
+              }}
+              backgroundColor={colors['secondary-grey']}
             />
           </View>
         </View>

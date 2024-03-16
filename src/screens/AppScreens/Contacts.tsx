@@ -314,12 +314,13 @@ const ContactsPage = () => {
             <Text style={styles.pendingCardsText}>Choose an Option</Text>
             <PrimaryButtonComponent
               title="Save shared cards"
-              onPressing={() =>
+              onPressing={() => {
+                setModalVisibility(false);
                 navigation.navigate('CardStack', {
                   screen: 'SaveShareCardScreen',
                   params: { pendingCardList },
-                })
-              }
+                });
+              }}
             ></PrimaryButtonComponent>
             <PrimaryButtonComponent
               title="I'll do it later"

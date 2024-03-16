@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import colors from '../../utils/colorPallete';
 import {
   ActivityIndicator,
@@ -21,8 +21,16 @@ import { acceptNewCard } from '../../hooks/acceptCardHook';
 import Toast from 'react-native-root-toast';
 import cloudinaryUpload from '../../hooks/cloudinaryUpload';
 import CardComponent from '../../components/CardComponent';
+import { useDispatch } from 'react-redux';
+import {
+  removeAllSelectedCards,
+  removeSelectedCardId,
+} from '../../context/selectedCardsSlice';
+import { removeCardById } from '../../context/pendingCardsSlice';
+import { setSharingProcess } from '../../context/sharingProcessSlice';
 
 const SetContactNameScreen = ({ route }: any) => {
+  const dispatch = useDispatch();
   const { cardDetails, sharing } = route.params;
   const [imageUploadProcessing, setImageUploadProcessing] = useState(false);
   console.log('\n\nSharing Status = ', sharing);
@@ -30,6 +38,10 @@ const SetContactNameScreen = ({ route }: any) => {
   const [newContactName, setNewContactName] = useState(
     route.params.cardDetails.card_name,
   );
+
+  useEffect(() => {
+    console.log('Card Name from Set contact Screen :', cardDetails);
+  }, []);
 
   //Calling create card hook
   const createCard = async (sharing: boolean) => {
@@ -99,6 +111,8 @@ const SetContactNameScreen = ({ route }: any) => {
       if (newStatus === '200') {
         if (sharing === true) {
           navigation.dispatch(StackActions.pop(1));
+          dispatch(removeSelectedCardId(cardDetails.card_id));
+          dispatch(removeCardById(cardDetails.card_id));
         } else {
           navigation.dispatch(
             CommonActions.reset({
@@ -136,7 +150,11 @@ const SetContactNameScreen = ({ route }: any) => {
       <View style={styles.buttonContainer}>
         <PrimaryButtonComponent
           title={'Go Back'}
-          onPressing={() => navigation.goBack()}
+          onPressing={() => {
+            dispatch(setSharingProcess(false));
+            dispatch(removeAllSelectedCards());
+            navigation.dispatch(StackActions.pop(1));
+          }}
           backgroundColor={colors['accent-white']}
           textColor={colors['primary-text']}
           isHighlighted={true}

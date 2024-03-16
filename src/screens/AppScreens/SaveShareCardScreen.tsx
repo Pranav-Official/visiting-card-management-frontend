@@ -10,28 +10,34 @@ import colors from '../../utils/colorPallete';
 import CardComponent from '../../components/CardComponent';
 import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import RadioButton from '../../components/RadioButton';
-import { getLocalItem } from '../../utils/Utils';
+import { getLocalItem, setLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import {
+  CommonActions,
+  NavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
 import BottomSheetComponent from '../../components/BottomSheetComponent';
 import SimilarCardsComponent from '../../components/SimilarCardsComponent';
 import { getSimilarCards } from '../../hooks/getSimilarCardsHook';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedCardIds } from '../../context/selectedCardsSlice';
 import { RootState } from '../../context/store';
+import { setSharingProcess } from '../../context/sharingProcessSlice';
 
 type Card = {
   card_id: string;
-  card_name: string;
-  img_front_link: string;
-  img_back_link: string;
-  job_title: string;
-  email: string;
-  phone: string;
-  company_name: string;
-  company_website: string;
-  contact_name: string;
-  user_id: string;
+  card_name: string | null;
+  company_name: string | null;
+  company_website: string | null;
+  contact_name: string | null;
+  email: string | null;
+  img_back_link: string | null;
+  img_front_link: string | null;
+  job_title: string | null;
+  phone: string | null;
+  user_id: string | null;
 };
 
 type UserData = {
@@ -102,10 +108,15 @@ const RenderItem = ({ item, selected, setter }: renderItemType) => {
 
 const SaveShareCardScreen = ({ route }: any) => {
   const dispatch = useDispatch();
+  const reduxSharingProcess = useSelector(
+    (state: RootState) => state.sharingProcessReducer.sharingProcess,
+  );
   const [similarModalVisibility, setSimilarModalVisibility] =
     React.useState(false);
 
-  const pendingCardList: UserData[] = route.params.pendingCardList;
+  const pendingCardList = useSelector(
+    (state: RootState) => state.pendingCardsReducer.pendingCardList,
+  );
 
   const [similarCardList, setSimilarCardList] = React.useState<ContactCards>({
     contact_name: '',
@@ -120,10 +131,38 @@ const SaveShareCardScreen = ({ route }: any) => {
   const navigation = useNavigation<NavigationProp<any>>();
 
   const handleSave = async () => {
-    try {
-      dispatch(setSelectedCardIds(selected));
-    } catch (error) {
-      console.log('Error while handling save:', error);
+    if (selected.length > 0) {
+      try {
+        dispatch(setSharingProcess(true));
+        dispatch(setSelectedCardIds(selected));
+      } catch (error) {
+        console.log('Error while handling save:', error);
+      }
+    }
+  };
+
+  const saveMultipleCards = async (card_id: string) => {
+    let selectCard: Card = {};
+    pendingCardList.forEach((pendingCardItem) => {
+      pendingCardItem.cards.forEach((card) => {
+        if (card.card_id === card_id) {
+          selectCard = card;
+          setCardDetails(card);
+        }
+      });
+    });
+    const similarCard = await fetchSimilarCards(selectCard);
+    console.log('\n\nSimilar Cards found: ', similarCard);
+    console.log('\n\nSimilar CArd modal visibility: ', similarModalVisibility);
+
+    if (similarCard === true) {
+      setSimilarModalVisibility(true);
+    } else {
+      const sharing = true;
+      navigation.navigate('CardStack', {
+        screen: 'SetContactNameScreen',
+        params: { cardDetails: selectCard, sharing },
+      });
     }
   };
 
@@ -131,7 +170,7 @@ const SaveShareCardScreen = ({ route }: any) => {
     try {
       const user_id = (await getLocalItem(Constants.USER_ID)) ?? '';
       const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
-      console.log('\ncardDetails = ', cardDetails);
+      console.log('\ncardDetails = ', card);
       const result = await getSimilarCards({
         user_id,
         card_name: card.card_name,
@@ -153,6 +192,28 @@ const SaveShareCardScreen = ({ route }: any) => {
       return false;
     }
   };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setCardDetails({});
+      if (reduxSelectedCardIds.length > 0 && reduxSharingProcess === true) {
+        console.log('\n\nUSE FOCUSS SHARED CARD SCREEN!!!');
+        saveMultipleCards(reduxSelectedCardIds[0]);
+      } else if (
+        reduxSelectedCardIds.length == 0 &&
+        reduxSharingProcess === true
+      ) {
+        dispatch(setSharingProcess(false));
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 1,
+            routes: [{ name: 'Home' }],
+          }),
+        );
+      }
+    }, [reduxSelectedCardIds]),
+  );
+
   return (
     <View style={{ padding: 18, flex: 1 }}>
       <Text
@@ -185,7 +246,10 @@ const SaveShareCardScreen = ({ route }: any) => {
             title="Later"
             backgroundColor={colors['accent-white']}
             textColor={colors['primary-text']}
-            onPressing={() => navigation.goBack()}
+            onPressing={async () => {
+              await setLocalItem(Constants.SAVE_SHARES_LATER, 'true');
+              navigation.goBack();
+            }}
             isHighlighted={true}
           />
         </View>

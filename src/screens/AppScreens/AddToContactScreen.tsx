@@ -12,7 +12,7 @@ import CardComponent from '../../components/CardComponent';
 import RadioButton from '../../components/RadioButton';
 import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import Constants from '../../utils/Constants';
-import { addToExistingContact } from '../../hooks/AddToExistingContact';
+import { addToExistingContact } from '../../hooks/addToExistingContact';
 import { getLocalItem } from '../../utils/Utils';
 import {
   CommonActions,
@@ -23,15 +23,26 @@ import {
 import { addSharedCardToExistingContact } from '../../hooks/addSharedToExistingContact';
 import Toast from 'react-native-root-toast';
 import cloudinaryUpload from '../../hooks/cloudinaryUpload';
+import { useDispatch } from 'react-redux';
+import {
+  removeAllSelectedCards,
+  removeSelectedCardId,
+} from '../../context/selectedCardsSlice';
+import { removeCardById } from '../../context/pendingCardsSlice';
+import { setSharingProcess } from '../../context/sharingProcessSlice';
 
 type Card = {
   card_id: string;
-  card_name: string;
-  email: string;
-  phone: string;
-  job_title: string;
-  company_name: string;
-  company_website: string;
+  card_name: string | null;
+  company_name: string | null;
+  company_website: string | null;
+  contact_name: string | null;
+  email: string | null;
+  img_back_link: string | null;
+  img_front_link: string | null;
+  job_title: string | null;
+  phone: string | null;
+  user_id: string | null;
 };
 type ContactCard = {
   contact_name: string;
@@ -95,6 +106,7 @@ const RenderItem = ({ item, selected, setter }: renderItemType) => {
 };
 
 const AddToContact = ({ route }: any) => {
+  const dispatch = useDispatch();
   const inputList = route.params.similarCardList;
   let cardDetails = route.params.cardDetails;
   const sharing: boolean = route.params.sharing;
@@ -157,6 +169,8 @@ const AddToContact = ({ route }: any) => {
       //Navigate to SaveSharedCard Screen if sharing is true (for saving Multiple Cards)
       if (sharing === true) {
         navigation.dispatch(StackActions.pop(1));
+        dispatch(removeSelectedCardId(cardDetails.card_id));
+        dispatch(removeCardById(cardDetails.card_id));
       } else {
         navigation.dispatch(
           CommonActions.reset({
@@ -215,7 +229,7 @@ const AddToContact = ({ route }: any) => {
         <View style={styles.buttonContainer}>
           <View style={{ flex: 1 }}>
             {!imageUploadProcessing ? (
-              <MainButtonComponent
+              <PrimaryButtonComponent
                 title="Add to contact"
                 onPressing={() => addToContactFunction()}
               />
@@ -228,9 +242,14 @@ const AddToContact = ({ route }: any) => {
             )}
           </View>
           <View style={{ flex: 1 }}>
-            <ProfileButtonComponent
+            <PrimaryButtonComponent
               title="Cancel"
-              onPressing={() => navigation.dispatch(StackActions.pop(1))}
+              onPressing={() => {
+                dispatch(setSharingProcess(false));
+                dispatch(removeAllSelectedCards());
+                navigation.dispatch(StackActions.pop(1));
+              }}
+              backgroundColor={colors['secondary-grey']}
             />
           </View>
         </View>

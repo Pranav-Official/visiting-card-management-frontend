@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-type Cards = {
-  card_id: string | null;
+type Card = {
+  card_id: string;
   card_name: string | null;
   company_name: string | null;
   company_website: string | null;
@@ -18,7 +18,7 @@ type PendingCards = {
   user_email: string;
   user_id: string;
   user_fullname: string;
-  cards: Cards[];
+  cards: Card[];
 };
 
 type PendingCardsState = {

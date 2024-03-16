@@ -7,12 +7,16 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 type Card = {
   card_id: string;
-  card_name: string;
-  email: string;
-  phone: string;
-  job_title: string;
-  company_name: string;
-  company_website: string;
+  card_name: string | null;
+  company_name: string | null;
+  company_website: string | null;
+  contact_name: string | null;
+  email: string | null;
+  img_back_link: string | null;
+  img_front_link: string | null;
+  job_title: string | null;
+  phone: string | null;
+  user_id: string | null;
 };
 type ContactCards = {
   contact_name: string;
