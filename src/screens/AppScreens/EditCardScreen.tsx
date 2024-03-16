@@ -25,7 +25,7 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import BottomSheetComponent from '../../components/BottomSheetComponent';
 import SimilarCardsComponent from '../../components/SimilarCardsComponent';
 import { getSimilarCards } from '../../hooks/getSimilarCardsHook';
-import { isValidPhoneNumber, validateEmail } from '../../utils/regexCheck';
+import { validateEmail, validatePhoneNumber } from '../../utils/regexCheck';
 
 type Card = {
   card_id: string;
@@ -58,6 +58,7 @@ const EditCardDetails = ({ route }: any) => {
     contact_name: '',
     cards: [],
   });
+
   //To set similar card modal visibility state
   const [modalVisibility, setModalVisibility] = React.useState(false);
   //Pre-filling edit page card details
@@ -72,6 +73,9 @@ const EditCardDetails = ({ route }: any) => {
       const user_id = (await getLocalItem(Constants.USER_ID)) ?? '{}';
       const token = (await getLocalItem(Constants.USER_JWT)) ?? '{}';
 
+      if (cardDetails.phone) {
+        cardDetails.phone = cardDetails.phone.replace(/[\s()-]+/g, '');
+      }
       // Filtering out the edited fields
       const editedData = Object.keys(cardDetails)
         .filter((key) => cardDetails[key] !== route.params.cardDetails[key])
@@ -112,6 +116,33 @@ const EditCardDetails = ({ route }: any) => {
   };
   // function called when a newly created card or edited card is saved
   const handleSavePress = async () => {
+    // Initialize variables to track validation status
+    const isValidPhone =
+      validatePhoneNumber(cardDetails.phone, 'IN') ||
+      validatePhoneNumber(cardDetails.phone, 'JP');
+    const isValidEmail = validateEmail(cardDetails.email);
+
+    // Check if both phone and email are invalid
+    if (!isValidPhone && !isValidEmail) {
+      setPhoneBorder('Danger');
+      setEmailBorder('Danger');
+      setMandatoryFieldsEmpty(true);
+      return;
+    }
+
+    // Check if phone is invalid
+    if (!isValidPhone) {
+      setPhoneBorder('Danger');
+      setMandatoryFieldsEmpty(true);
+      return;
+    }
+
+    // Check if email is invalid
+    if (!isValidEmail) {
+      setEmailBorder('Danger');
+      setMandatoryFieldsEmpty(true);
+      return;
+    }
     if (cardDetails.card_name != undefined && !cardDetails.card_name.trim()) {
       setNameBorder('Danger');
     }
@@ -126,15 +157,6 @@ const EditCardDetails = ({ route }: any) => {
       (cardDetails.phone != undefined && !cardDetails.phone.trim()) ||
       (cardDetails.card_name != undefined && !cardDetails.card_name.trim())
     ) {
-      setMandatoryFieldsEmpty(true);
-      return;
-    }
-    if (!isValidPhoneNumber(cardDetails.phone)) {
-      setPhoneBorder('Danger');
-      setMandatoryFieldsEmpty(true);
-    }
-    if (!validateEmail(cardDetails.email)) {
-      setEmailBorder('Danger');
       setMandatoryFieldsEmpty(true);
       return;
     }
