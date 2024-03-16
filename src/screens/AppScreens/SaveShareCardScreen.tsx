@@ -16,6 +16,9 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import BottomSheetComponent from '../../components/BottomSheetComponent';
 import SimilarCardsComponent from '../../components/SimilarCardsComponent';
 import { getSimilarCards } from '../../hooks/getSimilarCardsHook';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSelectedCardIds } from '../../context/selectedCardsSlice';
+import { RootState } from '../../context/store';
 
 type Card = {
   card_id: string;
@@ -98,6 +101,7 @@ const RenderItem = ({ item, selected, setter }: renderItemType) => {
 };
 
 const SaveShareCardScreen = ({ route }: any) => {
+  const dispatch = useDispatch();
   const [similarModalVisibility, setSimilarModalVisibility] =
     React.useState(false);
 
@@ -109,41 +113,15 @@ const SaveShareCardScreen = ({ route }: any) => {
   });
   const [cardDetails, setCardDetails] = useState<Card>();
   const [cardList] = useState(pendingCardList);
-  const [selected, setSelected] = useState<string[]>(['']);
+  const [selected, setSelected] = useState<string[]>([]);
+  const reduxSelectedCardIds = useSelector(
+    (state: RootState) => state.selectedCardReducer.selectedCardIds,
+  );
   const navigation = useNavigation<NavigationProp<any>>();
 
   const handleSave = async () => {
     try {
-      // Iterate over each user's pending cards
-      for (const user of pendingCardList) {
-        // Extract the nested array of cards for the current user
-        const cardsArray = user.cards;
-
-        if (!Array.isArray(cardsArray)) {
-          console.log('Invalid cards array:', cardsArray);
-          continue; // Move to the next user's pending cards
-        }
-
-        // Iterate over each card in the cards array
-        for (const card of cardsArray) {
-          // Set cardDetails with the details of the current card
-
-          setCardDetails(card);
-
-          const similarCardsExist = await fetchSimilarCards(card);
-
-          // If similar cards exist for the current card, show the modal
-          if (similarCardsExist) {
-            setSimilarModalVisibility(true);
-          } else {
-            // Otherwise, navigate to the "SetContactNameScreen" screen
-            navigation.navigate('CardStack', {
-              screen: 'SetContactNameScreen',
-              params: { cardDetails: card, sharing: true },
-            });
-          }
-        }
-      }
+      dispatch(setSelectedCardIds(selected));
     } catch (error) {
       console.log('Error while handling save:', error);
     }
