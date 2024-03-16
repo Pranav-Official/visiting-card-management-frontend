@@ -184,11 +184,15 @@ const CardListScreen = ({ route }: any) => {
               data={cardList}
               renderItem={({ item }) => (
                 <CardComponent
-                  name={item.card_name}
-                  job_position={item.job_title}
-                  email={item.email}
-                  phone_number={item.phone}
-                  company_name={item.company_name}
+                  name={item.card_name ? item.card_name : 'Add Card Name'}
+                  job_position={
+                    item.job_title ? item.job_title : 'Add Job Title'
+                  }
+                  email={item.email ? item.email : 'Add Email'}
+                  phone_number={item.phone ? item.phone : 'Add Contact Number'}
+                  company_name={
+                    item.company_name ? item.company_name : 'Add Company Name'
+                  }
                   clickFunc={() => handlePress(item.card_id)}
                   alignToSides={true}
                 />

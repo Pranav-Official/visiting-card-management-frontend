@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import PersonIcon from '../../assets/images/person.svg';
 import CompanyIcon from '../../assets/images/company.svg';
 import PhoneIcon from '../../assets/images/phone.svg';
 import MailIcon from '../../assets/images/mail.svg';
@@ -48,7 +49,7 @@ type BorderTypes = 'Danger' | 'Auth' | 'Normal';
 const EditCardDetails = ({ route }: any) => {
   const [cardDetails, setCardDetails] = useState(route.params.cardDetails);
   const navigation = useNavigation<NavigationProp<any>>();
-
+  const [nameBorder, setNameBorder] = useState<BorderTypes>('Normal');
   const [emailBorder, setEmailBorder] = useState<BorderTypes>('Normal');
   const [phoneBorder, setPhoneBorder] = useState<BorderTypes>('Normal');
   const [mandatoryFieldsEmpty, setMandatoryFieldsEmpty] = useState(false);
@@ -111,6 +112,9 @@ const EditCardDetails = ({ route }: any) => {
   };
   // function called when a newly created card or edited card is saved
   const handleSavePress = async () => {
+    if (cardDetails.card_name != undefined && !cardDetails.card_name.trim()) {
+      setNameBorder('Danger');
+    }
     if (cardDetails.phone != undefined && !cardDetails.phone.trim()) {
       setPhoneBorder('Danger');
     }
@@ -119,7 +123,8 @@ const EditCardDetails = ({ route }: any) => {
     }
     if (
       (cardDetails.email != undefined && !cardDetails.email.trim()) ||
-      (cardDetails.phone != undefined && !cardDetails.phone.trim())
+      (cardDetails.phone != undefined && !cardDetails.phone.trim()) ||
+      (cardDetails.card_name != undefined && !cardDetails.card_name.trim())
     ) {
       setMandatoryFieldsEmpty(true);
       return;
@@ -139,6 +144,7 @@ const EditCardDetails = ({ route }: any) => {
       //Card name editable only on create a new card page
       if (!cardDetails.card_name.trim()) {
         setMandatoryFieldsEmpty(true);
+        setNameBorder('Danger');
         return;
       }
       if (!mandatoryFieldsEmpty) {
@@ -165,10 +171,11 @@ const EditCardDetails = ({ route }: any) => {
     //setting non empty states for mandatory fields for entries
     if (key === 'card_name') {
       if (cardDetails.card_name && !cardDetails.card_name.trim()) {
-        setPhoneBorder('Danger');
+        setNameBorder('Danger');
         setMandatoryFieldsEmpty(true);
       }
       setMandatoryFieldsEmpty(false);
+      setNameBorder('Normal');
     }
     if (key === 'email') {
       if (cardDetails.email && !cardDetails.email.trim()) {
@@ -228,15 +235,36 @@ const EditCardDetails = ({ route }: any) => {
           backImageUri={cardDetails.img_back_link}
         />
       </View>
-      <View style={styles.cardNameHead}>
-        <EditCardNameComponent
-          placeholder={'Enter Card Name'}
-          value={cardDetails.card_name}
-          setter={(value: string) => handleInputChange('card_name', value)}
-          readonly={!route.params.create}
-        />
-      </View>
+      {!route.params.create && (
+        <View style={styles.cardNameHead}>
+          <EditCardNameComponent
+            placeholder={'Enter Card Name'}
+            value={cardDetails.card_name}
+            setter={(value: string) => handleInputChange('card_name', value)}
+            readonly={!route.params.create}
+          />
+        </View>
+      )}
       <View style={styles.inputFieldsContainer}>
+        {route.params.create && (
+          <View style={styles.iconField}>
+            <View style={styles.icon}>
+              <PersonIcon width={30} height={20} />
+            </View>
+            <View style={styles.input}>
+              <EditInputComponent
+                placeholder="Card Name"
+                header="Card Name"
+                hidden={false}
+                value={cardDetails.card_name}
+                setter={(value: string) =>
+                  handleInputChange('card_name', value)
+                }
+                borderType={nameBorder}
+              />
+            </View>
+          </View>
+        )}
         <View style={styles.iconField}>
           <View style={styles.icon}>
             <DesignationIcon width={30} height={20} />
