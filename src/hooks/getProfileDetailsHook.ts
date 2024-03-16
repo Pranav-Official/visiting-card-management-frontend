@@ -10,15 +10,13 @@ type UserData = {
 
 type ResponseType = {
   userData: UserData;
-  status: boolean;
+  status: boolean; 
 };
 
 export async function getProfile(
   user_id: string,
   jwtToken: string,
 ): Promise<ResponseType> {
-  console.log('\n\nReached Profile HOOK');
-
   try {
     const getProfileDetails = await api.get('api/v1/getProfile', {
       params: { user_id },
@@ -30,8 +28,6 @@ export async function getProfile(
     if (getProfileDetails.status === 200) {
       const userData = getProfileDetails.data.data;
       const status = getProfileDetails.data.status;
-
-      console.log('\n\nGet Profile Response: ', userData, status);
       return { userData, status };
     } else {
       console.log('\nError Getting Profile Details (getProfileDetailsHook)');

@@ -43,49 +43,61 @@ type imageURI = {
 };
 
 const CommonImageComponent = ({ frontImageUri, backImageUri }: imageURI) => {
-  // Sample data for FlatList
-  const imageData = [
-    {
-      uri: frontImageUri
-        ? frontImageUri
-        : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEXptu3jFyRY50KKSUvX0iKJ7f2zxNPNsMwA&usqp=CAU',
-    },
-    {
-      uri: backImageUri
-        ? backImageUri
-        : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEXptu3jFyRY50KKSUvX0iKJ7f2zxNPNsMwA&usqp=CAU',
-    },
-  ];
+  const imageData = [];
+
+  if (frontImageUri) {
+    imageData.push({ uri: frontImageUri });
+  }
+  if (backImageUri) {
+    imageData.push({ uri: backImageUri });
+  }
+
   const [isImageVisible, setIsImageVisible] = useState(false);
   const [imageIndex, setImageIndex] = useState(0);
 
   const itemSeparator = () => <View style={styles.separator} />;
-
-  return (
-    <View style={styles.mainStyle}>
-      <FlatList
-        data={imageData}
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-        renderItem={({ item, index }) => (
-          <CommonImage
-            Image={item.uri}
-            indexSetter={() => setImageIndex(index)}
-            onPress={() => setIsImageVisible(true)}
+  if (!frontImageUri && !backImageUri) {
+    return (
+      <TouchableOpacity>
+        <View style={styles.mainStyle}>
+          <Image
+            source={require('../assets/images/DefaultCard.png')}
+            style={styles.singleImage}
+            resizeMode="cover"
           />
-        )}
-        keyExtractor={(_, index) => index.toString()}
-        ItemSeparatorComponent={itemSeparator}
-      />
-      <ImageView
-        images={imageData}
-        imageIndex={imageIndex}
-        keyExtractor={(_, index) => index.toString()}
-        visible={isImageVisible}
-        onRequestClose={() => setIsImageVisible(false)}
-      />
-    </View>
-  );
+        </View>
+      </TouchableOpacity>
+    );
+  } else {
+    return (
+      <View style={styles.mainStyle}>
+        <FlatList
+          data={imageData}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          renderItem={({ item, index }) => (
+            <CommonImage
+              Image={item.uri}
+              indexSetter={() => setImageIndex(index)}
+              onPress={() => setIsImageVisible(true)}
+            />
+          )}
+          keyExtractor={(_, index) => index.toString()}
+          ItemSeparatorComponent={itemSeparator}
+          contentContainerStyle={
+            imageData.length === 1 ? styles.CommonImagecontainer2 : null
+          }
+        />
+        <ImageView
+          images={imageData}
+          imageIndex={imageIndex}
+          keyExtractor={(_, index) => index.toString()}
+          visible={isImageVisible}
+          onRequestClose={() => setIsImageVisible(false)}
+        />
+      </View>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
@@ -99,8 +111,12 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 10,
   },
+  CommonImagecontainer2: {
+    paddingLeft: 25,
+    width: '100%',
+  },
   separator: {
-    width: 0, // Adjust the width based on your desired spacing
+    width: 0,
   },
   cardContainer: {
     flexDirection: 'row',
@@ -116,7 +132,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   gap: {
-    height: 20, // Set the desired gap height
+    height: 20,
   },
   imageContainer: {
     flex: 1,
@@ -127,6 +143,20 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: 'cover',
     width: '100%',
+  },
+  singleImage: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: colors['accent-white'],
+    marginLeft: 45,
+    borderRadius: 20,
+    height: 200,
+    width: 320,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.38,
+    shadowRadius: 4.84,
+    elevation: 5,
   },
 });
 

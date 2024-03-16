@@ -12,7 +12,7 @@ import MailIcon from '../../assets/images/mail.svg';
 import WebsiteIcon from '../../assets/images/website.svg';
 import DesignationIcon from '../../assets/images/jobTitle.svg';
 import colors from '../../utils/colorPallete';
-import MainButtonComponent from '../../components/MainButtoncomponent';
+import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import CommonImageComponent from '../../components/CommonImageComponent';
 import EditInputComponent from '../../components/InputComponent';
 import EditCardNameComponent from '../../components/EditCardNameComponent';
@@ -325,11 +325,7 @@ const EditCardDetails = ({ route }: any) => {
             </View>
           )}
         </View>
-        <MainButtonComponent
-          children={undefined}
-          title={'Save'}
-          onPressing={handleSavePress}
-        />
+        <PrimaryButtonComponent title={'Save'} onPressing={handleSavePress} />
       </View>
       {/* Similar Cards displaying modal */}
       <BottomSheetComponent
