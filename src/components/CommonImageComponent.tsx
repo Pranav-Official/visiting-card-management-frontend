@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   separator: {
-    width: 0, // Adjust the width based on your desired spacing
+    width: 0,
   },
   cardContainer: {
     flexDirection: 'row',
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   gap: {
-    height: 20, // Set the desired gap height
+    height: 20,
   },
   imageContainer: {
     flex: 1,
