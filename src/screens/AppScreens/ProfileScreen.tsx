@@ -68,7 +68,7 @@ const ProfileScreen = () => {
       
     });
   };
-  const handleNav = () => {
+  const handlePasswordReset = () => {
     navigation.navigate('ChangePassword', {
       email: profileResponse?.userData.email ??'',
       jwtToken: Constants.USER_JWT,
@@ -126,7 +126,7 @@ const ProfileScreen = () => {
             backgroundColor={colors['accent-white']}
             textColor={colors['primary-danger']}
             isHighlighted={true}
-            onPressing={() =>handleNav()}
+            onPressing={() =>handlePasswordReset()}
           />
           <PrimaryButtonComponent
             title={'Logout'}
