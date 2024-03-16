@@ -10,7 +10,7 @@ type UserData = {
 
 type ResponseType = {
   userData: UserData;
-  status: boolean;
+  status: boolean; 
 };
 
 export async function getProfile(
