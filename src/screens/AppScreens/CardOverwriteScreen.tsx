@@ -18,6 +18,7 @@ import { overwriteExistingCard } from '../../hooks/overWriteCardHook';
 import {
   CommonActions,
   NavigationProp,
+  StackActions,
   useNavigation,
 } from '@react-navigation/native';
 import Toast from 'react-native-root-toast';
@@ -161,16 +162,21 @@ const CardOverwriteScreen = ({ route }: any) => {
     console.log('\n\nOverWrite Response: ', overwriteResponse);
     if (overwriteResponse?.statusCode === '200') {
       Toast.show('Card Overwritten Successfully');
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 1,
-          routes: [{ name: 'Home' }],
-        }),
-      );
-      navigation.navigate('CardStack', {
-        screen: 'CardDetailsScreen',
-        params: { card_id: selected },
-      });
+
+      if (sharing === true) {
+        navigation.dispatch(StackActions.pop(1));
+      } else {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 1,
+            routes: [{ name: 'Home' }],
+          }),
+        );
+        navigation.navigate('CardStack', {
+          screen: 'CardDetailsScreen',
+          params: { card_id: selected },
+        });
+      }
       // navigation.navigate('CardDetailsScreen', { card_id: selected });
     } else {
       Toast.show('Error Overwriting Card');
@@ -180,48 +186,63 @@ const CardOverwriteScreen = ({ route }: any) => {
 
   const [selected, setSelected] = useState('');
   return (
-    <View style={{ padding: 18, flex: 1 }}>
-      <Text
-        style={{
-          fontSize: 28,
-          color: colors['primary-text'],
-          fontWeight: '600',
-          marginBottom: 20,
-          textAlign: 'center',
-        }}
-      >
-        Choose Card to Overwrite
-      </Text>
-      <FlatList
-        data={cardList}
-        renderItem={({ item }) => {
-          return (
-            <RenderItem item={item} selected={selected} setter={setSelected} />
-          );
-        }}
-        keyExtractor={(item) => item.contact_name}
-        contentContainerStyle={{ paddingBottom: 20 }}
-      />
-      <View style={styles.buttonContainer}>
-        <View style={{ flex: 1 }}>
-          {!imageUploadProcessing ? (
-            <MainButtonComponent
-              title="Overwrite"
-              onPressing={overwriteFunction}
+    <View style={styles.mainContainer}>
+      <View style={styles.newCardContainer}>
+        <CardComponent
+          name={cardDetails.card_name}
+          job_position={cardDetails.job_title}
+          phone_number={cardDetails.phone}
+          email={cardDetails.email}
+          company_name={cardDetails.company_name}
+        ></CardComponent>
+      </View>
+      <View style={styles.bottomContainer}>
+        <Text
+          style={{
+            fontSize: 28,
+            color: colors['primary-text'],
+            fontWeight: '600',
+            marginBottom: 20,
+            textAlign: 'center',
+          }}
+        >
+          Choose Card to Overwrite
+        </Text>
+        <FlatList
+          data={cardList}
+          renderItem={({ item }) => {
+            return (
+              <RenderItem
+                item={item}
+                selected={selected}
+                setter={setSelected}
+              />
+            );
+          }}
+          keyExtractor={(item) => item.contact_name}
+          contentContainerStyle={{ paddingBottom: 20 }}
+        />
+        <View style={styles.buttonContainer}>
+          <View style={{ flex: 1 }}>
+            {!imageUploadProcessing ? (
+              <MainButtonComponent
+                title="Overwrite"
+                onPressing={overwriteFunction}
+              />
+            ) : (
+              <ActivityIndicator
+                style={styles.loading}
+                size="large"
+                color={colors['secondary-light']}
+              />
+            )}
+          </View>
+          <View style={{ flex: 1 }}>
+            <ProfileButtonComponent
+              title="Cancel"
+              onPressing={() => navigation.goBack()}
             />
-          ) : (
-            <ActivityIndicator
-              style={styles.loading}
-              size="large"
-              color={colors['secondary-light']}
-            />
-          )}
-        </View>
-        <View style={{ flex: 1 }}>
-          <ProfileButtonComponent
-            title="Cancel"
-            onPressing={() => navigation.goBack()}
-          />
+          </View>
         </View>
       </View>
     </View>
@@ -229,18 +250,29 @@ const CardOverwriteScreen = ({ route }: any) => {
 };
 
 const styles = StyleSheet.create({
-  view: {
-    justifyContent: 'flex-end',
-    margin: 0,
+  mainContainer: {
+    backgroundColor: colors['primary-accent'],
+    flex: 1,
   },
-  bottomSheet: {
-    width: '100%',
-    height: '85%',
-    alignItems: 'center',
-    paddingTop: 25,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+  newCardContainer: {
+    paddingVertical: 50,
+    padding: 25,
+  },
+  bottomContainer: {
     backgroundColor: colors['secondary-light'],
+    padding: 18,
+    flex: 1,
+    borderTopRightRadius: 25,
+    borderTopLeftRadius: 25,
+
+    shadowColor: colors['primary-text'],
+    shadowOffset: {
+      width: 0,
+      height: -4,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   similarCardsText: {
     marginTop: 10,
@@ -254,6 +286,7 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
     borderRadius: 14,
     width: '100%',
+    zIndex: 1,
   },
   contactName: {
     paddingStart: 10,
@@ -262,11 +295,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   buttonContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
     flexDirection: 'row',
     gap: 10,
-    height: 100,
-    paddingVertical: 10,
     width: '100%',
+    height: 100,
     paddingHorizontal: 10,
   },
   loading: {

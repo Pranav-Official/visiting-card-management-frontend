@@ -12,6 +12,7 @@ import ProfileButtonComponent from '../../components/ProfileButtonComponent';
 import {
   CommonActions,
   NavigationProp,
+  StackActions,
   useNavigation,
 } from '@react-navigation/native';
 import { getLocalItem } from '../../utils/Utils';
@@ -20,6 +21,7 @@ import { newCardDetails } from '../../hooks/createCardHook';
 import { acceptNewCard } from '../../hooks/acceptCardHook';
 import Toast from 'react-native-root-toast';
 import cloudinaryUpload from '../../hooks/cloudinaryUpload';
+import CardComponent from '../../components/CardComponent';
 
 const SetContactNameScreen = ({ route }: any) => {
   const { cardDetails, sharing } = route.params;
@@ -96,13 +98,17 @@ const SetContactNameScreen = ({ route }: any) => {
 
       // if save successful, navigating to home screen
       if (newStatus === '200') {
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 1,
-            routes: [{ name: 'Home' }],
-          }),
-        );
-        navigation.navigate('Home', {});
+        if (sharing === true) {
+          navigation.dispatch(StackActions.pop(1));
+        } else {
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 1,
+              routes: [{ name: 'Home' }],
+            }),
+          );
+          navigation.navigate('Home', {});
+        }
       }
     } catch (error) {
       console.error('Error creating new card:', error);
@@ -111,6 +117,13 @@ const SetContactNameScreen = ({ route }: any) => {
 
   return (
     <View style={styles.container}>
+      <CardComponent
+        name={cardDetails.card_name}
+        job_position={cardDetails.job_title}
+        email={cardDetails.email}
+        phone_number={cardDetails.Phone}
+        company_name={cardDetails.company_name}
+      ></CardComponent>
       <Text style={styles.chooseText}>Choose a Name for the</Text>
       <Text style={styles.newContact}>New Contact</Text>
       <View style={styles.inputText}>
@@ -151,7 +164,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors['secondary-light'],
     flex: 1,
     padding: 40,
-    paddingTop: '70%',
+    paddingTop: '40%',
   },
   chooseText: {
     color: colors['primary-text'],

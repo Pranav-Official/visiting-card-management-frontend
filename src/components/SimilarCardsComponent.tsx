@@ -52,7 +52,7 @@ const SimilarCardsComponent = (props) => {
 
   return (
     <View style={styles.modalView}>
-      <Text style={styles.similarCardsText}>Similar Cards Alredy Exists!</Text>
+      <Text style={styles.similarCardsText}>Similar Cards Already Exists!</Text>
 
       <FlatList
         data={similarCardList}
