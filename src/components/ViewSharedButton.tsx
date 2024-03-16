@@ -3,18 +3,17 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import colors from '../utils/colorPallete';
 import SharePersonIcon from '..//assets/images/shareContactIcon.svg';
 interface ViewSharedButtonProps {
-  children?: ReactNode;
   title: string;
   number: string;
   onPressing: () => any;
-  highlighted?: boolean;
+  
 }
 const ViewSharedButton: React.FC<ViewSharedButtonProps> = ({
-  children,
+  
   title,
   number,
   onPressing,
-  highlighted = false,
+  
 }) => {
   return (
     <TouchableOpacity onPress={() => onPressing()} style={styles.mainContainer}>
