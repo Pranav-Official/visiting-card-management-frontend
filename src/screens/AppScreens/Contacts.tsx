@@ -28,7 +28,7 @@ import CardComponent from '../../components/CardComponent';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeCard, setCards } from '../../context/pendingCardsSlice';
+import { removeCardById, setCards } from '../../context/pendingCardsSlice';
 import { RootState } from '../../context/store';
 
 type Contact = {
@@ -70,7 +70,7 @@ const ContactsPage = () => {
 
   const dispatch = useDispatch();
   const reduxPendingCardList = useSelector(
-    (state: RootState) => state.pendingCardsReducer.cards,
+    (state: RootState) => state.pendingCardsReducer.pendingCardList,
   );
 
   const get = async () => {
@@ -130,16 +130,7 @@ const ContactsPage = () => {
       ) {
         setModalVisibility(true);
         setPendingCardList(pendingCards.pendingCardList);
-        // console.log(
-        //   '\n\n[From HomeScreen] PendingCards: ',
-        //   pendingCards.pendingCardList[0],
-        // );
-        let cards: any[] = [];
-        for (let i = 0; i < pendingCards.pendingCardList.length; i++) {
-          cards = cards.concat(pendingCards.pendingCardList[i].cards);
-        }
-        console.log('\n\n[From HomeScreen] PendingCards: ', cards);
-        dispatch(setCards(cards));
+        dispatch(setCards(pendingCards.pendingCardList));
       } else {
         setModalVisibility(false);
       }
@@ -265,9 +256,6 @@ const ContactsPage = () => {
                 },
               },
             });
-            dispatch(
-              removeCard({ card_id: '1e48e00a-41dc-40d7-997c-7feb1296c3c2' }),
-            );
           }}
         >
           <MaterialCommunityIcons

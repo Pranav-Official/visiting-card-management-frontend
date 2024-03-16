@@ -14,12 +14,19 @@ type Cards = {
   user_id: string | null;
 };
 
-type PendingCardsState = {
+type PendingCards = {
+  user_email: string;
+  user_id: string;
+  user_fullname: string;
   cards: Cards[];
 };
 
+type PendingCardsState = {
+  pendingCardList: PendingCards[];
+};
+
 const initialState: PendingCardsState = {
-  cards: [],
+  pendingCardList: [],
 };
 
 export const pendingCardsSlice = createSlice({
@@ -27,16 +34,28 @@ export const pendingCardsSlice = createSlice({
   initialState,
   reducers: {
     setCards: (state, action) => {
-      state.cards = action.payload;
+      state.pendingCardList = action.payload;
     },
-    removeCard: (state, action) => {
-      state.cards = state.cards.filter(
-        (card) => card.card_id !== action.payload.card_id,
+    removeCardById: (state, action) => {
+      const updatedPendingCardList = state.pendingCardList.map(
+        (pendingCard) => {
+          const updatedCards = pendingCard.cards.filter(
+            (card) => card.card_id !== action.payload.card_id,
+          );
+          return {
+            ...pendingCard,
+            cards: updatedCards,
+          };
+        },
       );
+      const filteredPendingCardList = updatedPendingCardList.filter(
+        (pendingCard) => pendingCard.cards.length > 0,
+      );
+      state.pendingCardList = filteredPendingCardList;
     },
   },
 });
 
-export const { setCards, removeCard } = pendingCardsSlice.actions;
+export const { setCards, removeCardById } = pendingCardsSlice.actions;
 
 export default pendingCardsSlice.reducer;
