@@ -8,7 +8,7 @@ import {
   Modal,
   TouchableOpacity,
 } from 'react-native';
-import MainButtonComponent from '../../components/MainButtoncomponent';
+import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import TextRecognition, {
   TextRecognitionScript,
 } from '@react-native-ml-kit/text-recognition';
@@ -198,7 +198,7 @@ const CropConfirmationScreen = ({ route }) => {
         )}
       </View>
       <View style={styles.extractButton}>
-        <MainButtonComponent
+        <PrimaryButtonComponent
           title="Extract Card Details"
           onPressing={extractData}
         />

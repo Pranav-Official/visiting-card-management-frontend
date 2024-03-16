@@ -23,8 +23,7 @@ import SearchBarComponent from '../../components/SearchBarComponent';
 import ContactShimmer from '../../components/Shimmers/ContactShimmer';
 import { getPendingCards } from '../../hooks/getPendingCardsHook';
 import BottomSheetComponent from '../../components/BottomSheetComponent';
-import MainButtonComponent from '../../components/MainButtoncomponent';
-import ProfileButtonComponent from '../../components/ProfileButtonComponent';
+import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import CardComponent from '../../components/CardComponent';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -325,7 +324,7 @@ const ContactsPage = () => {
           />
           <View style={styles.buttonContainer}>
             <Text style={styles.pendingCardsText}>Choose an Option</Text>
-            <MainButtonComponent
+            <PrimaryButtonComponent
               title="Save shared cards"
               onPressing={() =>
                 navigation.navigate('CardStack', {
@@ -333,15 +332,17 @@ const ContactsPage = () => {
                   params: { pendingCardList },
                 })
               }
-            ></MainButtonComponent>
-            <ProfileButtonComponent
+            ></PrimaryButtonComponent>
+            <PrimaryButtonComponent
               title="I'll do it later"
               onPressing={async () => {
                 setModalVisibility(false);
                 await setLocalItem(Constants.SAVE_SHARES_LATER, 'true');
               }}
-              danger={true}
-            ></ProfileButtonComponent>
+              textColor={colors['primary-text']}
+              backgroundColor={colors['accent-white']}
+              isHighlighted={true}
+            ></PrimaryButtonComponent>
           </View>
         </View>
       </BottomSheetComponent>

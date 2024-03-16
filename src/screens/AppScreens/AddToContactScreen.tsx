@@ -10,10 +10,9 @@ import {
 import colors from '../../utils/colorPallete';
 import CardComponent from '../../components/CardComponent';
 import RadioButton from '../../components/RadioButton';
-import MainButtonComponent from '../../components/MainButtoncomponent';
-import ProfileButtonComponent from '../../components/ProfileButtonComponent';
+import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import Constants from '../../utils/Constants';
-import { addToExistingContact } from '../../hooks/addToContactHook';
+import { addToExistingContact } from '../../hooks/AddToExistingContact';
 import { getLocalItem } from '../../utils/Utils';
 import {
   CommonActions,
@@ -21,7 +20,8 @@ import {
   StackActions,
   useNavigation,
 } from '@react-navigation/native';
-import { addSharedCardToExistingContact } from '../../hooks/AddToExistingContact';
+import { addSharedCardToExistingContact } from '../../hooks/addSharedToExistingContact';
+import Toast from 'react-native-root-toast';
 import cloudinaryUpload from '../../hooks/cloudinaryUpload';
 
 type Card = {
@@ -38,71 +38,74 @@ type ContactCard = {
   parent_card_id: string;
   cards: Card[];
 };
+
 type renderItemType = {
   item: ContactCard;
   selected: string;
-  setter: (cardId: string) => void;
+  setter: any;
 };
-const RenderItem = ({ item, selected, setter }: renderItemType) => (
-  <View
-    style={[
-      styles.similarCardsContainer,
-      { flexDirection: 'column', marginBottom: 20, gap: 20 },
-    ]}
-  >
-    <View style={{ flexDirection: 'row' }}>
-      <TouchableOpacity
-        style={{ flex: 1, paddingTop: 5 }}
-        onPress={() => {
-          setter(item.parent_card_id);
-          console.log('\n\nTHE SETTER IS: ', item.parent_card_id);
-        }}
-      >
-        {selected == item.parent_card_id ? (
-          <RadioButton selected={true} />
-        ) : (
-          <RadioButton />
-        )}
-      </TouchableOpacity>
-      <View style={{ flex: 15 }}>
-        <Text style={styles.contactName}>{item.contact_name}</Text>
-      </View>
-    </View>
-    {item.cards.map((card: Card) => (
-      <View style={{ flexDirection: 'row' }} key={card.card_id}>
-        <View style={{ flex: 1 }}>
-          <CardComponent
-            alignToSides={false}
-            job_position={card.job_title}
-            name={card.card_name}
-            email={card.email}
-            phone_number={card.phone}
-            company_name={card.company_name}
-          />
+
+const RenderItem = ({ item, selected, setter }: renderItemType) => {
+  const handlePress = () => {
+    if (selected === item.parent_card_id) {
+      setter('');
+    } else {
+      setter(item.parent_card_id);
+    }
+  };
+
+  return (
+    <TouchableOpacity
+      style={[
+        styles.similarCardsContainer,
+        { flexDirection: 'column', marginBottom: 20, gap: 20 },
+      ]}
+      activeOpacity={1}
+      onPress={handlePress} // Use the handlePress function
+    >
+      <View style={{ flexDirection: 'row' }}>
+        <View style={{ flex: 1, paddingTop: 5 }}>
+          {selected === item.parent_card_id ? (
+            <RadioButton selected={true} />
+          ) : (
+            <RadioButton />
+          )}
+        </View>
+        <View style={{ flex: 15 }}>
+          <Text style={styles.contactName}>{item.contact_name}</Text>
         </View>
       </View>
-    ))}
-  </View>
-);
+      {item.cards.map((card: Card) => (
+        <View style={{ flexDirection: 'row' }} key={card.card_id}>
+          <View style={{ flex: 1 }}>
+            <CardComponent
+              card_id={card.card_id}
+              alignToSides={false}
+              job_position={card.job_title}
+              name={card.card_name}
+              email={card.email}
+              phone_number={card.phone}
+              company_name={card.company_name}
+            />
+          </View>
+        </View>
+      ))}
+    </TouchableOpacity>
+  );
+};
 
 const AddToContact = ({ route }: any) => {
   const inputList = route.params.similarCardList;
   let cardDetails = route.params.cardDetails;
   const sharing: boolean = route.params.sharing;
-  console.log('ADd to contact Screen: sharing page? :', sharing);
   const [cardList] = useState(inputList);
   const [selected, setSelected] = useState('');
   const [imageUploadProcessing, setImageUploadProcessing] = useState(false);
   const navigation = useNavigation<NavigationProp<any>>();
 
   const addToContactFunction = async () => {
-    console.log('\n\nADD TO CONTACTS REACHED!!!!!\n\n');
     const user_id = (await getLocalItem(Constants.USER_ID)) ?? '';
-    console.log('\n\nUser Id from AddToContact: ', user_id);
     const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
-    console.log('\n\nTHE CARD DETAILS IN AToC are: ', cardDetails);
-    console.log('\n\nSelected Card ID: ', selected);
-
     let addToContactResponse;
     if (sharing == true) {
       addToContactResponse = await addSharedCardToExistingContact(
@@ -110,10 +113,6 @@ const AddToContact = ({ route }: any) => {
         jwtToken,
         selected,
         cardDetails,
-      );
-      console.log(
-        '\n\nADDD to contact Respone from SCREEN: ',
-        addToContactResponse.addToExistingContactData,
       );
     } else {
       if (cardDetails.img_front_link) {
@@ -147,16 +146,12 @@ const AddToContact = ({ route }: any) => {
         selected,
         cardDetails,
       );
-      console.log(
-        '\n\nADDD to contact Respone from SCREEN: ',
-        addToContactResponse?.addToExistingContactData,
-      );
     }
 
     if (addToContactResponse?.statusCode === 200) {
       const createdCardId =
         addToContactResponse.addToExistingContactData.data.cardId;
-      console.log('\n\nNEWLY CREATED CARD ID: ', createdCardId);
+      Toast.show('Card Added Successfully!');
       navigation.dispatch(
         CommonActions.reset({
           index: 1,
@@ -167,7 +162,10 @@ const AddToContact = ({ route }: any) => {
         screen: 'CardDetailsScreen',
         params: { card_id: createdCardId },
       });
-    } else console.log('\n\nError Navigating');
+    } else {
+      Toast.show('Error Adding Card');
+      console.log('\n\nError Adding Screen');
+    }
   };
 
   return (
@@ -196,7 +194,7 @@ const AddToContact = ({ route }: any) => {
       <View style={styles.buttonContainer}>
         <View style={{ flex: 1 }}>
           {!imageUploadProcessing ? (
-            <MainButtonComponent
+            <PrimaryButtonComponent
               title="Add to contact"
               onPressing={() => addToContactFunction()}
             />
@@ -209,9 +207,10 @@ const AddToContact = ({ route }: any) => {
           )}
         </View>
         <View style={{ flex: 1 }}>
-          <ProfileButtonComponent
+          <PrimaryButtonComponent
             title="Cancel"
             onPressing={() => navigation.dispatch(StackActions.pop(1))}
+            backgroundColor={colors['secondary-grey']}
           />
         </View>
       </View>
@@ -245,6 +244,7 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
     borderRadius: 14,
     width: '100%',
+    zIndex: 1,
   },
   contactName: {
     paddingStart: 10,

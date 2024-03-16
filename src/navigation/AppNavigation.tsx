@@ -17,6 +17,9 @@ import ProfileScreen from '../screens/AppScreens/ProfileScreen';
 import CropConfirmationScreen from '../screens/AppScreens/CropConfirmationScreen';
 import SaveShareCardScreen from '../screens/AppScreens/SaveShareCardScreen';
 import SearchScreen from '../screens/AppScreens/SearchScreen';
+import SharedContactsScreen from '../screens/AppScreens/SharedContactsScreen';
+import ViewSharedContactsScreen from '../screens/AppScreens/ViewSharedContactsScreen';
+import ChangePassword from '../screens/AuthScreens/ChangePassword';
 const StackNav = createNativeStackNavigator();
 const HomeStackNavigation = () => {
   return (
@@ -28,6 +31,7 @@ const HomeStackNavigation = () => {
       <StackNav.Screen name="Home" component={HomeBottomBarNavigation} />
       <StackNav.Screen name="SearchScreen" component={SearchScreen} />
       <StackNav.Screen name="CardStack" component={CardStackNavigation} />
+      <StackNav.Screen name="ChangePassword" component={ChangePassword}/>
     </StackNav.Navigator>
   );
 };
@@ -89,7 +93,7 @@ const HomeBottomBarNavigation = () => {
             />
           ),
         }}
-      />
+      />       
     </BottomBarNavigation.Navigator>
   );
 };
@@ -125,6 +129,14 @@ const CardStackNavigation = () => {
       <StackNav.Screen
         name="CropConfirmationScreen"
         component={CropConfirmationScreen}
+      />
+      <StackNav.Screen
+        name="ViewSharedContactsScreen"
+        component={ViewSharedContactsScreen}
+      />
+      <StackNav.Screen
+        name="SharedContactsScreen"
+        component={SharedContactsScreen}
       />
     </CardStackNav.Navigator>
   );
