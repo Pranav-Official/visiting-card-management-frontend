@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import {
-    ScrollView,
-  StyleSheet,
-  ToastAndroid,
-  View,
-} from 'react-native';
+import { ScrollView, StyleSheet, ToastAndroid, View } from 'react-native';
 import MainLogoComponent from '../../components/MainLogoComponent';
 import InputComponent from '../../components/InputComponent';
-import MainButtonComponent from '../../components/MainButtoncomponent';
 import {
   changePassword,
   changePasswordProp,
@@ -16,6 +10,7 @@ import { RouteProp, useNavigation } from '@react-navigation/native';
 import TopBackButton from '../../components/BackButton';
 import { isValidPassword } from '../../utils/regexCheck';
 import colors from '../../utils/colorPallete';
+import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 
 type ChangePasswordRouteProps = {
   ChangePassword: {
@@ -49,23 +44,22 @@ const ChangePassword: React.FC<Props> = ({ route }) => {
     setPasswordMatch(value === newPassword);
   };
 
-//   const passwordBorder: BorderTypes = passwordMatch ? 'Normal' : 'Danger';
+  //   const passwordBorder: BorderTypes = passwordMatch ? 'Normal' : 'Danger';
 
   const handleChangePassword = async () => {
-    
     if (!passwordMatch) {
       ToastAndroid.show('Passwords do not match!', ToastAndroid.SHORT);
       setPasswordBorder('Danger');
       return;
     }
-    if(!isValidPassword(newPassword)){
-        ToastAndroid.showWithGravity(
-            'Password must be at least 8 characters with uppercase, lowercase, digit, and special character.',
-            ToastAndroid.SHORT,
-            ToastAndroid.CENTER,
-          );
-          setPasswordBorder('Danger');
-          return;
+    if (!isValidPassword(newPassword)) {
+      ToastAndroid.showWithGravity(
+        'Password must be at least 8 characters with uppercase, lowercase, digit, and special character.',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
+      setPasswordBorder('Danger');
+      return;
     }
     // if(passwordMatch && isValidPassword(newPassword)){
     //     setPasswordBorder('Danger');
@@ -80,18 +74,17 @@ const ChangePassword: React.FC<Props> = ({ route }) => {
 
     try {
       const response = await changePassword(changePasswordProps);
-      console.log('changepassword response',response);
+      console.log('changepassword response', response);
       ToastAndroid.show('Password changed successfully!', ToastAndroid.SHORT);
       // Clear the password fields after successful change
       setNewPassword('');
       setConfirmPassword('');
-      if(response.statusCode == '200'){
+      if (response.statusCode == '200') {
         navigation.goBack();
       }
-    //   if(!passwordMatch && !isValidPassword(newPassword)){
-    //     setPasswordBorder('Danger');
-    // }
-      
+      //   if(!passwordMatch && !isValidPassword(newPassword)){
+      //     setPasswordBorder('Danger');
+      // }
     } catch (error) {
       console.error('Error changing password:', error);
       // Display an error message
@@ -129,10 +122,10 @@ const ChangePassword: React.FC<Props> = ({ route }) => {
         />
       </View>
       <View style={styles.button_container}>
-        <MainButtonComponent
+        <PrimaryButtonComponent
           title={'Change Password'}
           onPressing={handleChangePassword}
-        ></MainButtonComponent>
+        ></PrimaryButtonComponent>
       </View>
     </ScrollView>
   );
@@ -142,7 +135,7 @@ const styles = StyleSheet.create({
   main_container: {
     width: '100%',
     height: 1500,
-    backgroundColor:colors['secondary-light']
+    backgroundColor: colors['secondary-light'],
   },
   logo_container: {
     alignItems: 'center',
@@ -161,10 +154,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     height: 100,
   },
-  back_button_container:{
-    alignItems:'flex-start',
-    paddingTop:5,
-  }
+  back_button_container: {
+    alignItems: 'flex-start',
+    paddingTop: 5,
+  },
 });
 
 export default ChangePassword;
