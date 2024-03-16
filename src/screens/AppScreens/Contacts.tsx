@@ -28,6 +28,7 @@ import ProfileButtonComponent from '../../components/ProfileButtonComponent';
 import CardComponent from '../../components/CardComponent';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { listCards } from '../../hooks/CardListHook';
 
 type Contact = {
   card_id: string;
@@ -187,13 +188,30 @@ const ContactsPage = () => {
     }, []),
   );
 
-  const contactPage = (id: string, name: string) => {
+  const contactPage = async (id: string, name: string) => {
     console.log('contactPage', id, name);
+    const userId = (await getLocalItem(Constants.USER_ID)) ?? '';
+    const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
+    const cardId = id;
 
-    navigation.navigate('CardStack', {
-      screen: 'CardListScreen',
-      params: { card_id: id, name: name },
+    const result = await listCards({
+      user_id: userId,
+      jwt_token: jwtToken,
+      card_id: cardId,
     });
+
+    if (result.cardResp.data.length === 1) {
+      const cardId = result.cardResp.data[0].card_id;
+      navigation.navigate('CardStack', {
+        screen: 'CardDetailsScreen',
+        params: { card_id: cardId },
+      });
+    } else {
+      navigation.navigate('CardStack', {
+        screen: 'CardListScreen',
+        params: { card_id: id, name: name },
+      });
+    }
   };
 
   const goToSearchScreen = () => {

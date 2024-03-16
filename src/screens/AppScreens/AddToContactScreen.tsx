@@ -13,7 +13,7 @@ import RadioButton from '../../components/RadioButton';
 import MainButtonComponent from '../../components/MainButtoncomponent';
 import ProfileButtonComponent from '../../components/ProfileButtonComponent';
 import Constants from '../../utils/Constants';
-import { addToExistingContact } from '../../hooks/addToExistingContact';
+import { addToExistingContact } from '../../hooks/AddToExistingContact';
 import { getLocalItem } from '../../utils/Utils';
 import {
   CommonActions,
