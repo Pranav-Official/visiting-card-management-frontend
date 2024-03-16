@@ -199,11 +199,12 @@ const AddToContact = ({ route }: any) => {
               onPressing={() => addToContactFunction()}
             />
           ) : (
-            <ActivityIndicator
-              style={styles.loading}
-              size="large"
-              color={colors['secondary-light']}
-            />
+            <PrimaryButtonComponent title="">
+              <ActivityIndicator
+                size="large"
+                color={colors['secondary-light']}
+              />
+            </PrimaryButtonComponent>
           )}
         </View>
         <View style={{ flex: 1 }}>

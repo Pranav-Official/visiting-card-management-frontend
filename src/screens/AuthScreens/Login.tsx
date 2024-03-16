@@ -5,13 +5,12 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  TextInput,
   ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
 
-import ButtonComponent from '../../components/PrimaryButtonComponent';
+import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import InputComponent from '../../components/InputComponent';
 import MainLogoComponent from '../../components/MainLogoComponent';
 import BottomDialougeTouchable from '../../components/BottomDialougeTouchable';
@@ -168,18 +167,21 @@ const Login = () => {
           borderType={passwordBorder}
           placeholder="Enter Password"
         />
-        {!loading ? (
-          <View style={styles.buttonContainer}>
-            <ButtonComponent onPressing={() => LoginMain()} title="Log In" />
-          </View>
-        ) : (
-          <ActivityIndicator
-            style={styles.loading}
-            size="large"
-            color={colors['secondary-light']}
-          />
-        )}
-
+        <View style={styles.buttonContainer}>
+          {!loading ? (
+            <PrimaryButtonComponent
+              onPressing={() => LoginMain()}
+              title="Log In"
+            />
+          ) : (
+            <PrimaryButtonComponent title="">
+              <ActivityIndicator
+                size="large"
+                color={colors['secondary-light']}
+              />
+            </PrimaryButtonComponent>
+          )}
+        </View>
         <TouchableOpacity style={styles.forgotPassword}>
           <Text>Forgot Password?</Text>
         </TouchableOpacity>
