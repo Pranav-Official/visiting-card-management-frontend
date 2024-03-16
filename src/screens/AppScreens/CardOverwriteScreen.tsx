@@ -46,40 +46,52 @@ type routeParams = {
   CardDetailsScreen?: { card_id: string };
   CardStack?: { screen: string; params: { card_id: string } };
 };
-const RenderItem = ({ item, selected, setter }: renderItemType) => (
-  <View
-    style={[
-      styles.similarCardsContainer,
-      { flexDirection: 'column', marginBottom: 20, gap: 20 },
-    ]}
-  >
-    <Text style={styles.contactName}>{item.contact_name}</Text>
-    {item.cards.map((card: Card) => (
-      <View style={{ flexDirection: 'row' }} key={card.card_id}>
-        <TouchableOpacity
-          style={{ flex: 1, paddingTop: 5 }}
-          onPress={() => setter(card.card_id)}
-        >
-          {selected == card.card_id ? (
-            <RadioButton selected={true} />
-          ) : (
-            <RadioButton />
-          )}
-        </TouchableOpacity>
-        <View style={{ flex: 6 }}>
-          <CardComponent
-            alignToSides={false}
-            job_position={card.job_title}
-            name={card.card_name}
-            email={card.email}
-            phone_number={card.phone}
-            company_name={card.company_name}
-          />
+
+const RenderItem = ({ item, selected, setter }: renderItemType) => {
+  const handlePress = (cardId: string) => {
+    if (selected === cardId) {
+      setter('');
+    } else {
+      setter(cardId);
+    }
+  };
+
+  return (
+    <View
+      style={[
+        styles.similarCardsContainer,
+        { flexDirection: 'column', marginBottom: 20, gap: 20 },
+      ]}
+    >
+      <Text style={styles.contactName}>{item.contact_name}</Text>
+      {item.cards.map((card) => (
+        <View style={{ flexDirection: 'row' }} key={card.card_id}>
+          <TouchableOpacity
+            style={{ flex: 1, paddingTop: 5 }}
+            onPress={() => handlePress(card.card_id)}
+          >
+            {selected === card.card_id ? (
+              <RadioButton selected={true} />
+            ) : (
+              <RadioButton />
+            )}
+          </TouchableOpacity>
+          <View style={{ flex: 6 }}>
+            <CardComponent
+              card_id={card.card_id}
+              alignToSides={false}
+              job_position={card.job_title}
+              name={card.card_name}
+              email={card.email}
+              phone_number={card.phone}
+              company_name={card.company_name}
+            />
+          </View>
         </View>
-      </View>
-    ))}
-  </View>
-);
+      ))}
+    </View>
+  );
+};
 
 const CardOverwriteScreen = ({ route }: any) => {
   const inputList = route.params.similarCardList;

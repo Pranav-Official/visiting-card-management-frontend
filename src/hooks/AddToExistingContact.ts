@@ -1,76 +1,54 @@
-import { CardData } from './searchListHook';
-import Constants from '../utils/Constants';
-import { getLocalItem } from '../utils/Utils';
 import api from './api';
 
-interface CardDetailsProp {
-  user_id: string;
-  jwtToken: string;
-  parent_card_id: string;
-  newData: CardDataType;
-}
-
-type CardDataType = {
+type Card = {
+  card_id: string;
   card_name: string;
-  img_front_link: string;
-  img_back_link: string;
-  job_title: string;
   email: string;
   phone: string;
+  job_title: string;
   company_name: string;
   company_website: string;
 };
 
-interface CardDetailsResponse {
-  statusCode: string;
-  addToExistingContactResp?: string;
-}
-
-export async function addSharedCardToExistingContact(
+//Add To Existing Contact Hook
+export async function addToExistingContact(
   user_id: string,
   jwtToken: string,
   parent_card_id: string,
-  newData: CardData,
+  cardDetails: Card,
 ) {
-  let statusCode = '';
-  let addToExistingContactData: string | undefined;
-  console.log(
-    '\n\nReached Add Shared Card to existing',
+  let addToExistingContactData = null;
+  let statusCode: number;
+  const addToContactPayload = {
     user_id,
-    jwtToken,
     parent_card_id,
-    newData,
-  );
-  const current_user_id = (await getLocalItem(Constants.USER_ID)) || '';
-  newData.user_id = current_user_id;
-  const shared_card_id = newData.card_id;
-  console.log('\n\nRequest Payload:', {
-    user_id,
-    shared_card_id,
-    parent_card_id,
-  });
+    ...cardDetails,
+  };
 
-  console.log('newData--->', newData);
-
+  console.log('\n\nAdd to Contact API HOOK CardDetails: ', cardDetails);
   try {
-    const CardDetailsResponse = await api.post(
-      'api/v1/addSharedCardToExistingContact',
+    const addToExistingContactResponse = await api.post(
+      '/api/v1/addToExistingContact',
+      addToContactPayload,
       {
-        user_id: user_id,
-        shared_card_id: shared_card_id,
-        parent_card_id: parent_card_id,
-      },
-      {
-        headers: { Authorization: `Bearer ${jwtToken}` },
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
       },
     );
 
-    statusCode = CardDetailsResponse.status;
-    //console.log('add to existing contact response---->',CardDetailsResponse);
-    addToExistingContactData = CardDetailsResponse.data;
-  } catch (error) {
-    console.log('Error while logging in:', error);
-  }
+    console.log(
+      '\n\nAdd To Contact Response: ',
+      addToExistingContactResponse.data,
+    );
 
-  return { addToExistingContactData, statusCode };
+    addToExistingContactData = addToExistingContactResponse.data;
+    statusCode = addToExistingContactResponse.status;
+
+    return { addToExistingContactData, statusCode };
+  } catch (error) {
+    statusCode = 400;
+    console.log('Error while logging in:', error);
+    return { addToExistingContactData, statusCode };
+  }
 }

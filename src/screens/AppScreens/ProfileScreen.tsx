@@ -16,13 +16,14 @@ import { getLocalItem, setLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import { userLogin } from '../../context/userSlice';
 import { useDispatch } from 'react-redux';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 type UserData = {
   email: string;
   fullName: string;
   totalAcceptedCards: number;
   totalContacts: number;
-  totalPendingCards: number;
+  totalPendingCards: number
 };
 
 type ResponseType = {
@@ -60,6 +61,14 @@ const ProfileScreen = () => {
     setLocalItem(Constants.USER_ID, '');
     dispatch(userLogin(false));
   };
+
+  const navigation = useNavigation<NavigationProp<any>>();
+  const handleNav = () => {
+    navigation.navigate('ChangePassword', {
+      email: profileResponse?.userData.email ??'',
+      jwtToken: Constants.USER_JWT,
+      
+  })};
   return (
     <ScrollView style={styles.profileMainContainer}>
       <View style={styles.profileContainer}>
