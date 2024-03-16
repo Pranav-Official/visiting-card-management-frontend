@@ -7,7 +7,12 @@ import SearchListComponent from '../../components/SearchListComponet';
 import { CardData, fetchSearchableList } from '../../hooks/searchListHook';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import {
+  CommonActions,
+  NavigationProp,
+  StackActions,
+  useNavigation,
+} from '@react-navigation/native';
 
 type filteredList = {
   matchIndex: number;
@@ -133,7 +138,7 @@ const SearchScreen = () => {
   }, []);
 
   useEffect(() => {
-    if (searchText.length > 2) {
+    if (searchText.length > 0) {
       console.log(searchText);
       const result = searchContacts(searchableList, searchText.toLowerCase());
       console.log('search result =', result);
@@ -144,6 +149,7 @@ const SearchScreen = () => {
   }, [searchText]);
 
   const navigateToCardList = (card_id: string, contact_name: string) => {
+    navigation.dispatch(StackActions.popToTop());
     navigation.navigate('CardStack', {
       screen: 'CardListScreen',
       params: { card_id: card_id, name: contact_name },
@@ -172,7 +178,7 @@ const SearchScreen = () => {
         />
       </View>
       <View style={{ marginTop: 30, marginLeft: 40 }}>
-        {filteredSearchableList.length > 0 || searchText.length > 2 ? (
+        {filteredSearchableList.length > 0 || searchText.length > 0 ? (
           <FlatList
             data={filteredSearchableList}
             renderItem={({ item }) => (
