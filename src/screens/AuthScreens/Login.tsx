@@ -11,7 +11,7 @@ import {
   View,
 } from 'react-native';
 
-import ButtonComponent from '../../components/MainButtoncomponent';
+import ButtonComponent from '../../components/PrimaryButtonComponent';
 import InputComponent from '../../components/InputComponent';
 import MainLogoComponent from '../../components/MainLogoComponent';
 import BottomDialougeTouchable from '../../components/BottomDialougeTouchable';

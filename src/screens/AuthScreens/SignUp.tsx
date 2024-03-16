@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   ActivityIndicator,
   SafeAreaView,
@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 
-import ButtonComponent from '../../components/MainButtoncomponent';
+import ButtonComponent from '../../components/PrimaryButtonComponent';
 import InputComponent from '../../components/InputComponent';
 import MainLogoComponent from '../../components/MainLogoComponent';
 import BottomDialougeTouchable from '../../components/BottomDialougeTouchable';
@@ -21,33 +21,26 @@ import { userDetails } from '../../context/userDetailsSlice';
 import colors from '../../utils/colorPallete';
 import { isValidPassword, validateEmail } from '../../utils/regexCheck';
 
-// type response = {
-//   status: boolean;
-//   message: string;
-//   data: {
-//     token: string;
-//     user_id: string;
-//   };
-// };
-
 type BorderTypes = 'Danger' | 'Auth' | 'Normal';
 
 const SignUp = () => {
   const dispatch = useDispatch();
   const [fullname, setFullname] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [email, setEmail] = useState('');
   const [emailBorder, setEmailBorder] = useState<BorderTypes>('Normal');
   const [fullnameBorder, setNameBorder] = useState<BorderTypes>('Normal');
   const [passwordBorder, setPasswordBorder] = useState<BorderTypes>('Normal');
+  const [confirmPasswordBorder, setConfirmPasswordBorder] = useState<BorderTypes>('Normal');
   const [loading, setLoading] = useState(false);
 
   const SignUpMain = async () => {
-    if (email === '' || password === '' || fullname === '') {
-      // If any of the fields are empty, set their respective borders to 'Danger'
+    if (email === '' || password === '' || fullname === '' || confirmPassword === '') {
       if (email === '') setEmailBorder('Danger');
       if (password === '') setPasswordBorder('Danger');
       if (fullname === '') setNameBorder('Danger');
+      if (confirmPassword === '') setConfirmPasswordBorder('Danger');
       ToastAndroid.showWithGravity(
         'Please enter all fields',
         ToastAndroid.SHORT,
@@ -55,7 +48,6 @@ const SignUp = () => {
       );
       return;
     }
-    // Validate email
     if (!validateEmail(email)) {
       setEmailBorder('Danger');
       ToastAndroid.showWithGravity(
@@ -65,12 +57,20 @@ const SignUp = () => {
       );
       return;
     }
-
-    // Validate password
     if (!isValidPassword(password)) {
       setPasswordBorder('Danger');
       ToastAndroid.showWithGravity(
-        'Password must be atleast 8 characters with uppercase, lowercase, digit, and special character.',
+        'Password must be at least 8 characters with uppercase, lowercase, digit, and special character.',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
+      return;
+    }
+    if (password !== confirmPassword) {
+      setPasswordBorder('Danger');
+      setConfirmPasswordBorder('Danger');
+      ToastAndroid.showWithGravity(
+        'Passwords do not match',
         ToastAndroid.SHORT,
         ToastAndroid.CENTER,
       );
@@ -79,6 +79,7 @@ const SignUp = () => {
     setNameBorder('Normal');
     setEmailBorder('Normal');
     setPasswordBorder('Normal');
+    setConfirmPasswordBorder('Normal');
     setLoading(true);
 
     try {
@@ -134,10 +135,10 @@ const SignUp = () => {
           value={fullname}
           setter={(val) => {
             setFullname(val);
-            setNameBorder('Normal'); // Set border to 'Normal' when user starts entering input
+            setNameBorder('Normal');
           }}
           borderType={fullnameBorder}
-          placeholder="Enter full Name"
+          placeholder="Enter Full Name"
         />
         <InputComponent
           hidden={false}
@@ -145,7 +146,7 @@ const SignUp = () => {
           value={email}
           setter={(val) => {
             setEmail(val);
-            setEmailBorder('Normal'); // Set border to 'Normal' when user starts entering input
+            setEmailBorder('Normal');
           }}
           borderType={emailBorder}
           placeholder="Enter Email"
@@ -156,14 +157,25 @@ const SignUp = () => {
           value={password}
           setter={(val) => {
             setPassword(val);
-            setPasswordBorder('Normal'); // Set border to 'Normal' when user starts entering input
+            setPasswordBorder('Normal');
           }}
           borderType={passwordBorder}
           placeholder="Enter Password"
         />
+        <InputComponent
+          header="Confirm Password"
+          hidden={true}
+          value={confirmPassword}
+          setter={(val) => {
+            setConfirmPassword(val);
+            setConfirmPasswordBorder('Normal');
+          }}
+          borderType={confirmPasswordBorder}
+          placeholder="Confirm Password"
+        />
         {!loading ? (
           <View style={styles.buttonContainer}>
-            <ButtonComponent onPressing={() => SignUpMain()} title="Sign Up" />
+            <ButtonComponent onPressing={SignUpMain} title="Sign Up" />
           </View>
         ) : (
           <ActivityIndicator
@@ -205,10 +217,6 @@ const styles = StyleSheet.create({
     height: 50,
     flexDirection: 'column',
   },
-  forgotPassword: {
-    marginTop: 10,
-    alignSelf: 'center',
-  },
   loading: {
     backgroundColor: colors['primary-accent'],
     width: '100%',
@@ -219,3 +227,4 @@ const styles = StyleSheet.create({
 });
 
 export default SignUp;
+

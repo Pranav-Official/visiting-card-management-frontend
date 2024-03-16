@@ -132,8 +132,6 @@ const CardListScreen = ({ route }: any) => {
               label: 'Edit Contact Name',
               onSelect: changeContactNameFunction,
             },
-
-            // Add more menu options as needed
           ]}
         />
       </View>
@@ -181,8 +179,10 @@ const CardListScreen = ({ route }: any) => {
           <Text style={styles.cardHeading}>Cards</Text>
           {!isLoading ? (
             <FlatList
+            
               contentContainerStyle={styles.flatListStyle}
               showsVerticalScrollIndicator={false}
+              
               data={cardList}
               renderItem={({ item }) => (
                 <CardComponent

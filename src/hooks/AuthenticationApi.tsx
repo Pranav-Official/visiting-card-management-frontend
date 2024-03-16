@@ -73,7 +73,6 @@ export const SignUpUser = async ({
   try {
     const logInResponse = await api.post('/userRegistration', signUpPayload);
     signUpResp = logInResponse.data;
-    // console.log(loginResp);
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log('Axios Error while signing in:', error);

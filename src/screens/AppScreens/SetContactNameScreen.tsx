@@ -7,8 +7,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import MainButtonComponent from '../../components/MainButtoncomponent';
-import ProfileButtonComponent from '../../components/ProfileButtonComponent';
+import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import {
   CommonActions,
   NavigationProp,
@@ -135,17 +134,17 @@ const SetContactNameScreen = ({ route }: any) => {
         />
       </View>
       <View style={styles.buttonContainer}>
-        <ProfileButtonComponent
+        <PrimaryButtonComponent
           title={'Go Back'}
           onPressing={() => navigation.goBack()}
-          danger={true}
+          backgroundColor={colors['accent-white']}
+          textColor={colors['primary-text']}
+          isHighlighted={true}
         />
         {!imageUploadProcessing ? (
-          <MainButtonComponent
+          <PrimaryButtonComponent
             title="Save"
-            onPressing={() =>
-              sharing === true ? createCard(true) : createCard(false)
-            }
+            onPressing={() => (sharing ? createCard(true) : createCard(false))}
           />
         ) : (
           <ActivityIndicator

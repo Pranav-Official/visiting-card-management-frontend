@@ -17,7 +17,6 @@ type CardDataType = {
   company_name: string;
   company_website: string;
   contact_name: string;
-  // description;
 };
 
 interface CardDetailsResponse {
@@ -52,7 +51,6 @@ export async function newCardDetails({
     statusCode = CardDetailsResponse.status.toString();
 
     newCardResp = CardDetailsResponse.data;
-    // console.log('New card response------>', newCardResp);
   } catch (error) {
     console.log('Error while logging in:', error);
   }

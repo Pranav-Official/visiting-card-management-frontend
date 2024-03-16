@@ -1,14 +1,13 @@
-//Card Component 
-
+//Card Component
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import PersonIcon from '../assets/images/person.svg';
 import PhoneIcon from '../assets/images/phone.svg';
 import MailIcon from '../assets/images/mail.svg';
 import CompanyIcon from '../assets/images/organisation.svg';
 import ArrowIcon from '../assets/images/Arrow.svg';
 import colors from '../utils/colorPallete';
- 
+
 const styles = StyleSheet.create({
   card_container: {
     height: 170,
@@ -80,7 +79,6 @@ const styles = StyleSheet.create({
     height: 33,
     alignItems: 'center',
     paddingLeft: 10,
-
   },
   tr2: {
     flexDirection: 'row',
@@ -127,7 +125,7 @@ const styles = StyleSheet.create({
     marginRight: 0,
   },
 });
- 
+
 interface Prop {
   name: string;
   job_position: string;
@@ -137,7 +135,7 @@ interface Prop {
   alignToSides?: boolean;
   clickFunc?: () => void;
 }
- 
+
 // type Card = {card_name:string,job_role:string,email:string,company_name:string}
 const CardComponent: React.FC<Prop> = ({
   alignToSides,
@@ -154,9 +152,10 @@ const CardComponent: React.FC<Prop> = ({
         style={[
           styles.first_row,
           alignToSides
-            ? {justifyContent: 'space-between'}
-            : {justifyContent: 'center'},
-        ]}>
+            ? { justifyContent: 'space-between' }
+            : { justifyContent: 'center' },
+        ]}
+      >
         <Text style={styles.card_name}>{name}</Text>
         {alignToSides && (
           <TouchableOpacity style={styles.card_button} onPress={clickFunc}>
@@ -165,7 +164,7 @@ const CardComponent: React.FC<Prop> = ({
           </TouchableOpacity>
         )}
       </View>
- 
+
       <View style={styles.second_row}>
         <View style={styles.sr1}>
           <PersonIcon width={14} height={14} fill={'black'} />
@@ -189,6 +188,5 @@ const CardComponent: React.FC<Prop> = ({
     </TouchableOpacity>
   );
 };
- 
-export default CardComponent;
 
+export default CardComponent;
