@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import colors from '../../utils/colorPallete';
 import Phone from '../../assets/images/phone.svg';
 import Company from '../../assets/images/company.svg';
 import Person from '../../assets/images/person.svg';
-import MainButtonComponent from '../../components/MainButtoncomponent';
-import ProfileButtonComponent from '../../components/ProfileButtonComponent';
+import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import { getProfile } from '../../hooks/getProfileDetailsHook';
 import { getLocalItem, setLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
@@ -56,8 +61,13 @@ const ProfileScreen = () => {
     setLocalItem(Constants.USER_ID, '');
     dispatch(userLogin(false));
   };
-
   const navigation = useNavigation<NavigationProp<any>>();
+  const handlePress = () => {
+    navigation.navigate('CardStack', {
+      screen: 'ViewSharedContactsScreen',
+      
+    });
+  };
   const handleNav = () => {
     navigation.navigate('ChangePassword', {
       email: profileResponse?.userData.email ??'',
@@ -105,13 +115,28 @@ const ProfileScreen = () => {
         </View>
 
         <View style={styles.buttonsContainer}>
-          <ProfileButtonComponent title={'View Shared Contacts'} />
-          <ProfileButtonComponent title={'Change Password'} danger={true} onPressing={handleNav}/>
-          <MainButtonComponent title={'Logout'} onPressing={Logout} />
+          <PrimaryButtonComponent
+            title={'View Shared Contacts'}
+            backgroundColor={colors['accent-white']}
+            isHighlighted={true}
+            onPressing={() =>handlePress()}
+          />
+          <PrimaryButtonComponent
+            title={'Change Password'}
+            backgroundColor={colors['accent-white']}
+            textColor={colors['primary-danger']}
+            isHighlighted={true}
+            onPressing={() =>handleNav()}
+          />
+          <PrimaryButtonComponent
+            title={'Logout'}
+            onPressing={Logout}
+            backgroundColor={colors['primary-danger']}
+            textColor={colors['accent-white']}
+          />
         </View>
       </View>
     </ScrollView>
-    
   );
 };
 

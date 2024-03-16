@@ -10,8 +10,7 @@ import {
 import colors from '../../utils/colorPallete';
 import CardComponent from '../../components/CardComponent';
 import RadioButton from '../../components/RadioButton';
-import MainButtonComponent from '../../components/MainButtoncomponent';
-import ProfileButtonComponent from '../../components/ProfileButtonComponent';
+import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import Constants from '../../utils/Constants';
 import { addToExistingContact } from '../../hooks/AddToExistingContact';
 import { getLocalItem } from '../../utils/Utils';
@@ -99,20 +98,14 @@ const AddToContact = ({ route }: any) => {
   const inputList = route.params.similarCardList;
   let cardDetails = route.params.cardDetails;
   const sharing: boolean = route.params.sharing;
-  console.log('ADd to contact Screen: sharing page? :', sharing);
   const [cardList] = useState(inputList);
   const [selected, setSelected] = useState('');
   const [imageUploadProcessing, setImageUploadProcessing] = useState(false);
   const navigation = useNavigation<NavigationProp<any>>();
 
   const addToContactFunction = async () => {
-    console.log('\n\nADD TO CONTACTS REACHED!!!!!\n\n');
     const user_id = (await getLocalItem(Constants.USER_ID)) ?? '';
-    console.log('\n\nUser Id from AddToContact: ', user_id);
     const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
-    console.log('\n\nTHE CARD DETAILS IN AToC are: ', cardDetails);
-    console.log('\n\nSelected Card ID: ', selected);
-
     let addToContactResponse;
     if (sharing == true) {
       addToContactResponse = await addSharedCardToExistingContact(
@@ -120,10 +113,6 @@ const AddToContact = ({ route }: any) => {
         jwtToken,
         selected,
         cardDetails,
-      );
-      console.log(
-        '\n\nADDD to contact Respone from SCREEN: ',
-        addToContactResponse.addToExistingContactData,
       );
     } else {
       if (cardDetails.img_front_link) {
@@ -157,17 +146,12 @@ const AddToContact = ({ route }: any) => {
         selected,
         cardDetails,
       );
-      console.log(
-        '\n\nADDD to contact Respone from SCREEN: ',
-        addToContactResponse?.addToExistingContactData,
-      );
     }
 
     if (addToContactResponse?.statusCode === 200) {
       const createdCardId =
         addToContactResponse.addToExistingContactData.data.cardId;
       Toast.show('Card Added Successfully!');
-      console.log('\n\nNEWLY CREATED CARD ID: ', createdCardId);
       navigation.dispatch(
         CommonActions.reset({
           index: 1,
@@ -210,7 +194,7 @@ const AddToContact = ({ route }: any) => {
       <View style={styles.buttonContainer}>
         <View style={{ flex: 1 }}>
           {!imageUploadProcessing ? (
-            <MainButtonComponent
+            <PrimaryButtonComponent
               title="Add to contact"
               onPressing={() => addToContactFunction()}
             />
@@ -223,9 +207,10 @@ const AddToContact = ({ route }: any) => {
           )}
         </View>
         <View style={{ flex: 1 }}>
-          <ProfileButtonComponent
+          <PrimaryButtonComponent
             title="Cancel"
             onPressing={() => navigation.dispatch(StackActions.pop(1))}
+            backgroundColor={colors['secondary-grey']}
           />
         </View>
       </View>

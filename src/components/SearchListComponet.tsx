@@ -86,7 +86,6 @@ const SearchListComponent = ({
         });
       }
     }
-    console.log(maintext, subtext);
   }, [searchText]);
 
   return (
