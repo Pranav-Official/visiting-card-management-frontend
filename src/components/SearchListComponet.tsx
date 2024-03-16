@@ -68,7 +68,7 @@ const SearchListComponent = ({
       if (matchType == 'contact_name') {
         setmaintext({
           part1: contactName.slice(0, matchIndex),
-          part2: contactName.slice(matchIndex, matchIndex + matchLength - 1),
+          part2: contactName.slice(matchIndex, matchIndex + matchLength),
           part3: contactName.slice(
             matchIndex + matchLength,
             matchString.length,
@@ -86,7 +86,6 @@ const SearchListComponent = ({
         });
       }
     }
-    console.log(maintext, subtext);
   }, [searchText]);
 
   return (
