@@ -46,9 +46,11 @@ type CardDetails = {
 };
 import CardDetailsShimmer from '../../components/Shimmers/CardDetailsShimmer';
 import ShareCardScreen from './ShareCardPage';
+import translate from 'google-translate-api';
 
 const CardDetailPage = ({ route }: any) => {
   const [cardDetail, setCardDetail] = useState<CardDetails>({});
+  const [translatedCompanyName, setTranslatedCompanyName] = useState('');
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation<NavigationProp<any>>();
@@ -154,6 +156,16 @@ const CardDetailPage = ({ route }: any) => {
     }
   };
 
+  const handleTranslate = async () => {
+    try {
+      const res = await translate(cardDetail.company_name?.toString() || '', { to: 'en' });
+      setTranslatedCompanyName(res.text); // Update translated text state
+    } catch (error) {
+      console.error('Translation error:', error);
+      Alert.alert('Translation Error', 'Failed to translate text.');
+    }
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -190,7 +202,7 @@ const CardDetailPage = ({ route }: any) => {
       </View>
 
       <View style={styles.headerStyle}>
-        <TouchableOpacity style={styles.buttonStyle}>
+        <TouchableOpacity style={styles.buttonStyle}  onPress={handleTranslate}>
           <Text style={styles.buttonText}>Translate</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -212,7 +224,7 @@ const CardDetailPage = ({ route }: any) => {
           onLongPress={() => {
             longPressToCopy(cardDetail.company_name || '');
           }}
-          card_detail={cardDetail.company_name || ''}
+          card_detail={translatedCompanyName || cardDetail.company_name || ''}
           isLoading={isLoading}
         >
           <CompanyName width={20} height={20} color={'primary-text'} />

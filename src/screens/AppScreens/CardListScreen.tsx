@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react'; 
 import CardComponent from '../../components/CardComponent';
 import { listCards } from '../../hooks/CardListHook';
 import { getLocalItem } from '../../utils/Utils';
