@@ -26,7 +26,7 @@ describe('InputComponent', () => {
     expect(getByPlaceholderText('Enter text')).toBeTruthy();
   });
 
-  test('toggles visibility of password when hidden prop is true', () => {
+  test('hides visibility of password when hidden prop is true', () => {
     const { getByPlaceholderText, getByTestId } = render(
       <InputComponent
         header="Password"
@@ -38,7 +38,6 @@ describe('InputComponent', () => {
     );
 
     const passwordInput = getByPlaceholderText('password');
-    fireEvent.changeText(passwordInput, '12345678');
     expect(passwordInput.props.secureTextEntry).toBe(true);
   });
 
@@ -53,5 +52,56 @@ describe('InputComponent', () => {
     fireEvent.changeText(input, 'new value');
 
     expect(setterMock).toHaveBeenCalledWith('new value');
+  });
+
+  test('clicking close icon clears the input field', () => {
+    const setterMock = jest.fn();
+    const { getByPlaceholderText, getByTestId } = render(
+      <InputComponent
+        header="Email"
+        placeholder="Email"
+        value="Initial value"
+        setter={setterMock}
+      />,
+    );
+    // Fill input Field with a value
+    const passwordInput = getByPlaceholderText('Email');
+    fireEvent.changeText(passwordInput, 'john.doe@gmail.com');
+    expect(setterMock).toHaveBeenCalledWith('john.doe@gmail.com');
+
+    //check if closeButton Appear on focus
+    fireEvent(passwordInput, 'focus');
+    const closeIcon = getByTestId('close-icon');
+    expect(closeIcon).toBeTruthy();
+
+    //check field clearing on pressing closeButton
+    fireEvent(closeIcon, 'press');
+    expect(setterMock).toHaveBeenCalledWith('');
+  });
+
+  test('clicking eye icons toggles the secureText property of textInput', () => {
+    const setterMock = jest.fn();
+    const { getByPlaceholderText, getByTestId } = render(
+      <InputComponent
+        header="Password"
+        placeholder="Password"
+        value="12345678"
+        hidden={true}
+        setter={setterMock}
+      />,
+    );
+    const passwordInput = getByPlaceholderText('Password');
+
+    // onFocus, closedeye icon Appears and password is hidden
+    fireEvent(passwordInput, 'focus');
+    const closedEye = getByTestId('closedEye');
+    expect(closedEye).toBeTruthy();
+    expect(passwordInput.props.secureTextEntry).toBe(true);
+
+    // Click closedEye, it changes to openEye and password is visible
+    fireEvent(closedEye, 'press');
+    const openEye = getByTestId('openEye');
+    expect(openEye).toBeTruthy();
+    expect(passwordInput.props.secureTextEntry).toBe(false);
   });
 });

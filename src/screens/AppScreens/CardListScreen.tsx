@@ -9,8 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useCallback, useState } from 'react'; 
-import CardComponent from '../../components/CardComponent';
+import { useCallback, useState } from 'react';
 import { listCards } from '../../hooks/CardListHook';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
@@ -23,6 +22,7 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import { editCardDetails } from '../../hooks/editCardHook';
+import NewCardComponent from '../../components/NewCardListScreenComponent';
 
 const CardListScreen = ({ route }: any) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -97,6 +97,7 @@ const CardListScreen = ({ route }: any) => {
       if (result.cardResp.data.length == 0) {
         navigation.goBack();
       }
+
       setCardList(result.cardResp.data);
       setIsLoading(false);
     } catch (error) {
@@ -177,35 +178,45 @@ const CardListScreen = ({ route }: any) => {
             </View>
           )}
           <Text style={styles.cardHeading}>Cards</Text>
-          {!isLoading ? (
-            <FlatList
-            
-              contentContainerStyle={styles.flatListStyle}
-              showsVerticalScrollIndicator={false}
-              
-              data={cardList}
-              renderItem={({ item }) => (
-                <CardComponent
-                  name={item.card_name}
-                  job_position={item.job_title}
-                  email={item.email}
-                  phone_number={item.phone}
-                  company_name={item.company_name}
-                  clickFunc={() => handlePress(item.card_id)}
-                  alignToSides={true}
-                />
-              )}
-              keyExtractor={(item) => item.card_id}
-            />
-          ) : (
-            <FlatList
-              contentContainerStyle={styles.flatListStyle}
-              showsVerticalScrollIndicator={false}
-              data={arr}
-              renderItem={({ item }) => <ShimmerComponent />}
-              keyExtractor={(item) => item.toString()}
-            />
-          )}
+          <View style={styles.container}>
+            {!isLoading ? (
+              <FlatList
+                horizontal
+                contentContainerStyle={styles.flatListStyle}
+                showsHorizontalScrollIndicator={false}
+                data={cardList}
+                renderItem={({ item }) => (
+                  <View>
+                    <NewCardComponent
+                      name={item.card_name}
+                      job_position={item.job_title}
+                      email={item.email}
+                      phone_number={item.phone}
+                      company_name={item.company_name}
+                      clickFunc={() => handlePress(item.card_id)}
+                      alignToSides={true}
+                    />
+                  </View>
+                )}
+                keyExtractor={(item) => item.card_id}
+                snapToInterval={390}
+                snapToAlignment="center"
+                decelerationRate="fast"
+                ItemSeparatorComponent={() => (
+                  <View style={styles.itemSeparator} />
+                )}
+              />
+            ) : (
+              <FlatList
+                horizontal
+                contentContainerStyle={styles.flatListStyle}
+                showsHorizontalScrollIndicator={false}
+                data={arr}
+                renderItem={({ item }) => <ShimmerComponent />}
+                keyExtractor={(item) => item.toString()}
+              />
+            )}
+          </View>
         </View>
       </View>
     </View>
@@ -239,13 +250,17 @@ const styles = StyleSheet.create({
   contactNameSetButton: {
     top: '35%',
   },
-
   cardcontainer: {
     width: '100%',
-    height: 170,
+    height: 300,
     elevation: 5,
     paddingRight: 20,
     paddingTop: 10,
+  },
+  container: {
+    width: '100%',
+    overflow: 'hidden',
+    justifyContent: 'center',
   },
   letterCircle: {
     borderRadius: 90,
@@ -293,8 +308,11 @@ const styles = StyleSheet.create({
   },
   flatListStyle: {
     gap: 20,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     paddingBottom: 150,
+  },
+  itemSeparator: {
+    width: 20,
   },
   contactName: {
     color: colors['primary-text'],

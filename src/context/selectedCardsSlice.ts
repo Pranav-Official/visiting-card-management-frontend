@@ -15,9 +15,21 @@ export const selectedCardsSlice = createSlice({
     setSelectedCardIds: (state, action: PayloadAction<string[]>) => {
       state.selectedCardIds = action.payload;
     },
+    removeSelectedCardId: (state, action: PayloadAction<string>) => {
+      state.selectedCardIds = state.selectedCardIds.filter(
+        (card_id) => card_id != action.payload,
+      );
+    },
+    removeAllSelectedCards: (state) => {
+      state.selectedCardIds = initialState.selectedCardIds;
+    },
   },
 });
 
-export const { setSelectedCardIds } = selectedCardsSlice.actions;
+export const {
+  setSelectedCardIds,
+  removeSelectedCardId,
+  removeAllSelectedCards,
+} = selectedCardsSlice.actions;
 
 export default selectedCardsSlice.reducer;

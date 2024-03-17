@@ -27,8 +27,9 @@ import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import CardComponent from '../../components/CardComponent';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { listCards } from '../../hooks/CardListHook';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeCardById, setCards } from '../../context/pendingCardsSlice';
+import { setCards } from '../../context/pendingCardsSlice';
 import { RootState } from '../../context/store';
 
 type Contact = {
@@ -196,13 +197,30 @@ const ContactsPage = () => {
     }, []),
   );
 
-  const contactPage = (id: string, name: string) => {
+  const contactPage = async (id: string, name: string) => {
     console.log('contactPage', id, name);
+    const userId = (await getLocalItem(Constants.USER_ID)) ?? '';
+    const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
+    const cardId = id;
 
-    navigation.navigate('CardStack', {
-      screen: 'CardListScreen',
-      params: { card_id: id, name: name },
+    const result = await listCards({
+      user_id: userId,
+      jwt_token: jwtToken,
+      card_id: cardId,
     });
+
+    if (result.cardResp.data.length === 1) {
+      const cardId = result.cardResp.data[0].card_id;
+      navigation.navigate('CardStack', {
+        screen: 'CardDetailsScreen',
+        params: { card_id: cardId },
+      });
+    } else {
+      navigation.navigate('CardStack', {
+        screen: 'CardListScreen',
+        params: { card_id: id, name: name },
+      });
+    }
   };
 
   const goToSearchScreen = () => {
@@ -314,12 +332,13 @@ const ContactsPage = () => {
             <Text style={styles.pendingCardsText}>Choose an Option</Text>
             <PrimaryButtonComponent
               title="Save shared cards"
-              onPressing={() =>
+              onPressing={() => {
+                setModalVisibility(false);
                 navigation.navigate('CardStack', {
                   screen: 'SaveShareCardScreen',
                   params: { pendingCardList },
-                })
-              }
+                });
+              }}
             ></PrimaryButtonComponent>
             <PrimaryButtonComponent
               title="I'll do it later"

@@ -62,7 +62,7 @@ const ProfileScreen = () => {
     dispatch(userLogin(false));
   };
   const navigation = useNavigation<NavigationProp<any>>();
-  const handlePress = () => {
+  const navigateSharedContactsScreen = () => {
     navigation.navigate('CardStack', {
       screen: 'ViewSharedContactsScreen',
       
@@ -119,7 +119,7 @@ const ProfileScreen = () => {
             title={'View Shared Contacts'}
             backgroundColor={colors['accent-white']}
             isHighlighted={true}
-            onPressing={() =>handlePress()}
+            onPressing={() =>navigateSharedContactsScreen()}
           />
           <PrimaryButtonComponent
             title={'Change Password'}

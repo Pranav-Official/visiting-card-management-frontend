@@ -23,15 +23,26 @@ import {
 import { addSharedCardToExistingContact } from '../../hooks/addSharedToExistingContact';
 import Toast from 'react-native-root-toast';
 import cloudinaryUpload from '../../hooks/cloudinaryUpload';
+import { useDispatch } from 'react-redux';
+import {
+  removeAllSelectedCards,
+  removeSelectedCardId,
+} from '../../context/selectedCardsSlice';
+import { removeCardById } from '../../context/pendingCardsSlice';
+import { setSharingProcess } from '../../context/sharingProcessSlice';
 
 type Card = {
   card_id: string;
-  card_name: string;
-  email: string;
-  phone: string;
-  job_title: string;
-  company_name: string;
-  company_website: string;
+  card_name: string | null;
+  company_name: string | null;
+  company_website: string | null;
+  contact_name: string | null;
+  email: string | null;
+  img_back_link: string | null;
+  img_front_link: string | null;
+  job_title: string | null;
+  phone: string | null;
+  user_id: string | null;
 };
 type ContactCard = {
   contact_name: string;
@@ -95,6 +106,7 @@ const RenderItem = ({ item, selected, setter }: renderItemType) => {
 };
 
 const AddToContact = ({ route }: any) => {
+  const dispatch = useDispatch();
   const inputList = route.params.similarCardList;
   let cardDetails = route.params.cardDetails;
   const sharing: boolean = route.params.sharing;
@@ -152,16 +164,25 @@ const AddToContact = ({ route }: any) => {
       const createdCardId =
         addToContactResponse.addToExistingContactData.data.cardId;
       Toast.show('Card Added Successfully!');
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 1,
-          routes: [{ name: 'Home' }],
-        }),
-      );
-      navigation.navigate('CardStack', {
-        screen: 'CardDetailsScreen',
-        params: { card_id: createdCardId },
-      });
+      console.log('\n\nNEWLY CREATED CARD ID: ', createdCardId);
+
+      //Navigate to SaveSharedCard Screen if sharing is true (for saving Multiple Cards)
+      if (sharing === true) {
+        navigation.dispatch(StackActions.pop(1));
+        dispatch(removeSelectedCardId(cardDetails.card_id));
+        dispatch(removeCardById({ card_id: cardDetails.card_id }));
+      } else {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 1,
+            routes: [{ name: 'Home' }],
+          }),
+        );
+        navigation.navigate('CardStack', {
+          screen: 'CardDetailsScreen',
+          params: { card_id: createdCardId },
+        });
+      }
     } else {
       Toast.show('Error Adding Card');
       console.log('\n\nError Adding Screen');
@@ -169,49 +190,68 @@ const AddToContact = ({ route }: any) => {
   };
 
   return (
-    <View style={{ padding: 18, flex: 1 }}>
-      <Text
-        style={{
-          fontSize: 28,
-          color: colors['primary-text'],
-          fontWeight: '600',
-          marginBottom: 20,
-          textAlign: 'center',
-        }}
-      >
-        Choose a contact to add to
-      </Text>
-      <FlatList
-        data={cardList}
-        renderItem={({ item }) => {
-          return (
-            <RenderItem item={item} selected={selected} setter={setSelected} />
-          );
-        }}
-        keyExtractor={(item) => item.contact_name}
-        contentContainerStyle={{ paddingBottom: 20 }}
-      />
-      <View style={styles.buttonContainer}>
-        <View style={{ flex: 1 }}>
-          {!imageUploadProcessing ? (
+    <View style={styles.mainContainer}>
+      <View style={styles.newCardContainer}>
+        <CardComponent
+          name={cardDetails.card_name}
+          job_position={cardDetails.job_title}
+          phone_number={cardDetails.phone}
+          email={cardDetails.email}
+          company_name={cardDetails.company_name}
+        ></CardComponent>
+      </View>
+      <View style={styles.bottomContainer}>
+        <Text
+          style={{
+            fontSize: 28,
+            color: colors['primary-text'],
+            fontWeight: '600',
+            marginBottom: 20,
+            textAlign: 'center',
+          }}
+        >
+          Choose a Contact to Add To
+        </Text>
+        <FlatList
+          data={cardList}
+          renderItem={({ item }) => {
+            return (
+              <RenderItem
+                item={item}
+                selected={selected}
+                setter={setSelected}
+              />
+            );
+          }}
+          keyExtractor={(item) => item.contact_name}
+          contentContainerStyle={{ paddingBottom: 20 }}
+        />
+        <View style={styles.buttonContainer}>
+          <View style={{ flex: 1 }}>
+            {!imageUploadProcessing ? (
+              <PrimaryButtonComponent
+                title="Add to contact"
+                onPressing={() => addToContactFunction()}
+              />
+            ) : (
+              <ActivityIndicator
+                style={styles.loading}
+                size="large"
+                color={colors['secondary-light']}
+              />
+            )}
+          </View>
+          <View style={{ flex: 1 }}>
             <PrimaryButtonComponent
-              title="Add to contact"
-              onPressing={() => addToContactFunction()}
+              title="Cancel"
+              onPressing={() => {
+                dispatch(setSharingProcess(false));
+                dispatch(removeAllSelectedCards());
+                navigation.dispatch(StackActions.pop(1));
+              }}
+              backgroundColor={colors['secondary-grey']}
             />
-          ) : (
-            <ActivityIndicator
-              style={styles.loading}
-              size="large"
-              color={colors['secondary-light']}
-            />
-          )}
-        </View>
-        <View style={{ flex: 1 }}>
-          <PrimaryButtonComponent
-            title="Cancel"
-            onPressing={() => navigation.dispatch(StackActions.pop(1))}
-            backgroundColor={colors['secondary-grey']}
-          />
+          </View>
         </View>
       </View>
     </View>
@@ -219,18 +259,29 @@ const AddToContact = ({ route }: any) => {
 };
 
 const styles = StyleSheet.create({
-  view: {
-    justifyContent: 'flex-end',
-    margin: 0,
+  mainContainer: {
+    backgroundColor: colors['primary-accent'],
+    flex: 1,
   },
-  bottomSheet: {
-    width: '100%',
-    height: '85%',
-    alignItems: 'center',
-    paddingTop: 25,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+  newCardContainer: {
+    paddingVertical: 50,
+    padding: 25,
+  },
+  bottomContainer: {
     backgroundColor: colors['secondary-light'],
+    padding: 18,
+    flex: 1,
+    borderTopRightRadius: 25,
+    borderTopLeftRadius: 25,
+
+    shadowColor: colors['primary-text'],
+    shadowOffset: {
+      width: 0,
+      height: -4,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   similarCardsText: {
     marginTop: 10,
@@ -253,9 +304,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   buttonContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
     flexDirection: 'row',
     gap: 10,
-    paddingVertical: 10,
     width: '100%',
     height: 100,
     paddingHorizontal: 10,
