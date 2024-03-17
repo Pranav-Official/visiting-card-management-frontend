@@ -29,7 +29,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { listCards } from '../../hooks/CardListHook';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeCardById, setCards } from '../../context/pendingCardsSlice';
+import { setCards } from '../../context/pendingCardsSlice';
 import { RootState } from '../../context/store';
 
 type Contact = {
@@ -332,12 +332,13 @@ const ContactsPage = () => {
             <Text style={styles.pendingCardsText}>Choose an Option</Text>
             <PrimaryButtonComponent
               title="Save shared cards"
-              onPressing={() =>
+              onPressing={() => {
+                setModalVisibility(false);
                 navigation.navigate('CardStack', {
                   screen: 'SaveShareCardScreen',
                   params: { pendingCardList },
-                })
-              }
+                });
+              }}
             ></PrimaryButtonComponent>
             <PrimaryButtonComponent
               title="I'll do it later"
