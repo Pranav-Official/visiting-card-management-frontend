@@ -48,10 +48,15 @@ export const pendingCardsSlice = createSlice({
           };
         },
       );
+
+      // Filter out pending list items with no cards
       const filteredPendingCardList = updatedPendingCardList.filter(
         (pendingCard) => pendingCard.cards.length > 0,
       );
-      state.pendingCardList = filteredPendingCardList;
+      return {
+        ...state,
+        pendingCardList: filteredPendingCardList,
+      };
     },
   },
 });

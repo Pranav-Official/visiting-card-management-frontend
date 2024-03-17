@@ -123,7 +123,6 @@ const SaveShareCardScreen = ({ route }: any) => {
     cards: [],
   });
   const [cardDetails, setCardDetails] = useState<Card>();
-  const [cardList] = useState(pendingCardList);
   const [selected, setSelected] = useState<string[]>([]);
   const reduxSelectedCardIds = useSelector(
     (state: RootState) => state.selectedCardReducer.selectedCardIds,
@@ -158,6 +157,8 @@ const SaveShareCardScreen = ({ route }: any) => {
     if (similarCard === true) {
       setSimilarModalVisibility(true);
     } else {
+      setSimilarCardList({ contact_name: '', cards: [] });
+      setSimilarModalVisibility(false);
       const sharing = true;
       navigation.navigate('CardStack', {
         screen: 'SetContactNameScreen',
@@ -198,6 +199,7 @@ const SaveShareCardScreen = ({ route }: any) => {
       setCardDetails({});
       if (reduxSelectedCardIds.length > 0 && reduxSharingProcess === true) {
         console.log('\n\nUSE FOCUSS SHARED CARD SCREEN!!!');
+        setSelected(reduxSelectedCardIds);
         saveMultipleCards(reduxSelectedCardIds[0]);
       } else if (
         reduxSelectedCardIds.length == 0 &&
@@ -210,6 +212,7 @@ const SaveShareCardScreen = ({ route }: any) => {
             routes: [{ name: 'Home' }],
           }),
         );
+        setLocalItem(Constants.SAVE_SHARES_LATER, 'true');
       }
     }, [reduxSelectedCardIds]),
   );
@@ -228,7 +231,7 @@ const SaveShareCardScreen = ({ route }: any) => {
         Choose the cards to save
       </Text>
       <FlatList
-        data={cardList}
+        data={pendingCardList}
         renderItem={({ item }) => {
           return (
             <RenderItem item={item} selected={selected} setter={setSelected} />

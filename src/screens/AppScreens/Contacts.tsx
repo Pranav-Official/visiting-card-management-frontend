@@ -28,7 +28,7 @@ import CardComponent from '../../components/CardComponent';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeCardById, setCards } from '../../context/pendingCardsSlice';
+import { setCards } from '../../context/pendingCardsSlice';
 import { RootState } from '../../context/store';
 
 type Contact = {

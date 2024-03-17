@@ -162,7 +162,7 @@ const CardOverwriteScreen = ({ route }: any) => {
       if (sharing === true) {
         navigation.dispatch(StackActions.pop(1));
         dispatch(removeSelectedCardId(cardDetails.card_id));
-        dispatch(removeCardById(cardDetails.card_id));
+        dispatch(removeCardById({ card_id: cardDetails.card_id }));
       } else {
         navigation.dispatch(
           CommonActions.reset({

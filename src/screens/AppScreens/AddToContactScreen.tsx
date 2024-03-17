@@ -12,7 +12,7 @@ import CardComponent from '../../components/CardComponent';
 import RadioButton from '../../components/RadioButton';
 import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import Constants from '../../utils/Constants';
-import { addToExistingContact } from '../../hooks/addToExistingContact';
+import { addToExistingContact } from '../../hooks/AddToExistingContact';
 import { getLocalItem } from '../../utils/Utils';
 import {
   CommonActions,
@@ -170,7 +170,7 @@ const AddToContact = ({ route }: any) => {
       if (sharing === true) {
         navigation.dispatch(StackActions.pop(1));
         dispatch(removeSelectedCardId(cardDetails.card_id));
-        dispatch(removeCardById(cardDetails.card_id));
+        dispatch(removeCardById({ card_id: cardDetails.card_id }));
       } else {
         navigation.dispatch(
           CommonActions.reset({
