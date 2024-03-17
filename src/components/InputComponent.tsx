@@ -61,7 +61,7 @@ const InputComponent = ({
         {isFocused && hidden == false ? (
           <TouchableOpacity
             style={styles.iconContainer}
-            onPress={() => setter('')} 
+            onPress={() => setter('')}  
           >
             <MaterialIcons name="close" size={25} />
           </TouchableOpacity>
