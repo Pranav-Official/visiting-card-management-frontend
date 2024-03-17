@@ -61,7 +61,8 @@ const InputComponent = ({
         {isFocused && hidden == false ? (
           <TouchableOpacity
             style={styles.iconContainer}
-            onPress={() => setter('')} 
+            onPress={() => setter('')}
+            testID="close-icon"
           >
             <MaterialIcons name="close" size={25} />
           </TouchableOpacity>
@@ -71,6 +72,7 @@ const InputComponent = ({
             <TouchableOpacity
               style={styles.iconContainer}
               onPress={toggleShowHide}
+              testID="openEye"
             >
               <OpenEyeIcon width={24} height={24} />
             </TouchableOpacity>
@@ -78,6 +80,7 @@ const InputComponent = ({
             <TouchableOpacity
               style={styles.iconContainer}
               onPress={toggleShowHide}
+              testID="closedEye"
             >
               <ClosedEyeIcon width={24} height={24} />
             </TouchableOpacity>
