@@ -17,7 +17,7 @@ type ImgContainer = {
 
 const CommonImage = (props: ImgContainer) => {
   return (
-    <View style={styles.CommonImagecontainer}>
+    <View style={styles.CommonImagecontainer} testID='Image'>
       <TouchableOpacity
         style={styles.cardContainer}
         onPress={() => {
@@ -59,7 +59,7 @@ const CommonImageComponent = ({ frontImageUri, backImageUri }: imageURI) => {
   if (!frontImageUri && !backImageUri) {
     return (
       <TouchableOpacity>
-        <View style={styles.mainStyle}>
+        <View style={styles.mainStyle} testID='defaultImage'>
           <Image
             source={require('../assets/images/Defaultcard.png')}
             style={styles.singleImage}
@@ -88,6 +88,7 @@ const CommonImageComponent = ({ frontImageUri, backImageUri }: imageURI) => {
             imageData.length === 1 ? styles.CommonImagecontainer2 : null
           }
         />
+        <View testID='imageView'>
         <ImageView
           images={imageData}
           imageIndex={imageIndex}
@@ -95,6 +96,7 @@ const CommonImageComponent = ({ frontImageUri, backImageUri }: imageURI) => {
           visible={isImageVisible}
           onRequestClose={() => setIsImageVisible(false)}
         />
+        </View>
       </View>
     );
   }
@@ -156,7 +158,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.38,
     shadowRadius: 4.84,
-    elevation: 5,
+    //elevation: 5,
   },
 });
 
