@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import colors from '../../utils/colorPallete';
 import {
   Alert,
@@ -15,11 +15,12 @@ import CardDetailComponent from '../../components/CardDetailComponent';
 import Phone from '../../assets/images/phone.svg';
 import Email from '../../assets/images/mail.svg';
 import Website from '../../assets/images/website.svg';
-import ProfileButtonComponent from '../../components/ProfileButtonComponent';
-import MainButtonComponent from '../../components/MainButtoncomponent';
+import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import DeleteIcon from '../../assets/images/DeleteIcon.svg';
 import ShareIcon from '../../assets/images/ShareIcon.svg';
 import BackButtonIcon from '../../assets/images/Arrow.svg';
+import CardDetailsShimmer from '../../components/Shimmers/CardDetailsShimmer';
+import ShareCardScreen from './ShareCardPage';
 import { listCardDetails } from '../../hooks/CardDetailHook';
 import Constants from '../../utils/Constants';
 import { getLocalItem } from '../../utils/Utils';
@@ -44,8 +45,6 @@ type CardDetails = {
   company_website?: string;
   description?: string | null;
 };
-import CardDetailsShimmer from '../../components/Shimmers/CardDetailsShimmer';
-import ShareCardScreen from './ShareCardPage';
 
 const CardDetailPage = ({ route }: any) => {
   const [cardDetail, setCardDetail] = useState<CardDetails>({});
@@ -100,7 +99,6 @@ const CardDetailPage = ({ route }: any) => {
         jwtToken: userToken,
         card_id: route.params.card_id,
       });
-      console.log('DeleteCard Resp', statusCode, deleteCardResp);
 
       if (statusCode === '200') {
         navigation.goBack();
@@ -253,23 +251,25 @@ const CardDetailPage = ({ route }: any) => {
       </View>
 
       <View style={styles.editButtons}>
-        <View style={styles.profileButton}>
+        <View style={styles.deleteModalButton}>
           <TouchableOpacity style={styles.delete}>
-            <ProfileButtonComponent
+            <PrimaryButtonComponent
               children={<DeleteIcon width={40} height={24} />}
               title={'Delete'}
-              danger={true}
+              textColor={colors['primary-danger']}
               onPressing={toggleDeleteModal}
-            ></ProfileButtonComponent>
+              isHighlighted={true}
+              backgroundColor={colors['accent-white']}
+            ></PrimaryButtonComponent>
           </TouchableOpacity>
         </View>
 
         <View style={styles.mainButton}>
-          <MainButtonComponent
+          <PrimaryButtonComponent
             children={<ShareIcon width={40} height={24} />}
             title={'Share'}
             onPressing={toggleShareModal}
-          ></MainButtonComponent>
+          ></PrimaryButtonComponent>
           <BottomSheetComponent
             visibility={ShareModalVisible}
             visibilitySetter={setShareModalVisible}
@@ -298,15 +298,18 @@ const CardDetailPage = ({ route }: any) => {
                 Are you sure you want to delete this card?
               </Text>
               <View style={styles.deleteButtonContainer}>
-                <ProfileButtonComponent
+                <PrimaryButtonComponent
                   title={'Delete'}
-                  danger={true}
+                  textColor={colors['primary-danger']}
                   onPressing={handleDeleteCard}
-                ></ProfileButtonComponent>
-                <MainButtonComponent
+                  backgroundColor={colors['accent-white']}
+                  isHighlighted={true}
+                />
+                <PrimaryButtonComponent
                   title={'Cancel'}
                   onPressing={toggleDeleteModal}
-                ></MainButtonComponent>
+                  backgroundColor={colors['secondary-grey']}
+                ></PrimaryButtonComponent>
               </View>
             </View>
           </View>
@@ -399,7 +402,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
   },
-  profileButton: {
+  deleteModalButton: {
     flex: 1,
     height: 50,
   },
@@ -417,7 +420,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
   deleteModalView: {
-    backgroundColor: colors['accent-white'],
+    backgroundColor: colors['secondary-light'],
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',

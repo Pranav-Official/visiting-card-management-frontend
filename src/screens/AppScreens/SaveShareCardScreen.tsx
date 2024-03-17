@@ -8,8 +8,7 @@ import {
 } from 'react-native';
 import colors from '../../utils/colorPallete';
 import CardComponent from '../../components/CardComponent';
-import MainButtonComponent from '../../components/MainButtoncomponent';
-import ProfileButtonComponent from '../../components/ProfileButtonComponent';
+import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import RadioButton from '../../components/RadioButton';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
@@ -17,6 +16,9 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import BottomSheetComponent from '../../components/BottomSheetComponent';
 import SimilarCardsComponent from '../../components/SimilarCardsComponent';
 import { getSimilarCards } from '../../hooks/getSimilarCardsHook';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSelectedCardIds } from '../../context/selectedCardsSlice';
+import { RootState } from '../../context/store';
 
 type Card = {
   card_id: string;
@@ -99,6 +101,7 @@ const RenderItem = ({ item, selected, setter }: renderItemType) => {
 };
 
 const SaveShareCardScreen = ({ route }: any) => {
+  const dispatch = useDispatch();
   const [similarModalVisibility, setSimilarModalVisibility] =
     React.useState(false);
 
@@ -110,53 +113,15 @@ const SaveShareCardScreen = ({ route }: any) => {
   });
   const [cardDetails, setCardDetails] = useState<Card>();
   const [cardList] = useState(pendingCardList);
-  const [selected, setSelected] = useState<string[]>(['']);
+  const [selected, setSelected] = useState<string[]>([]);
+  const reduxSelectedCardIds = useSelector(
+    (state: RootState) => state.selectedCardReducer.selectedCardIds,
+  );
   const navigation = useNavigation<NavigationProp<any>>();
 
   const handleSave = async () => {
     try {
-      console.log('\n\nREACHED HANDLE SAVE', pendingCardList);
-
-      // Iterate over each user's pending cards
-      for (const user of pendingCardList) {
-        // Extract the nested array of cards for the current user
-        const cardsArray = user.cards;
-
-        // Ensure that cardsArray is an array
-        if (!Array.isArray(cardsArray)) {
-          console.log('Invalid cards array:', cardsArray);
-          continue; // Move to the next user's pending cards
-        }
-
-        // Iterate over each card in the cards array
-        for (const card of cardsArray) {
-          // Set cardDetails with the details of the current card
-          console.log('\n\nREACHED HANDLE SAVE BLAHHH');
-          console.log('\n\nHELLO SETTING CARD: ', card);
-
-          //This is Udaayipp
-          // const user_id = (await getLocalItem(Constants.USER_ID)) || '';
-          // card.user_id = user_id;
-
-          setCardDetails(card);
-
-          const similarCardsExist = await fetchSimilarCards(card);
-
-          console.log('\n\nSimilar Cards FOUND STATUS: ', similarCardList);
-
-          // If similar cards exist for the current card, show the modal
-          if (similarCardsExist) {
-            setSimilarModalVisibility(true);
-          } else {
-            console.log('\n\nCard Details to Navigate Are: ', cardDetails);
-            // Otherwise, navigate to the "SetContactNameScreen" screen
-            navigation.navigate('CardStack', {
-              screen: 'SetContactNameScreen',
-              params: { cardDetails: card, sharing: true },
-            });
-          }
-        }
-      }
+      dispatch(setSelectedCardIds(selected));
     } catch (error) {
       console.log('Error while handling save:', error);
     }
@@ -164,7 +129,6 @@ const SaveShareCardScreen = ({ route }: any) => {
 
   const fetchSimilarCards = async (card: Card) => {
     try {
-      console.log('\n\nREACHED FETCH SIMILAR Cards\n\n');
       const user_id = (await getLocalItem(Constants.USER_ID)) ?? '';
       const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
       console.log('\ncardDetails = ', cardDetails);
@@ -180,10 +144,8 @@ const SaveShareCardScreen = ({ route }: any) => {
 
       if (result.statusCode === '200') {
         setSimilarCardList(result.similarCardList);
-        console.log('\n\nSimilar Card Data = ', result.similarCardList);
         return true;
       } else {
-        console.log('From GSC Hook: Error fetching SimilarCards:', result);
         return false;
       }
     } catch (error) {
@@ -216,12 +178,15 @@ const SaveShareCardScreen = ({ route }: any) => {
       />
       <View style={styles.buttonContainer}>
         <View style={{ flex: 1 }}>
-          <MainButtonComponent title="Save" onPressing={handleSave} />
+          <PrimaryButtonComponent title="Save" onPressing={handleSave} />
         </View>
         <View style={{ flex: 1 }}>
-          <ProfileButtonComponent
+          <PrimaryButtonComponent
             title="Later"
+            backgroundColor={colors['accent-white']}
+            textColor={colors['primary-text']}
             onPressing={() => navigation.goBack()}
+            isHighlighted={true}
           />
         </View>
       </View>

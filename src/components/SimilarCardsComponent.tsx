@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
-import MainButtonComponent from './MainButtoncomponent';
+import PrimaryButtonComponent from './PrimaryButtonComponent';
 import CardComponent from './CardComponent';
 import colors from '../utils/colorPallete';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
@@ -19,7 +19,7 @@ type ContactCards = {
   cards: Card[];
 };
 
-const SimilarCardsComponent = (props) => {
+const SimilarCardsComponent = (props: any) => {
   const cardDetails = props.cardDetails;
   const similarCardList: ContactCards = props.similarCardList;
   const sharing: boolean = props.sharing;
@@ -61,7 +61,7 @@ const SimilarCardsComponent = (props) => {
       />
       <View style={styles.buttonContainer}>
         <Text style={styles.similarCardsText}>Choose an Option</Text>
-        <MainButtonComponent
+        <PrimaryButtonComponent
           title="Overwrite Existing Card"
           onPressing={() => {
             props.modalVisibilitySetter(false);
@@ -71,8 +71,9 @@ const SimilarCardsComponent = (props) => {
               sharing,
             });
           }}
-        ></MainButtonComponent>
-        <MainButtonComponent
+          textColor={colors['primary-text']}
+        ></PrimaryButtonComponent>
+        <PrimaryButtonComponent
           title="Add to Existing Contacts"
           onPressing={() => {
             props.modalVisibilitySetter(false);
@@ -81,8 +82,9 @@ const SimilarCardsComponent = (props) => {
               params: { similarCardList, cardDetails, sharing },
             });
           }}
-        ></MainButtonComponent>
-        <MainButtonComponent
+          backgroundColor={colors['primary-accent']}
+        ></PrimaryButtonComponent>
+        <PrimaryButtonComponent
           title="Add as a New Contact"
           onPressing={() => {
             props.modalVisibilitySetter(false);
@@ -91,7 +93,8 @@ const SimilarCardsComponent = (props) => {
               params: { cardDetails, sharing },
             });
           }}
-        ></MainButtonComponent>
+          backgroundColor={colors['primary-accent']}
+        ></PrimaryButtonComponent>
       </View>
     </View>
   );

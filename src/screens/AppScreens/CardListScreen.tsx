@@ -133,7 +133,6 @@ const CardListScreen = ({ route }: any) => {
               label: 'Edit Contact Name',
               onSelect: changeContactNameFunction,
             },
-            // Add more menu options as needed
           ]}
         />
       </View>

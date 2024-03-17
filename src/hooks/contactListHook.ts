@@ -10,7 +10,6 @@ export const getContactList = async (user_id: string, token: string) => {
         },
       },
     );
-    // console.log(response.data);
     return response.data;
   } catch (error) {
     console.log(error);
