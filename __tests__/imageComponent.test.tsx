@@ -24,7 +24,7 @@ describe('CommonImageComponent', () => {
 
   it('renders default image when no images are provided', () => {
     const { getAllByTestId } = render(
-      <CommonImageComponent frontImageUri="" backImageUri="" />,
+      <CommonImageComponent />,
     );
     const images = getAllByTestId('defaultImage');
     expect(images.length).toBe(1);
@@ -38,7 +38,7 @@ describe('CommonImageComponent', () => {
       />,
     );
     const images = getAllByTestId('Image');
-    expect(images.length).toBe(2 || 1);
+    expect(images.length).toBe(2);
     fireEvent.press(images[0]);
     expect(getAllByTestId('imageView')).toBeDefined();
   });
