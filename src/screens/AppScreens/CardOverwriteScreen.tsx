@@ -197,11 +197,12 @@ const CardOverwriteScreen = ({ route }: any) => {
               onPressing={overwriteFunction}
             />
           ) : (
-            <ActivityIndicator
-              style={styles.loading}
-              size="large"
-              color={colors['secondary-light']}
-            />
+            <PrimaryButtonComponent title="">
+              <ActivityIndicator
+                size="large"
+                color={colors['secondary-light']}
+              />
+            </PrimaryButtonComponent>
           )}
         </View>
         <View style={{ flex: 1 }}>
