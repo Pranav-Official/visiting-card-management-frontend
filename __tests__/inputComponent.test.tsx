@@ -1,12 +1,12 @@
 import React from 'react';
-import { render, fireEvent, userEvent } from '@testing-library/react-native';
+import { render, fireEvent } from '@testing-library/react-native';
 import InputComponent from '../src/components/InputComponent';
 
 describe('InputComponent', () => {
-  const user = userEvent.setup();
+  const setterMock = jest.fn();
   test('renders correctly with default props', () => {
     const { getByPlaceholderText, getByText } = render(
-      <InputComponent header="Header" value="" setter={() => {}} />,
+      <InputComponent header="Header" value="" setter={setterMock} />,
     );
 
     expect(getByPlaceholderText('')).toBeTruthy();
@@ -19,7 +19,7 @@ describe('InputComponent', () => {
         header="Header"
         placeholder="Enter text"
         value=""
-        setter={() => {}}
+        setter={setterMock}
       />,
     );
 
@@ -27,13 +27,13 @@ describe('InputComponent', () => {
   });
 
   test('toggles visibility of password when hidden prop is true', () => {
-    const { getByPlaceholderText, getByTestId } = render(
+    const { getByPlaceholderText } = render(
       <InputComponent
         header="Password"
         placeholder="password"
         hidden={true}
         value="password"
-        setter={() => {}}
+        setter={setterMock}
       />,
     );
 
