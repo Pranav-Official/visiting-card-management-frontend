@@ -27,6 +27,10 @@ import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import CardComponent from '../../components/CardComponent';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { listCards } from '../../hooks/CardListHook';
+import { useDispatch, useSelector } from 'react-redux';
+import { setCards } from '../../context/pendingCardsSlice';
+import { RootState } from '../../context/store';
 
 type Contact = {
   card_id: string;
@@ -65,6 +69,11 @@ const ContactsPage = () => {
 
   const [modalVisibility, setModalVisibility] = React.useState(false);
 
+  const dispatch = useDispatch();
+  const reduxPendingCardList = useSelector(
+    (state: RootState) => state.pendingCardsReducer.pendingCardList,
+  );
+
   const get = async () => {
     const user_id = (await getLocalItem(Constants.USER_ID)) || '';
     const token = (await getLocalItem(Constants.USER_JWT)) || '';
@@ -86,7 +95,7 @@ const ContactsPage = () => {
       <Text style={styles.userNameInModal}>From {item.user_fullname}</Text>
 
       {item.cards.map((card: Card) => (
-        <View style={styles.singleCard} key={card.user_id}>
+        <View style={styles.singleCard} key={card.user_id + card.card_id}>
           <CardComponent
             key={card.card_id}
             alignToSides={false}
@@ -122,6 +131,7 @@ const ContactsPage = () => {
       ) {
         setModalVisibility(true);
         setPendingCardList(pendingCards.pendingCardList);
+        dispatch(setCards(pendingCards.pendingCardList));
       } else {
         setModalVisibility(false);
       }
@@ -146,6 +156,7 @@ const ContactsPage = () => {
       .catch((err) => {
         console.log('Error occured', err);
       });
+    console.log('redux state log ', reduxPendingCardList);
   };
   const chooseImage = async () => {
     ImagePicker.openPicker({
@@ -186,13 +197,30 @@ const ContactsPage = () => {
     }, []),
   );
 
-  const contactPage = (id: string, name: string) => {
+  const contactPage = async (id: string, name: string) => {
     console.log('contactPage', id, name);
+    const userId = (await getLocalItem(Constants.USER_ID)) ?? '';
+    const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
+    const cardId = id;
 
-    navigation.navigate('CardStack', {
-      screen: 'CardListScreen',
-      params: { card_id: id, name: name },
+    const result = await listCards({
+      user_id: userId,
+      jwt_token: jwtToken,
+      card_id: cardId,
     });
+
+    if (result.cardResp.data.length === 1) {
+      const cardId = result.cardResp.data[0].card_id;
+      navigation.navigate('CardStack', {
+        screen: 'CardDetailsScreen',
+        params: { card_id: cardId },
+      });
+    } else {
+      navigation.navigate('CardStack', {
+        screen: 'CardListScreen',
+        params: { card_id: id, name: name },
+      });
+    }
   };
 
   const goToSearchScreen = () => {
@@ -221,7 +249,7 @@ const ContactsPage = () => {
               onPress={() => contactPage(item.card_id, item.contact_name)}
             />
           )}
-          keyExtractor={(item) => item.card_id}
+          keyExtractor={(item) => item.card_id + item.contact_name}
           scrollEventThrottle={16}
         />
       )}
@@ -296,18 +324,21 @@ const ContactsPage = () => {
           <FlatList
             data={pendingCardList}
             renderItem={renderItem}
-            keyExtractor={(item) => item.user_id}
+            keyExtractor={(item) =>
+              item.user_id + JSON.stringify(item).slice(0, 5)
+            }
           />
           <View style={styles.buttonContainer}>
             <Text style={styles.pendingCardsText}>Choose an Option</Text>
             <PrimaryButtonComponent
               title="Save shared cards"
-              onPressing={() =>
+              onPressing={() => {
+                setModalVisibility(false);
                 navigation.navigate('CardStack', {
                   screen: 'SaveShareCardScreen',
                   params: { pendingCardList },
-                })
-              }
+                });
+              }}
             ></PrimaryButtonComponent>
             <PrimaryButtonComponent
               title="I'll do it later"

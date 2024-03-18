@@ -10,7 +10,6 @@ import {
   View,
 } from 'react-native';
 import { useCallback, useState } from 'react';
-import CardComponent from '../../components/CardComponent';
 import { listCards } from '../../hooks/CardListHook';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
@@ -23,6 +22,7 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import { editCardDetails } from '../../hooks/editCardHook';
+import NewCardComponent from '../../components/NewCardListScreenComponent';
 
 const CardListScreen = ({ route }: any) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -97,6 +97,7 @@ const CardListScreen = ({ route }: any) => {
       if (result.cardResp.data.length == 0) {
         navigation.goBack();
       }
+
       setCardList(result.cardResp.data);
       setIsLoading(false);
     } catch (error) {
@@ -183,7 +184,7 @@ const CardListScreen = ({ route }: any) => {
               showsVerticalScrollIndicator={false}
               data={cardList}
               renderItem={({ item }) => (
-                <CardComponent
+                <NewCardComponent
                   name={item.card_name ? item.card_name : 'Add Card Name'}
                   job_position={
                     item.job_title ? item.job_title : 'Add Job Title'
@@ -241,13 +242,17 @@ const styles = StyleSheet.create({
   contactNameSetButton: {
     top: '35%',
   },
-
   cardcontainer: {
     width: '100%',
-    height: 170,
+    height: 300,
     elevation: 5,
     paddingRight: 20,
     paddingTop: 10,
+  },
+  container: {
+    width: '100%',
+    overflow: 'hidden',
+    justifyContent: 'center',
   },
   letterCircle: {
     borderRadius: 90,
@@ -295,8 +300,11 @@ const styles = StyleSheet.create({
   },
   flatListStyle: {
     gap: 20,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     paddingBottom: 150,
+  },
+  itemSeparator: {
+    width: 20,
   },
   contactName: {
     color: colors['primary-text'],

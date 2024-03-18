@@ -17,11 +17,19 @@ import { overwriteExistingCard } from '../../hooks/overWriteCardHook';
 import {
   CommonActions,
   NavigationProp,
+  StackActions,
   useNavigation,
 } from '@react-navigation/native';
 import Toast from 'react-native-root-toast';
 import { overwriteSharedCard } from '../../hooks/overwriteSharedCard';
 import cloudinaryUpload from '../../hooks/cloudinaryUpload';
+import { useDispatch } from 'react-redux';
+import {
+  removeAllSelectedCards,
+  removeSelectedCardId,
+} from '../../context/selectedCardsSlice';
+import { removeCardById } from '../../context/pendingCardsSlice';
+import { setSharingProcess } from '../../context/sharingProcessSlice';
 
 type Card = {
   card_id: string;
@@ -46,42 +54,55 @@ type routeParams = {
   CardDetailsScreen?: { card_id: string };
   CardStack?: { screen: string; params: { card_id: string } };
 };
-const RenderItem = ({ item, selected, setter }: renderItemType) => (
-  <View
-    style={[
-      styles.similarCardsContainer,
-      { flexDirection: 'column', marginBottom: 20, gap: 20 },
-    ]}
-  >
-    <Text style={styles.contactName}>{item.contact_name}</Text>
-    {item.cards.map((card: Card) => (
-      <View style={{ flexDirection: 'row' }} key={card.card_id}>
-        <TouchableOpacity
-          style={{ flex: 1, paddingTop: 5 }}
-          onPress={() => setter(card.card_id)}
-        >
-          {selected == card.card_id ? (
-            <RadioButton selected={true} />
-          ) : (
-            <RadioButton />
-          )}
-        </TouchableOpacity>
-        <View style={{ flex: 6 }}>
-          <CardComponent
-            alignToSides={false}
-            job_position={card.job_title}
-            name={card.card_name}
-            email={card.email}
-            phone_number={card.phone}
-            company_name={card.company_name}
-          />
+
+const RenderItem = ({ item, selected, setter }: renderItemType) => {
+  const handlePress = (cardId: string) => {
+    if (selected === cardId) {
+      setter('');
+    } else {
+      setter(cardId);
+    }
+  };
+
+  return (
+    <View
+      style={[
+        styles.similarCardsContainer,
+        { flexDirection: 'column', marginBottom: 20, gap: 20 },
+      ]}
+    >
+      <Text style={styles.contactName}>{item.contact_name}</Text>
+      {item.cards.map((card) => (
+        <View style={{ flexDirection: 'row' }} key={card.card_id}>
+          <TouchableOpacity
+            style={{ flex: 1, paddingTop: 5 }}
+            onPress={() => handlePress(card.card_id)}
+          >
+            {selected === card.card_id ? (
+              <RadioButton selected={true} />
+            ) : (
+              <RadioButton />
+            )}
+          </TouchableOpacity>
+          <View style={{ flex: 6 }}>
+            <CardComponent
+              card_id={card.card_id}
+              alignToSides={false}
+              job_position={card.job_title}
+              name={card.card_name}
+              email={card.email}
+              phone_number={card.phone}
+              company_name={card.company_name}
+            />
+          </View>
         </View>
-      </View>
-    ))}
-  </View>
-);
+      ))}
+    </View>
+  );
+};
 
 const CardOverwriteScreen = ({ route }: any) => {
+  const dispatch = useDispatch();
   const inputList = route.params.similarCardList;
   let cardDetails = route.params.cardDetails;
   const sharing: boolean = route.params.sharing;
@@ -137,16 +158,24 @@ const CardOverwriteScreen = ({ route }: any) => {
 
     if (overwriteResponse?.statusCode === '200') {
       Toast.show('Card Overwritten Successfully');
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 1,
-          routes: [{ name: 'Home' }],
-        }),
-      );
-      navigation.navigate('CardStack', {
-        screen: 'CardDetailsScreen',
-        params: { card_id: selected },
-      });
+
+      if (sharing === true) {
+        navigation.dispatch(StackActions.pop(1));
+        dispatch(removeSelectedCardId(cardDetails.card_id));
+        dispatch(removeCardById({ card_id: cardDetails.card_id }));
+      } else {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 1,
+            routes: [{ name: 'Home' }],
+          }),
+        );
+        navigation.navigate('CardStack', {
+          screen: 'CardDetailsScreen',
+          params: { card_id: selected },
+        });
+      }
+      // navigation.navigate('CardDetailsScreen', { card_id: selected });
     } else {
       Toast.show('Error Overwriting Card');
       console.log('\n\nError Navigating');
@@ -155,49 +184,68 @@ const CardOverwriteScreen = ({ route }: any) => {
 
   const [selected, setSelected] = useState('');
   return (
-    <View style={{ padding: 18, flex: 1 }}>
-      <Text
-        style={{
-          fontSize: 28,
-          color: colors['primary-text'],
-          fontWeight: '600',
-          marginBottom: 20,
-          textAlign: 'center',
-        }}
-      >
-        Choose Card to Overwrite
-      </Text>
-      <FlatList
-        data={cardList}
-        renderItem={({ item }) => {
-          return (
-            <RenderItem item={item} selected={selected} setter={setSelected} />
-          );
-        }}
-        keyExtractor={(item) => item.contact_name}
-        contentContainerStyle={{ paddingBottom: 20 }}
-      />
-      <View style={styles.buttonContainer}>
-        <View style={{ flex: 1 }}>
-          {!imageUploadProcessing ? (
+    <View style={styles.mainContainer}>
+      <View style={styles.newCardContainer}>
+        <CardComponent
+          name={cardDetails.card_name}
+          job_position={cardDetails.job_title}
+          phone_number={cardDetails.phone}
+          email={cardDetails.email}
+          company_name={cardDetails.company_name}
+        ></CardComponent>
+      </View>
+      <View style={styles.bottomContainer}>
+        <Text
+          style={{
+            fontSize: 28,
+            color: colors['primary-text'],
+            fontWeight: '600',
+            marginBottom: 20,
+            textAlign: 'center',
+          }}
+        >
+          Choose Card to Overwrite
+        </Text>
+        <FlatList
+          data={cardList}
+          renderItem={({ item }) => {
+            return (
+              <RenderItem
+                item={item}
+                selected={selected}
+                setter={setSelected}
+              />
+            );
+          }}
+          keyExtractor={(item) => item.contact_name}
+          contentContainerStyle={{ paddingBottom: 20 }}
+        />
+        <View style={styles.buttonContainer}>
+          <View style={{ flex: 1 }}>
+            {!imageUploadProcessing ? (
+              <PrimaryButtonComponent
+                title="Overwrite"
+                onPressing={overwriteFunction}
+              />
+            ) : (
+              <ActivityIndicator
+                style={styles.loading}
+                size="large"
+                color={colors['secondary-light']}
+              />
+            )}
+          </View>
+          <View style={{ flex: 1 }}>
             <PrimaryButtonComponent
-              title="Overwrite"
-              onPressing={overwriteFunction}
+              title="Cancel"
+              onPressing={() => {
+                dispatch(setSharingProcess(false));
+                dispatch(removeAllSelectedCards());
+                navigation.dispatch(StackActions.pop(1));
+              }}
+              backgroundColor={colors['secondary-grey']}
             />
-          ) : (
-            <ActivityIndicator
-              style={styles.loading}
-              size="large"
-              color={colors['secondary-light']}
-            />
-          )}
-        </View>
-        <View style={{ flex: 1 }}>
-          <PrimaryButtonComponent
-            title="Cancel"
-            onPressing={() => navigation.goBack()}
-            backgroundColor={colors['secondary-grey']}
-          />
+          </View>
         </View>
       </View>
     </View>
@@ -205,18 +253,29 @@ const CardOverwriteScreen = ({ route }: any) => {
 };
 
 const styles = StyleSheet.create({
-  view: {
-    justifyContent: 'flex-end',
-    margin: 0,
+  mainContainer: {
+    backgroundColor: colors['primary-accent'],
+    flex: 1,
   },
-  bottomSheet: {
-    width: '100%',
-    height: '85%',
-    alignItems: 'center',
-    paddingTop: 25,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+  newCardContainer: {
+    paddingVertical: 50,
+    padding: 25,
+  },
+  bottomContainer: {
     backgroundColor: colors['secondary-light'],
+    padding: 18,
+    flex: 1,
+    borderTopRightRadius: 25,
+    borderTopLeftRadius: 25,
+
+    shadowColor: colors['primary-text'],
+    shadowOffset: {
+      width: 0,
+      height: -4,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   similarCardsText: {
     marginTop: 10,
@@ -230,6 +289,7 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
     borderRadius: 14,
     width: '100%',
+    zIndex: 1,
   },
   contactName: {
     paddingStart: 10,
@@ -238,11 +298,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   buttonContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
     flexDirection: 'row',
     gap: 10,
-    height: 100,
-    paddingVertical: 10,
     width: '100%',
+    height: 100,
     paddingHorizontal: 10,
   },
   loading: {

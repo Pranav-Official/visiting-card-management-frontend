@@ -16,13 +16,14 @@ import { getLocalItem, setLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import { userLogin } from '../../context/userSlice';
 import { useDispatch } from 'react-redux';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 type UserData = {
   email: string;
   fullName: string;
   totalAcceptedCards: number;
   totalContacts: number;
-  totalPendingCards: number;
+  totalPendingCards: number
 };
 
 type ResponseType = {
@@ -60,6 +61,19 @@ const ProfileScreen = () => {
     setLocalItem(Constants.USER_ID, '');
     dispatch(userLogin(false));
   };
+  const navigation = useNavigation<NavigationProp<any>>();
+  const navigateSharedContactsScreen = () => {
+    navigation.navigate('CardStack', {
+      screen: 'ViewSharedContactsScreen',
+      
+    });
+  };
+  const handleNav = () => {
+    navigation.navigate('ChangePassword', {
+      email: profileResponse?.userData.email ??'',
+      jwtToken: Constants.USER_JWT,
+      
+  })};
   return (
     <ScrollView style={styles.profileMainContainer}>
       <View style={styles.profileContainer}>
@@ -105,12 +119,14 @@ const ProfileScreen = () => {
             title={'View Shared Contacts'}
             backgroundColor={colors['accent-white']}
             isHighlighted={true}
+            onPressing={() =>navigateSharedContactsScreen()}
           />
           <PrimaryButtonComponent
             title={'Change Password'}
             backgroundColor={colors['accent-white']}
             textColor={colors['primary-danger']}
             isHighlighted={true}
+            onPressing={() =>handleNav()}
           />
           <PrimaryButtonComponent
             title={'Logout'}
