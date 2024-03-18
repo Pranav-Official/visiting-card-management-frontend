@@ -180,6 +180,7 @@ const CardListScreen = ({ route }: any) => {
           <Text style={styles.cardHeading}>Cards</Text>
           {!isLoading ? (
             <FlatList
+              horizontal={true}
               contentContainerStyle={styles.flatListStyle}
               showsVerticalScrollIndicator={false}
               data={cardList}

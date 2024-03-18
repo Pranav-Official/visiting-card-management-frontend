@@ -238,7 +238,11 @@ const CardDetailPage = ({ route }: any) => {
           </>
         ) : (
           <>
-            <Text style={styles.cardName}>{cardDetail.card_name}</Text>
+            <Text style={styles.cardName}>
+              {showTranslated
+                ? translatedCardDetails.card_name
+                : cardDetail.card_name}
+            </Text>
             <Text
               style={styles.jobTitle}
               onPress={() => {
@@ -251,7 +255,11 @@ const CardDetailPage = ({ route }: any) => {
                 }
               }}
             >
-              {cardDetail.job_title ? cardDetail.job_title : 'Add Job title'}
+              {showTranslated
+                ? translatedCardDetails.job_title
+                : cardDetail.job_title
+                ? cardDetail.job_title
+                : 'Add Job title'}
             </Text>
           </>
         )}
@@ -282,7 +290,9 @@ const CardDetailPage = ({ route }: any) => {
               longPressToCopy(cardDetail.company_name || '');
           }}
           card_detail={
-            cardDetail.company_name
+            showTranslated
+              ? translatedCardDetails.company_name
+              : cardDetail.company_name
               ? cardDetail.company_name
               : 'Add Company Name'
           }
