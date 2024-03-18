@@ -34,6 +34,10 @@ import { isValidWebsiteUrl } from '../../utils/regexCheck';
 import BottomSheetComponent from '../../components/BottomSheetComponent';
 import { deleteCard } from '../../hooks/deleteCardHook';
 import Toast from 'react-native-root-toast';
+import TranslateText, {
+  TranslateLanguage,
+} from '@react-native-ml-kit/translate-text';
+import IdentifyLanguages from '@react-native-ml-kit/identify-languages';
 
 type CardDetails = {
   card_name: string;
@@ -49,6 +53,8 @@ type CardDetails = {
 
 const CardDetailPage = ({ route }: any) => {
   const [cardDetail, setCardDetail] = useState<CardDetails>({});
+  const [translatedCardDetails, setTranslatedCardDetails] = useState();
+  const [showTranslated, setShowtranslated] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation<NavigationProp<any>>();
@@ -153,7 +159,58 @@ const CardDetailPage = ({ route }: any) => {
       console.error('Error copying to clipboard:', error);
     }
   };
+  const handleTranslate = async () => {
+    console.log('Initialte Translation');
+    let enToJp = true;
 
+    const lang = await IdentifyLanguages.identify(
+      cardDetail.card_name + cardDetail.job_title + cardDetail.company_name,
+    );
+    console.log('identified language : ', lang);
+    if (lang == 'ja') {
+      enToJp = false;
+    } else {
+      enToJp = true;
+    }
+    const translationOptions = {
+      sourceLanguage:
+        enToJp != true ? TranslateLanguage.JAPANESE : TranslateLanguage.ENGLISH,
+      targetLanguage:
+        enToJp != true ? TranslateLanguage.ENGLISH : TranslateLanguage.JAPANESE,
+      downloadModelIfNeeded: true,
+      requireWifi: true,
+    };
+    try {
+      const translatedCardName = await TranslateText.translate({
+        text: cardDetail.card_name,
+        ...translationOptions,
+      });
+      const translatedJobTitle = await TranslateText.translate({
+        text: cardDetail.job_title ?? '',
+        ...translationOptions,
+      });
+      const translatedCompanyName = await TranslateText.translate({
+        text: cardDetail.company_name ?? '',
+        ...translationOptions,
+      });
+      console.log(
+        'After translation',
+        translatedCardName,
+        translatedCompanyName,
+        translatedJobTitle,
+      );
+      const translatedCardDetails = {
+        ...cardDetail,
+        card_name: translatedCardName,
+        job_title: translatedJobTitle,
+        company_name: translatedCompanyName,
+      };
+      setTranslatedCardDetails(translatedCardDetails);
+      setShowtranslated(!showTranslated);
+    } catch (error) {
+      console.log('Error in translation', error);
+    }
+  };
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -183,8 +240,13 @@ const CardDetailPage = ({ route }: any) => {
           </>
         ) : (
           <>
-            <Text style={styles.cardName}>{cardDetail.card_name}</Text>
-            <TouchableOpacity
+            <Text style={styles.cardName}>
+              {showTranslated
+                ? translatedCardDetails.card_name
+                : cardDetail.card_name}
+            </Text>
+            <Text
+              style={styles.jobTitle}
               onPress={() => {
                 if (!cardDetail.job_title) {
                   // Navigate to the edit screen if jobTitle is missing
@@ -199,12 +261,18 @@ const CardDetailPage = ({ route }: any) => {
                 {cardDetail.job_title ? cardDetail.job_title : 'Add Job title'}
               </Text>
             </TouchableOpacity>
+              {showTranslated
+                ? translatedCardDetails.job_title
+                : cardDetail.job_title
+                ? cardDetail.job_title
+                : 'Add Job title'}
+            </Text>
           </>
         )}
       </View>
 
       <View style={styles.headerStyle}>
-        <TouchableOpacity style={styles.buttonStyle}>
+        <TouchableOpacity style={styles.buttonStyle} onPress={handleTranslate}>
           <Text style={styles.buttonText}>Translate</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -228,7 +296,9 @@ const CardDetailPage = ({ route }: any) => {
               longPressToCopy(cardDetail.company_name || '');
           }}
           card_detail={
-            cardDetail.company_name
+            showTranslated
+              ? translatedCardDetails.company_name
+              : cardDetail.company_name
               ? cardDetail.company_name
               : 'Add Company Name'
           }

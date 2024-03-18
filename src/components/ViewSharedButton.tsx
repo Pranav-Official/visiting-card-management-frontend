@@ -16,14 +16,14 @@ const ViewSharedButton: React.FC<ViewSharedButtonProps> = ({
   
 }) => {
   return (
-    <TouchableOpacity onPress={() => onPressing()} style={styles.mainContainer}>
-        <View style={styles.lightBlueContainer}></View>
+    <TouchableOpacity onPress={() => onPressing()}  testID='sharedBtntest' style={styles.mainContainer}>
+        <View style={styles.lightBlueContainer} ></View>
         <View style={styles.contentContainer}>
           <Text style={styles.titleText}>{title}</Text>
           <View style={styles.contactNumberContainer}>
             <SharePersonIcon width={45} height={45} />
             <Text style={styles.contactText}>{number} contacts</Text>
-          </View>
+          </View >
         </View>
     </TouchableOpacity>
   );
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   titleText: {
-    fontSize: 32,
+    fontSize: 30,
     color: 'black',
   },
 });

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+  Dimensions,
   FlatList,
   Image,
   StyleSheet,
@@ -15,9 +16,13 @@ type ImgContainer = {
   indexSetter: () => void;
 };
 
+const screenWidth = Dimensions.get('window').width;
+const contentWidth = screenWidth - 95;
+const contentWidth2 = screenWidth - 70;
+
 const CommonImage = (props: ImgContainer) => {
   return (
-    <View style={styles.CommonImagecontainer} testID='Image'>
+    <View style={styles.CommonImagecontainer} testID="Image">
       <TouchableOpacity
         style={styles.cardContainer}
         onPress={() => {
@@ -59,7 +64,7 @@ const CommonImageComponent = ({ frontImageUri, backImageUri }: imageURI) => {
   if (!frontImageUri && !backImageUri) {
     return (
       <TouchableOpacity>
-        <View style={styles.mainStyle} testID='defaultImage'>
+        <View style={styles.mainStyle} testID="defaultImage">
           <Image
             source={require('../assets/images/Defaultcard.png')}
             style={styles.singleImage}
@@ -88,14 +93,14 @@ const CommonImageComponent = ({ frontImageUri, backImageUri }: imageURI) => {
             imageData.length === 1 ? styles.CommonImagecontainer2 : null
           }
         />
-        <View testID='imageView'>
-        <ImageView
-          images={imageData}
-          imageIndex={imageIndex}
-          keyExtractor={(_, index) => index.toString()}
-          visible={isImageVisible}
-          onRequestClose={() => setIsImageVisible(false)}
-        />
+        <View testID="imageView">
+          <ImageView
+            images={imageData}
+            imageIndex={imageIndex}
+            keyExtractor={(_, index) => index.toString()}
+            visible={isImageVisible}
+            onRequestClose={() => setIsImageVisible(false)}
+          />
         </View>
       </View>
     );
@@ -105,6 +110,7 @@ const CommonImageComponent = ({ frontImageUri, backImageUri }: imageURI) => {
 const styles = StyleSheet.create({
   CommonImagecontainer: {
     paddingLeft: 20,
+    width: contentWidth2,
   },
   mainStyle: {
     backgroundColor: colors['secondary-light'],
@@ -153,7 +159,7 @@ const styles = StyleSheet.create({
     marginLeft: 45,
     borderRadius: 20,
     height: 200,
-    width: 320,
+    width: contentWidth,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.38,
