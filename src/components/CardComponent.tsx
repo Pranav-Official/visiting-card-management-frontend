@@ -168,11 +168,15 @@ const CardComponent: React.FC<Prop> = ({
       <View style={styles.second_row}>
         <View style={styles.sr1}>
           <JobTitleIcon width={14} height={14} fill={'black'} />
-          <Text style={styles.job_position}>{job_position}</Text>
+          <Text style={styles.job_position}>
+            {job_position ? job_position : 'Add Job Title'}
+          </Text>
         </View>
         <View style={styles.sr2}>
           <PhoneIcon width={14} height={14} fill={'white'}></PhoneIcon>
-          <Text style={styles.phone_number}>{phone_number}</Text>
+          <Text style={styles.phone_number}>
+            {phone_number ? phone_number : 'Add Contact Number'}
+          </Text>
         </View>
       </View>
       <View style={styles.third_row}>
@@ -182,7 +186,9 @@ const CardComponent: React.FC<Prop> = ({
         </View>
         <View style={styles.tr2}>
           <CompanyIcon width={14} height={14} fill={'white'}></CompanyIcon>
-          <Text style={styles.company_name}>{company_name}</Text>
+          <Text style={styles.company_name}>
+            {company_name ? company_name : 'Add Company Name'}
+          </Text>
         </View>
       </View>
     </TouchableOpacity>
