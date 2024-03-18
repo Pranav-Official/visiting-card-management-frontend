@@ -257,10 +257,6 @@ const CardDetailPage = ({ route }: any) => {
                 }
               }}
             >
-              <Text style={styles.jobTitle}>
-                {cardDetail.job_title ? cardDetail.job_title : 'Add Job title'}
-              </Text>
-            </TouchableOpacity>
               {showTranslated
                 ? translatedCardDetails.job_title
                 : cardDetail.job_title
