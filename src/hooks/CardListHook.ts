@@ -26,7 +26,7 @@ export async function listCards({
   jwt_token,
 }: CardListProp): Promise<CardListResponse> {
   let statusCode = '';
-  let cardResp: CardReturn[] = [];
+  let cardResp: { data: CardReturn[] } = { data: [] };
 
   const contactParams = {
     user_id: user_id,

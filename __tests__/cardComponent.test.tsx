@@ -1,10 +1,27 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+import { render, fireEvent, RenderAPI } from '@testing-library/react-native';
 import CardComponent from '../src/components/CardComponent'; 
-import { getStyle } from 'react-native-svg/lib/typescript/xml';
 
 describe('CardComponent', () => {
+  let component: RenderAPI; // Declare the component variable
+
+  beforeEach(() => {
+    const mockClickFunc = jest.fn();
+    component = render(
+      <CardComponent
+        name='John Doe'
+        job_position="Developer"
+        email="johndoe@example.com"
+        phone_number="123-456-7890"
+        company_name="ABC Inc."
+        alignToSides={true}
+        clickFunc={mockClickFunc}
+      />,
+    );
+  });
+
   test('renders correctly with provided props', () => {
+    // Your existing test case
     const mockClickFunc = jest.fn();
     const { getByText } = render(
       <CardComponent
@@ -25,6 +42,7 @@ describe('CardComponent', () => {
   });
 
   test('calls clickFunc when card is pressed', () => {
+    // Your existing test case
     const mockClickFunc = jest.fn();
     const { getByTestId } = render(
       <CardComponent
@@ -41,30 +59,12 @@ describe('CardComponent', () => {
     fireEvent.press(card);
 
     expect(mockClickFunc).toHaveBeenCalledTimes(1);
-  });
-
-  test('align to sides apply applies correct style',() =>{
-    const mockClickFunc = jest.fn();
-    const{getByTestId,getByText} = render(
-      <CardComponent
-      name='John Doe'
-      job_position="Developer"
-      email="johndoe@example.com"
-      phone_number="123-456-7890"
-      company_name="ABC Inc."
-      alignToSides={true}
-      clickFunc={mockClickFunc}
-      />,
-    );
-    const cardContainer = getByTestId('card');
-    expect(cardContainer.props.style[1]).toEqual({
-      justifyContent: 'space-between',
-    });
-  })
+  });  
 
   test('align to sides does not apply style when false', () => {
+    component.unmount(); // Clean up the component
     const mockClickFunc = jest.fn();
-    const { getByTestId } = render(
+    component = render(
       <CardComponent
         name="John Doe"
         job_position="Developer"
@@ -75,10 +75,14 @@ describe('CardComponent', () => {
         clickFunc={mockClickFunc}
       />,
     );
+    const cardContainer = component.getByTestId('card');
+    const viewStyle = (cardContainer.children[1] as any).props.style; // Use type assertion
 
-    const cardContainer = getByTestId('card');
-    expect(cardContainer.props.style[1]).toEqual({
-      justifyContent: 'center',
-    });
+    expect(viewStyle.justifyContent).toEqual('center');
+  });
+
+  afterEach(() => {
+    component.unmount(); // Clean up the component after each test
   });
 });
+

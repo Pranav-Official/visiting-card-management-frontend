@@ -136,7 +136,6 @@ interface Prop {
   clickFunc?: () => void;
 }
 
-// type Card = {card_name:string,job_role:string,email:string,company_name:string}
 const CardComponent: React.FC<Prop> = ({
   alignToSides,
   name,

@@ -7,8 +7,7 @@ import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import { ShareCard, ShareCardProp } from '../../hooks/ShareCardHook';
-import Share from 'react-native-share';
-import { shareCardDetails, shareExternally } from '../../hooks/externalShare';
+import {shareExternally } from '../../hooks/externalShare';
 
 type ShareProp = {
   user_fullname: string;
@@ -21,9 +20,9 @@ const ShareCardScreen = ({
   cardDetails,
 }: ShareCardProp) => {
   const [shareList, setShareList] = useState<ShareProp[]>([]);
-  const [filteredShareList, setFilteredShareList] = useState<ShareProp[]>([]); //new
+  const [filteredShareList, setFilteredShareList] = useState<ShareProp[]>([]);
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
-  const [searchQuery, setSearchQuery] = useState<string>(''); //new
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,10 +31,10 @@ const ShareCardScreen = ({
         const jwt_token = (await getLocalItem(Constants.USER_JWT)) ?? '';
 
         const result = await listUsers({ user_id, jwt_token });
-        console.log('result:', result);
         setShareList(result.userResp);
       } catch (error) {
         console.log(error);
+        setShareList([]);
       }
     };
     fetchData();
@@ -55,6 +54,7 @@ const ShareCardScreen = ({
       setSelectedUserIds([...selectedUserIds, user_id]);
     }
   };
+  //call function according to selected user id array
   const handleShare = async () => {
     if (selectedUserIds.length > 0) {
       await handleShareInternally();
@@ -63,29 +63,26 @@ const ShareCardScreen = ({
     }
   };
 
+  //function to share cards internally
   const handleShareInternally = async () => {
     const user_id = (await getLocalItem(Constants.USER_ID)) ?? '';
     const jwt_token = (await getLocalItem(Constants.USER_JWT)) ?? '';
     const shareCardProps: ShareCardProp = {
       user_id,
       jwt_token,
-      card_id: card_id, // Replace with the actual card ID
+      card_id: card_id,
       receiver_user_ids: selectedUserIds,
     };
-    console.log('card_id handle press', card_id),
-      console.log('receiver user id handle press', selectedUserIds);
 
     try {
       const shareCardResponse = await ShareCard(shareCardProps);
-      console.log('Share Card Response:', shareCardResponse);
-      // Handle the response accordingly
       visibilitySetter && visibilitySetter();
     } catch (error) {
       console.error('Error sharing card Internally:', error);
-      // Handle errors
     }
   };
 
+  //function to share cards externally
   const handleShareExternally = () => {
     const filteredDetails: any = {};
     for (const key in cardDetails) {
@@ -133,7 +130,6 @@ const ShareCardScreen = ({
         <View style={styles.profile_button_container}>
           <PrimaryButtonComponent
             title={selectedUserIds.length > 0 ? 'Share Internally' : 'Share Externally'}
-            // onPressing={handleShareInternally}
             onPressing={handleShare}
           ></PrimaryButtonComponent>
         </View>

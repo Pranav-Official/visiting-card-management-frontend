@@ -32,20 +32,19 @@ const ChangePassword: React.FC<Props> = ({ route }) => {
   const [passwordBorder, setPasswordBorder] = useState<BorderTypes>('Normal');
   const navigation = useNavigation();
 
+  //check password matches confirm password field
   const handlePasswordChange = (value: string) => {
     setNewPassword(value);
-    // Check if new password and confirm password match
     setPasswordMatch(value === confirmPassword);
   };
 
+  //check confirm password matches new password
   const handleConfirmPasswordChange = (value: string) => {
     setConfirmPassword(value);
-    // Check if new password and confirm password match
     setPasswordMatch(value === newPassword);
   };
 
-  //   const passwordBorder: BorderTypes = passwordMatch ? 'Normal' : 'Danger';
-
+  //function to handle password change
   const handleChangePassword = async () => {
     if (!passwordMatch) {
       ToastAndroid.show('Passwords do not match!', ToastAndroid.SHORT);
@@ -61,15 +60,11 @@ const ChangePassword: React.FC<Props> = ({ route }) => {
       setPasswordBorder('Danger');
       return;
     }
-    // if(passwordMatch && isValidPassword(newPassword)){
-    //     setPasswordBorder('Danger');
-    // }
 
-    // Call your changePassword hook here
     const changePasswordProps: changePasswordProp = {
-      email, // Provide the email here
+      email,
       new_password: newPassword,
-      jwt_token: jwtToken, // Provide the JWT token here
+      jwt_token: jwtToken,
     };
 
     try {
@@ -82,12 +77,8 @@ const ChangePassword: React.FC<Props> = ({ route }) => {
       if (response.statusCode == '200') {
         navigation.goBack();
       }
-      //   if(!passwordMatch && !isValidPassword(newPassword)){
-      //     setPasswordBorder('Danger');
-      // }
     } catch (error) {
       console.error('Error changing password:', error);
-      // Display an error message
       ToastAndroid.show('Error changing password!', ToastAndroid.SHORT);
     }
   };

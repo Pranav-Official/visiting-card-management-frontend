@@ -42,6 +42,4 @@ export async function listUsers({
         return{statusCode,userResp};
         
     }
-
-
 }
