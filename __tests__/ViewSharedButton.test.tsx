@@ -42,14 +42,5 @@ describe('ViewSharedButton Component', () => {
     expect(mockOnPressing).toHaveBeenCalled();
   });
 
-  // it('matches snapshot', () => {
-  //   const { toJSON } = render(
-  //     <ViewSharedButton
-  //       title={mockTitle}
-  //       number={mockNumber}
-  //       onPressing={mockOnPressing}
-  //     />,
-  //   );
-  //   expect(toJSON()).toMatchSnapshot();
-  // });
+  
 });

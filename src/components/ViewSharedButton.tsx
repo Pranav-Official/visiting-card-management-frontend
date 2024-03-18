@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   titleText: {
-    fontSize: 32,
+    fontSize: 30,
     color: 'black',
   },
 });
