@@ -48,7 +48,7 @@ describe('ViewSharedButton Component', () => {
   //       title={mockTitle}
   //       number={mockNumber}
   //       onPressing={mockOnPressing}
-  //     />
+  //     />,
   //   );
   //   expect(toJSON()).toMatchSnapshot();
   // });
