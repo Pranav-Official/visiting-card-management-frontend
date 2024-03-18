@@ -48,7 +48,11 @@ const PrimaryButtonComponent = ({
   });
 
   return (
-    <TouchableOpacity style={styles.primaryButton} onPress={onPressing}>
+    <TouchableOpacity
+      style={styles.primaryButton}
+      onPress={onPressing}
+      testID="ButtonContainer"
+    >
       <View style={styles.iconTextContainer}>
         {children}
         <Text style={styles.primaryButtonTitle}>{title}</Text>

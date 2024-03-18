@@ -164,7 +164,6 @@ const AddToContact = ({ route }: any) => {
       const createdCardId =
         addToContactResponse.addToExistingContactData.data.cardId;
       Toast.show('Card Added Successfully!');
-      console.log('\n\nNEWLY CREATED CARD ID: ', createdCardId);
 
       //Navigate to SaveSharedCard Screen if sharing is true (for saving Multiple Cards)
       if (sharing === true) {
@@ -185,7 +184,6 @@ const AddToContact = ({ route }: any) => {
       }
     } else {
       Toast.show('Error Adding Card');
-      console.log('\n\nError Adding Screen');
     }
   };
 
