@@ -1,13 +1,16 @@
 //Card Component
 
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import PersonIcon from '../assets/images/jobTitle.svg';
 import PhoneIcon from '../assets/images/phone.svg';
 import MailIcon from '../assets/images/mail.svg';
 import CompanyIcon from '../assets/images/organisation.svg';
 import ArrowIcon from '../assets/images/Arrow.svg';
 import colors from '../utils/colorPallete';
+
+const screenWidth = Dimensions.get('window').width;
+const contentWidth = screenWidth - 200;
 
 const styles = StyleSheet.create({
   card_container: {
@@ -46,7 +49,7 @@ const styles = StyleSheet.create({
     marginRight: 40,
     color: '#102D4A',
     marginLeft: 10,
-    width: 213,
+    width: contentWidth,
   },
   tr1: {
     flexDirection: 'row',
@@ -68,20 +71,20 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
     fontSize: 18,
     marginLeft: 10,
-    width: 213,
+    width: contentWidth,
   },
   mail_text: {
     fontSize: 18,
     fontFamily: 'Roboto',
     marginRight: 40,
     marginLeft: 10,
-    width: 213,
+    width: contentWidth,
   },
   company_name: {
     fontSize: 18,
     fontFamily: 'Roboto',
     marginLeft: 10,
-    width: 213,
+    width: contentWidth,
   },
   card_button: {
     backgroundColor: colors['primary-accent'],
@@ -112,6 +115,12 @@ interface Prop {
   clickFunc?: () => void;
 }
 
+const truncateContactName = (name: string) => {
+  if (name.length > 22) {
+    return name.substring(0, 22) + '..'; // Add '..' if name exceeds 14 characters
+  }
+  return name;
+};
 // type Card = {card_name:string,job_role:string,email:string,company_name:string}
 const NewCardComponent: React.FC<Prop> = ({
   alignToSides,
@@ -132,7 +141,7 @@ const NewCardComponent: React.FC<Prop> = ({
             : { justifyContent: 'center' },
         ]}
       >
-        <Text style={styles.card_name}>{name}</Text>
+        <Text style={styles.card_name}>{truncateContactName(name)}</Text>
         {alignToSides && (
           <TouchableOpacity style={styles.card_button} onPress={clickFunc}>
             <Text style={styles.button_text}>View Card</Text>
@@ -144,7 +153,7 @@ const NewCardComponent: React.FC<Prop> = ({
       <View style={styles.detailStyle}>
         <View style={styles.tr1}>
           <PersonIcon width={18} height={18} fill={'black'} />
-          <Text style={styles.job_position}>{job_position}</Text>
+          <Text style={styles.job_position}>{truncateContactName(job_position)}</Text>
         </View>
 
         <View style={styles.tr1}>
@@ -154,12 +163,12 @@ const NewCardComponent: React.FC<Prop> = ({
 
         <View style={styles.tr1}>
           <MailIcon width={18} height={18} fill={'white'}></MailIcon>
-          <Text style={styles.mail_text}>{email}</Text>
+          <Text style={styles.mail_text}>  {truncateContactName(email)}</Text>
         </View>
 
         <View style={styles.tr1}>
           <CompanyIcon width={18} height={18} fill={'white'}></CompanyIcon>
-          <Text style={styles.company_name}>{company_name}</Text>
+          <Text style={styles.company_name}>  {truncateContactName(company_name)}</Text>
         </View>
       </View>
     </TouchableOpacity>
