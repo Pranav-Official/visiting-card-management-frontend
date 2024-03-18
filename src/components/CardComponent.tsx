@@ -1,7 +1,7 @@
 //Card Component
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import PersonIcon from '../assets/images/person.svg';
+import JobTitleIcon from '../assets/images/jobTitle.svg';
 import PhoneIcon from '../assets/images/phone.svg';
 import MailIcon from '../assets/images/mail.svg';
 import CompanyIcon from '../assets/images/organisation.svg';
@@ -167,7 +167,7 @@ const CardComponent: React.FC<Prop> = ({
 
       <View style={styles.second_row}>
         <View style={styles.sr1}>
-          <PersonIcon width={14} height={14} fill={'black'} />
+          <JobTitleIcon width={14} height={14} fill={'black'} />
           <Text style={styles.job_position}>{job_position}</Text>
         </View>
         <View style={styles.sr2}>

@@ -19,7 +19,7 @@
     "@react-navigation/native-stack": "^6.9.18",
     "@reduxjs/toolkit": "^2.2.1",
     "axios": "^1.6.7",
-    "google-translate-api": "^2.3.0",
+    "libphonenumber-js": "^1.10.58",
     "react": "18.2.0",
     "react-native": "0.73.4",
     "react-native-image-crop-picker": "^0.40.3",
