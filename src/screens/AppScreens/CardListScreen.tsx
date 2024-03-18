@@ -181,7 +181,8 @@ const CardListScreen = ({ route }: any) => {
           {!isLoading ? (
             <FlatList
               contentContainerStyle={styles.flatListStyle}
-              showsVerticalScrollIndicator={false}
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
               data={cardList}
               renderItem={({ item }) => (
                 <NewCardComponent
