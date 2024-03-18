@@ -55,6 +55,13 @@ const ShareCardScreen = ({
       setSelectedUserIds([...selectedUserIds, user_id]);
     }
   };
+  const handleShare = async () => {
+    if (selectedUserIds.length > 0) {
+      await handleShareInternally();
+    } else {
+      handleShareExternally();
+    }
+  };
 
   const handleShareInternally = async () => {
     const user_id = (await getLocalItem(Constants.USER_ID)) ?? '';
@@ -125,14 +132,9 @@ const ShareCardScreen = ({
       <View style={styles.button_container}>
         <View style={styles.profile_button_container}>
           <PrimaryButtonComponent
-            title={'Share Internally'}
-            onPressing={handleShareInternally}
-          ></PrimaryButtonComponent>
-        </View>
-        <View style={styles.main_button_container}>
-          <PrimaryButtonComponent
-            title={'Share Externally'}
-            onPressing={handleShareExternally}
+            title={selectedUserIds.length > 0 ? 'Share Internally' : 'Share Externally'}
+            // onPressing={handleShareInternally}
+            onPressing={handleShare}
           ></PrimaryButtonComponent>
         </View>
       </View>
@@ -161,12 +163,12 @@ const styles = StyleSheet.create({
   contact_area: {
     width: '100%',
     paddingHorizontal: 10,
-    height: 450,
+    height: 480,
   },
   button_container: {
     position: 'absolute',
     width: '100%',
-    height: 120,
+    height: 70,
     bottom: 50,
   },
   profile_button_container: {
@@ -175,11 +177,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     // top:500,
   },
-  main_button_container: {
-    marginBottom: 0,
-    height: 70,
-    paddingHorizontal: 20,
-  },
+  
 });
 
 export default ShareCardScreen;

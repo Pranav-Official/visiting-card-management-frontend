@@ -147,7 +147,7 @@ const CardComponent: React.FC<Prop> = ({
   clickFunc,
 }): JSX.Element => {
   return (
-    <TouchableOpacity style={styles.card_container} onPress={clickFunc}>
+    <TouchableOpacity style={styles.card_container} onPress={clickFunc} testID='card'>
       <View
         style={[
           styles.first_row,
