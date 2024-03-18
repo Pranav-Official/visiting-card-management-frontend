@@ -3,14 +3,12 @@ import { StyleSheet, TextInput, View } from 'react-native';
 import colors from '../utils/colorPallete';
 
 type InputProps = {
-  placeholder: string;
   value: string;
   setter: (value: string) => void;
   readonly?: boolean;
 };
 
 const EditCardNameComponent = ({
-  placeholder,
   value,
   setter,
   readonly = true,
@@ -18,7 +16,6 @@ const EditCardNameComponent = ({
   return (
     <View style={styles.inputContainer}>
       <TextInput
-        placeholder={placeholder}
         style={styles.input}
         value={value}
         onChangeText={(val) => setter(val)}

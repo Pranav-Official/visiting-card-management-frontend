@@ -33,6 +33,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import { isValidWebsiteUrl } from '../../utils/regexCheck';
 import BottomSheetComponent from '../../components/BottomSheetComponent';
 import { deleteCard } from '../../hooks/deleteCardHook';
+import Toast from 'react-native-root-toast';
 
 type CardDetails = {
   card_name: string;
@@ -101,6 +102,7 @@ const CardDetailPage = ({ route }: any) => {
       });
 
       if (statusCode === '200') {
+        Toast.show('Card deleted successfully');
         navigation.goBack();
       } else {
         console.log('Delete card failed:', deleteCardResp);
@@ -182,8 +184,7 @@ const CardDetailPage = ({ route }: any) => {
         ) : (
           <>
             <Text style={styles.cardName}>{cardDetail.card_name}</Text>
-            <Text
-              style={styles.jobTitle}
+            <TouchableOpacity
               onPress={() => {
                 if (!cardDetail.job_title) {
                   // Navigate to the edit screen if jobTitle is missing
@@ -194,8 +195,10 @@ const CardDetailPage = ({ route }: any) => {
                 }
               }}
             >
-              {cardDetail.job_title ? cardDetail.job_title : 'Add Job title'}
-            </Text>
+              <Text style={styles.jobTitle}>
+                {cardDetail.job_title ? cardDetail.job_title : 'Add Job title'}
+              </Text>
+            </TouchableOpacity>
           </>
         )}
       </View>
