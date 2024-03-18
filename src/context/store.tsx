@@ -3,6 +3,7 @@ import userReducer from '../context/userSlice';
 import userDetailsReducer from '../context/userDetailsSlice';
 import pendingCardsReducer from '../context/pendingCardsSlice';
 import selectedCardReducer from '../context/selectedCardsSlice';
+import sharingProcessReducer from '../context/sharingProcessSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     userDetailsReducer,
     pendingCardsReducer,
     selectedCardReducer,
+    sharingProcessReducer,
   },
 });
 

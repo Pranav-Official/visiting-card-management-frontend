@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-type Cards = {
-  card_id: string | null;
+type Card = {
+  card_id: string;
   card_name: string | null;
   company_name: string | null;
   company_website: string | null;
@@ -18,7 +18,7 @@ type PendingCards = {
   user_email: string;
   user_id: string;
   user_fullname: string;
-  cards: Cards[];
+  cards: Card[];
 };
 
 type PendingCardsState = {
@@ -48,10 +48,15 @@ export const pendingCardsSlice = createSlice({
           };
         },
       );
+
+      // Filter out pending list items with no cards
       const filteredPendingCardList = updatedPendingCardList.filter(
         (pendingCard) => pendingCard.cards.length > 0,
       );
-      state.pendingCardList = filteredPendingCardList;
+      return {
+        ...state,
+        pendingCardList: filteredPendingCardList,
+      };
     },
   },
 });
