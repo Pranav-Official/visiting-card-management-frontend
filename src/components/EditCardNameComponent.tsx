@@ -16,6 +16,7 @@ const EditCardNameComponent = ({
   return (
     <View style={styles.inputContainer}>
       <TextInput
+        testID="cardNameInput"
         style={styles.input}
         value={value}
         onChangeText={(val) => setter(val)}
