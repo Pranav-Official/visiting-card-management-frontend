@@ -33,6 +33,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import { isValidWebsiteUrl } from '../../utils/regexCheck';
 import BottomSheetComponent from '../../components/BottomSheetComponent';
 import { deleteCard } from '../../hooks/deleteCardHook';
+import Toast from 'react-native-root-toast';
 import TranslateText, {
   TranslateLanguage,
 } from '@react-native-ml-kit/translate-text';
@@ -107,6 +108,7 @@ const CardDetailPage = ({ route }: any) => {
       });
 
       if (statusCode === '200') {
+        Toast.show('Card deleted successfully');
         navigation.goBack();
       } else {
         console.log('Delete card failed:', deleteCardResp);
@@ -255,6 +257,10 @@ const CardDetailPage = ({ route }: any) => {
                 }
               }}
             >
+              <Text style={styles.jobTitle}>
+                {cardDetail.job_title ? cardDetail.job_title : 'Add Job title'}
+              </Text>
+            </TouchableOpacity>
               {showTranslated
                 ? translatedCardDetails.job_title
                 : cardDetail.job_title

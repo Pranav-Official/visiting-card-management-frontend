@@ -41,13 +41,12 @@ const styles = StyleSheet.create({
   card_name: {
     fontFamily: 'Roboto',
     fontSize: 22,
-    color: 'black',
+    color: colors['primary-text'],
   },
   job_position: {
     fontFamily: 'Roboto',
     fontSize: 18,
     marginRight: 40,
-    color: '#102D4A',
     marginLeft: 10,
     width: contentWidth,
   },

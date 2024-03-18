@@ -26,6 +26,7 @@ import BottomSheetComponent from '../../components/BottomSheetComponent';
 import SimilarCardsComponent from '../../components/SimilarCardsComponent';
 import { getSimilarCards } from '../../hooks/getSimilarCardsHook';
 import { validateEmail, validatePhoneNumber } from '../../utils/regexCheck';
+import Toast from 'react-native-root-toast';
 
 type Card = {
   card_id: string;
@@ -105,6 +106,7 @@ const EditCardDetails = ({ route }: any) => {
 
       //if save successful,navigating to cardDetails screen
       if (isSaved === '200') {
+        Toast.show('Card edited successfully');
         navigation.navigate('CardStack', {
           screen: 'CardDetailsScreen',
           params: { card_id: route.params.card_id },
@@ -116,6 +118,23 @@ const EditCardDetails = ({ route }: any) => {
   };
   // function called when a newly created card or edited card is saved
   const handleSavePress = async () => {
+    if (cardDetails.card_name != undefined && !cardDetails.card_name.trim()) {
+      setNameBorder('Danger');
+    }
+    if (cardDetails.phone != undefined && !cardDetails.phone.trim()) {
+      setPhoneBorder('Danger');
+    }
+    if (cardDetails.email != undefined && !cardDetails.email.trim()) {
+      setEmailBorder('Danger');
+    }
+    if (
+      (cardDetails.email != undefined && !cardDetails.email.trim()) ||
+      (cardDetails.phone != undefined && !cardDetails.phone.trim()) ||
+      (cardDetails.card_name != undefined && !cardDetails.card_name.trim())
+    ) {
+      setMandatoryFieldsEmpty(true);
+      return;
+    }
     // Initialize variables to track validation status
     const isValidPhone =
       validatePhoneNumber(cardDetails.phone, 'IN') ||
@@ -140,23 +159,6 @@ const EditCardDetails = ({ route }: any) => {
     // Check if email is invalid
     if (!isValidEmail) {
       setEmailBorder('Danger');
-      setMandatoryFieldsEmpty(true);
-      return;
-    }
-    if (cardDetails.card_name != undefined && !cardDetails.card_name.trim()) {
-      setNameBorder('Danger');
-    }
-    if (cardDetails.phone != undefined && !cardDetails.phone.trim()) {
-      setPhoneBorder('Danger');
-    }
-    if (cardDetails.email != undefined && !cardDetails.email.trim()) {
-      setEmailBorder('Danger');
-    }
-    if (
-      (cardDetails.email != undefined && !cardDetails.email.trim()) ||
-      (cardDetails.phone != undefined && !cardDetails.phone.trim()) ||
-      (cardDetails.card_name != undefined && !cardDetails.card_name.trim())
-    ) {
       setMandatoryFieldsEmpty(true);
       return;
     }
@@ -260,7 +262,6 @@ const EditCardDetails = ({ route }: any) => {
       {!route.params.create && (
         <View style={styles.cardNameHead}>
           <EditCardNameComponent
-            placeholder={'Enter Card Name'}
             value={cardDetails.card_name}
             setter={(value: string) => handleInputChange('card_name', value)}
             readonly={!route.params.create}
