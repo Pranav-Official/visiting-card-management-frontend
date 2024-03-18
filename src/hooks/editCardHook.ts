@@ -1,3 +1,4 @@
+import axios from 'axios';
 import api from './api';
 
 interface EditCardProp {
@@ -38,8 +39,12 @@ export async function editCardDetails({
 
     statusCode = response.status.toString();
     editCardResp = response.data;
-  } catch (error: any) {
-    console.log('Error while editing:', error.response);
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log('Axios Error while editing:', error.response?.data);
+    } else {
+      console.log('Error while editing:', error);
+    }
   }
 
   return { statusCode, editCardResp };

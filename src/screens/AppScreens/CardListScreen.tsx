@@ -178,45 +178,37 @@ const CardListScreen = ({ route }: any) => {
             </View>
           )}
           <Text style={styles.cardHeading}>Cards</Text>
-          <View style={styles.container}>
-            {!isLoading ? (
-              <FlatList
-                horizontal
-                contentContainerStyle={styles.flatListStyle}
-                showsHorizontalScrollIndicator={false}
-                data={cardList}
-                renderItem={({ item }) => (
-                  <View>
-                    <NewCardComponent
-                      name={item.card_name}
-                      job_position={item.job_title}
-                      email={item.email}
-                      phone_number={item.phone}
-                      company_name={item.company_name}
-                      clickFunc={() => handlePress(item.card_id)}
-                      alignToSides={true}
-                    />
-                  </View>
-                )}
-                keyExtractor={(item) => item.card_id}
-                snapToInterval={390}
-                snapToAlignment="center"
-                decelerationRate="fast"
-                ItemSeparatorComponent={() => (
-                  <View style={styles.itemSeparator} />
-                )}
-              />
-            ) : (
-              <FlatList
-                horizontal
-                contentContainerStyle={styles.flatListStyle}
-                showsHorizontalScrollIndicator={false}
-                data={arr}
-                renderItem={({ item }) => <ShimmerComponent />}
-                keyExtractor={(item) => item.toString()}
-              />
-            )}
-          </View>
+          {!isLoading ? (
+            <FlatList
+              contentContainerStyle={styles.flatListStyle}
+              showsVerticalScrollIndicator={false}
+              data={cardList}
+              renderItem={({ item }) => (
+                <NewCardComponent
+                  name={item.card_name ? item.card_name : 'Add Card Name'}
+                  job_position={
+                    item.job_title ? item.job_title : 'Add Job Title'
+                  }
+                  email={item.email ? item.email : 'Add Email'}
+                  phone_number={item.phone ? item.phone : 'Add Contact Number'}
+                  company_name={
+                    item.company_name ? item.company_name : 'Add Company Name'
+                  }
+                  clickFunc={() => handlePress(item.card_id)}
+                  alignToSides={true}
+                />
+              )}
+              keyExtractor={(item) => item.card_id}
+            />
+          ) : (
+            <FlatList
+              contentContainerStyle={styles.flatListStyle}
+              showsVerticalScrollIndicator={false}
+              data={arr}
+              renderItem={({ item }) => <ShimmerComponent />}
+              keyExtractor={(item) => item.toString()}
+            />
+          )}
         </View>
       </View>
     </View>
