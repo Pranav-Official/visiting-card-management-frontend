@@ -33,6 +33,10 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import { isValidWebsiteUrl } from '../../utils/regexCheck';
 import BottomSheetComponent from '../../components/BottomSheetComponent';
 import { deleteCard } from '../../hooks/deleteCardHook';
+import TranslateText, {
+  TranslateLanguage,
+} from '@react-native-ml-kit/translate-text';
+import IdentifyLanguages from '@react-native-ml-kit/identify-languages';
 
 type CardDetails = {
   card_name: string;
@@ -48,6 +52,8 @@ type CardDetails = {
 
 const CardDetailPage = ({ route }: any) => {
   const [cardDetail, setCardDetail] = useState<CardDetails>({});
+  const [translatedCardDetails, setTranslatedCardDetails] = useState();
+  const [showTranslated, setShowtranslated] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation<NavigationProp<any>>();
@@ -151,7 +157,58 @@ const CardDetailPage = ({ route }: any) => {
       console.error('Error copying to clipboard:', error);
     }
   };
+  const handleTranslate = async () => {
+    console.log('Initialte Translation');
+    let enToJp = true;
 
+    const lang = await IdentifyLanguages.identify(
+      cardDetail.card_name + cardDetail.job_title + cardDetail.company_name,
+    );
+    console.log('identified language : ', lang);
+    if (lang == 'ja') {
+      enToJp = false;
+    } else {
+      enToJp = true;
+    }
+    const translationOptions = {
+      sourceLanguage:
+        enToJp != true ? TranslateLanguage.JAPANESE : TranslateLanguage.ENGLISH,
+      targetLanguage:
+        enToJp != true ? TranslateLanguage.ENGLISH : TranslateLanguage.JAPANESE,
+      downloadModelIfNeeded: true,
+      requireWifi: true,
+    };
+    try {
+      const translatedCardName = await TranslateText.translate({
+        text: cardDetail.card_name,
+        ...translationOptions,
+      });
+      const translatedJobTitle = await TranslateText.translate({
+        text: cardDetail.job_title ?? '',
+        ...translationOptions,
+      });
+      const translatedCompanyName = await TranslateText.translate({
+        text: cardDetail.company_name ?? '',
+        ...translationOptions,
+      });
+      console.log(
+        'After translation',
+        translatedCardName,
+        translatedCompanyName,
+        translatedJobTitle,
+      );
+      const translatedCardDetails = {
+        ...cardDetail,
+        card_name: translatedCardName,
+        job_title: translatedJobTitle,
+        company_name: translatedCompanyName,
+      };
+      setTranslatedCardDetails(translatedCardDetails);
+      setShowtranslated(!showTranslated);
+    } catch (error) {
+      console.log('Error in translation', error);
+    }
+  };
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -181,14 +238,35 @@ const CardDetailPage = ({ route }: any) => {
           </>
         ) : (
           <>
-            <Text style={styles.cardName}>{cardDetail.card_name}</Text>
-            <Text style={styles.jobTitle}>{cardDetail.job_title}</Text>
+            <Text style={styles.cardName}>
+              {showTranslated
+                ? translatedCardDetails.card_name
+                : cardDetail.card_name}
+            </Text>
+            <Text
+              style={styles.jobTitle}
+              onPress={() => {
+                if (!cardDetail.job_title) {
+                  // Navigate to the edit screen if jobTitle is missing
+                  navigation.navigate('EditCardScreen', {
+                    cardDetails: cardDetail,
+                    card_id: route.params.card_id,
+                  });
+                }
+              }}
+            >
+              {showTranslated
+                ? translatedCardDetails.job_title
+                : cardDetail.job_title
+                ? cardDetail.job_title
+                : 'Add Job title'}
+            </Text>
           </>
         )}
       </View>
 
       <View style={styles.headerStyle}>
-        <TouchableOpacity style={styles.buttonStyle}>
+        <TouchableOpacity style={styles.buttonStyle} onPress={handleTranslate}>
           <Text style={styles.buttonText}>Translate</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -208,9 +286,26 @@ const CardDetailPage = ({ route }: any) => {
       <View style={styles.cardDetailsContainer}>
         <CardDetailComponent
           onLongPress={() => {
-            longPressToCopy(cardDetail.company_name || '');
+            if (cardDetail.company_name)
+              longPressToCopy(cardDetail.company_name || '');
           }}
-          card_detail={cardDetail.company_name || ''}
+          card_detail={
+            showTranslated
+              ? translatedCardDetails.company_name
+              : cardDetail.company_name
+              ? cardDetail.company_name
+              : 'Add Company Name'
+          }
+          onPress={() => {
+            // Navigate to the edit screen if company name is missing
+            if (!cardDetail.company_name) {
+              navigation.navigate('EditCardScreen', {
+                cardDetails: cardDetail,
+                card_id: route.params.card_id,
+              });
+            }
+          }}
+          isPlaceholder={cardDetail.company_name ? false : true}
           isLoading={isLoading}
         >
           <CompanyName width={20} height={20} color={'primary-text'} />
@@ -218,10 +313,24 @@ const CardDetailPage = ({ route }: any) => {
 
         <CardDetailComponent
           onLongPress={() => {
-            longPressToCopy(cardDetail.phone || '');
+            if (cardDetail.phone) longPressToCopy(cardDetail.phone || '');
           }}
-          onPress={() => phonePress(cardDetail.phone || '')}
-          card_detail={cardDetail.phone || ''}
+          onPress={() => {
+            if (!cardDetail.phone) {
+              // Navigate to the edit screen if phone number is missing
+              navigation.navigate('EditCardScreen', {
+                cardDetails: cardDetail,
+                card_id: route.params.card_id,
+              });
+            } else {
+              // Call phonePress function if phone number is present
+              phonePress(cardDetail.phone || '');
+            }
+          }}
+          card_detail={
+            cardDetail.phone ? cardDetail.phone : 'Add Contact Number'
+          }
+          isPlaceholder={cardDetail.phone ? false : true}
           isLoading={isLoading}
         >
           <Phone width={20} height={20} color={'primary-text'} />
@@ -229,10 +338,22 @@ const CardDetailPage = ({ route }: any) => {
 
         <CardDetailComponent
           onLongPress={() => {
-            longPressToCopy(cardDetail.email || '');
+            if (cardDetail.email) longPressToCopy(cardDetail.email || '');
           }}
-          onPress={() => emailPress(cardDetail.email || '')}
-          card_detail={cardDetail.email || ''}
+          onPress={() => {
+            if (!cardDetail.email) {
+              // Navigate to the edit screen if email is missing
+              navigation.navigate('EditCardScreen', {
+                cardDetails: cardDetail,
+                card_id: route.params.card_id,
+              });
+            } else {
+              // Call phonePress function if email is present
+              emailPress(cardDetail.email || '');
+            }
+          }}
+          card_detail={cardDetail.email ? cardDetail.email : 'Add Email'}
+          isPlaceholder={cardDetail.email ? false : true}
           isLoading={isLoading}
         >
           <Email width={20} height={20} color={'primary-text'} />
@@ -240,10 +361,27 @@ const CardDetailPage = ({ route }: any) => {
 
         <CardDetailComponent
           onLongPress={() => {
-            longPressToCopy(cardDetail.company_website || '');
+            if (cardDetail.company_website)
+              longPressToCopy(cardDetail.company_website || '');
           }}
-          onPress={() => websitePress(cardDetail.company_website || '')}
-          card_detail={cardDetail.company_website || ''}
+          onPress={() => {
+            if (!cardDetail.company_website) {
+              // Navigate to the edit screen if website is missing
+              navigation.navigate('EditCardScreen', {
+                cardDetails: cardDetail,
+                card_id: route.params.card_id,
+              });
+            } else {
+              // Call websitePress function if website is present
+              websitePress(cardDetail.company_website || '');
+            }
+          }}
+          card_detail={
+            cardDetail.company_website
+              ? cardDetail.company_website
+              : 'Add Company Website'
+          }
+          isPlaceholder={cardDetail.company_website ? false : true}
           isLoading={isLoading}
         >
           <Website width={20} height={20} color={'primary-text'} />

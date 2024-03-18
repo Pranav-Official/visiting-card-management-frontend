@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { listCards } from '../../hooks/CardListHook';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
@@ -23,6 +23,7 @@ import {
 } from '@react-navigation/native';
 import { editCardDetails } from '../../hooks/editCardHook';
 import NewCardComponent from '../../components/NewCardListScreenComponent';
+import Swiper from 'react-native-swiper';
 
 const CardListScreen = ({ route }: any) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -31,6 +32,8 @@ const CardListScreen = ({ route }: any) => {
   const [changeContactName, setChangeContactName] = useState(false);
   const [contactName, setContactName] = useState(route.params.name ?? '');
   const [temporaryContactName, setTemporaryContactName] = useState(contactName);
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [totalCards, setTotalCards] = useState(0);
   const changeContactNameFunction = () => {
     setChangeContactName(true);
   };
@@ -118,6 +121,16 @@ const CardListScreen = ({ route }: any) => {
     });
   };
 
+  useEffect(() => {
+    // Update total number of cards when cardList changes
+    setTotalCards(cardList.length);
+  }, [cardList]);
+
+  // Function to handle card swipe
+  const handleCardSwipe = (index: number) => {
+    setCurrentCardIndex(index);
+  };
+
   return (
     <View
       style={[
@@ -178,46 +191,53 @@ const CardListScreen = ({ route }: any) => {
             </View>
           )}
           <Text style={styles.cardHeading}>Cards</Text>
-          <View style={styles.container}>
-            {!isLoading ? (
-              <FlatList
-                horizontal
-                contentContainerStyle={styles.flatListStyle}
-                showsHorizontalScrollIndicator={false}
-                data={cardList}
-                renderItem={({ item }) => (
-                  <View>
-                    <NewCardComponent
-                      name={item.card_name}
-                      job_position={item.job_title}
-                      email={item.email}
-                      phone_number={item.phone}
-                      company_name={item.company_name}
-                      clickFunc={() => handlePress(item.card_id)}
-                      alignToSides={true}
-                    />
-                  </View>
-                )}
-                keyExtractor={(item) => item.card_id}
-                snapToInterval={390}
-                snapToAlignment="center"
-                decelerationRate="fast"
-                ItemSeparatorComponent={() => (
-                  <View style={styles.itemSeparator} />
-                )}
-              />
-            ) : (
-              <FlatList
-                horizontal
-                contentContainerStyle={styles.flatListStyle}
-                showsHorizontalScrollIndicator={false}
-                data={arr}
-                renderItem={({ item }) => <ShimmerComponent />}
-                keyExtractor={(item) => item.toString()}
-              />
-            )}
-          </View>
+          {!isLoading ? (
+            <Swiper
+              style={styles.flatListStyle}
+              horizontal={true}
+              showsPagination={false}
+              loop={false}
+              onIndexChanged={handleCardSwipe}
+              snapToOffsets={[0, 390, 740]}
+            >
+              {cardList.map((item, index) => (
+                <View style={styles.swiperList}>
+                  <NewCardComponent
+                    key={index}
+                    name={item.card_name ? item.card_name : 'Add Card Name'}
+                    job_position={
+                      item.job_title ? item.job_title : 'Add Job Title'
+                    }
+                    email={item.email ? item.email : 'Add Email'}
+                    phone_number={
+                      item.phone ? item.phone : 'Add Contact Number'
+                    }
+                    company_name={
+                      item.company_name ? item.company_name : 'Add Company Name'
+                    }
+                    clickFunc={() => handlePress(item.card_id)}
+                    alignToSides={true}
+                  />
+                  <View style={styles.swiperList}></View>
+                </View>
+              ))}
+            </Swiper>
+          ) : (
+            <FlatList
+              contentContainerStyle={styles.flatListStyle}
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              data={arr}
+              renderItem={({ item }) => <ShimmerComponent />}
+              keyExtractor={(item) => item.toString()}
+            />
+          )}
         </View>
+      </View>
+      <View style={styles.bottomCounterContainer}>
+        <Text style={styles.bottomCounterText}>{`${
+          currentCardIndex + 1
+        } of ${totalCards}`}</Text>
       </View>
     </View>
   );
@@ -307,9 +327,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   flatListStyle: {
-    gap: 20,
-    paddingHorizontal: 20,
+    gap: 40,
     paddingBottom: 150,
+  },
+  swiperList: {
+    paddingHorizontal: 15,
   },
   itemSeparator: {
     width: 20,
@@ -325,6 +347,19 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 20,
     paddingHorizontal: 10,
+  },
+  bottomCounterContainer: {
+    position: 'absolute',
+    bottom: 20,
+    alignSelf: 'center',
+    backgroundColor: colors['accent-grey'],
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+  },
+  bottomCounterText: {
+    color: colors['accent-white'],
+    fontSize: 16,
   },
 });
 export default CardListScreen;
