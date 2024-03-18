@@ -10,7 +10,7 @@ import ArrowIcon from '../assets/images/Arrow.svg';
 import colors from '../utils/colorPallete';
 
 const screenWidth = Dimensions.get('window').width;
-const contentWidth = screenWidth - 200;
+const contentWidth = screenWidth - 180;
 
 const styles = StyleSheet.create({
   card_container: {
