@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import PersonIcon from '../../assets/images/person.svg';
 import CompanyIcon from '../../assets/images/company.svg';
 import PhoneIcon from '../../assets/images/phone.svg';
 import MailIcon from '../../assets/images/mail.svg';
@@ -24,7 +25,7 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import BottomSheetComponent from '../../components/BottomSheetComponent';
 import SimilarCardsComponent from '../../components/SimilarCardsComponent';
 import { getSimilarCards } from '../../hooks/getSimilarCardsHook';
-import { isValidPhoneNumber, validateEmail } from '../../utils/regexCheck';
+import { validateEmail, validatePhoneNumber } from '../../utils/regexCheck';
 
 type Card = {
   card_id: string;
@@ -48,7 +49,7 @@ type BorderTypes = 'Danger' | 'Auth' | 'Normal';
 const EditCardDetails = ({ route }: any) => {
   const [cardDetails, setCardDetails] = useState(route.params.cardDetails);
   const navigation = useNavigation<NavigationProp<any>>();
-
+  const [nameBorder, setNameBorder] = useState<BorderTypes>('Normal');
   const [emailBorder, setEmailBorder] = useState<BorderTypes>('Normal');
   const [phoneBorder, setPhoneBorder] = useState<BorderTypes>('Normal');
   const [mandatoryFieldsEmpty, setMandatoryFieldsEmpty] = useState(false);
@@ -57,6 +58,7 @@ const EditCardDetails = ({ route }: any) => {
     contact_name: '',
     cards: [],
   });
+
   //To set similar card modal visibility state
   const [modalVisibility, setModalVisibility] = React.useState(false);
   //Pre-filling edit page card details
@@ -71,6 +73,9 @@ const EditCardDetails = ({ route }: any) => {
       const user_id = (await getLocalItem(Constants.USER_ID)) ?? '{}';
       const token = (await getLocalItem(Constants.USER_JWT)) ?? '{}';
 
+      if (cardDetails.phone) {
+        cardDetails.phone = cardDetails.phone.replace(/[\s()-]+/g, '');
+      }
       // Filtering out the edited fields
       const editedData = Object.keys(cardDetails)
         .filter((key) => cardDetails[key] !== route.params.cardDetails[key])
@@ -111,6 +116,36 @@ const EditCardDetails = ({ route }: any) => {
   };
   // function called when a newly created card or edited card is saved
   const handleSavePress = async () => {
+    // Initialize variables to track validation status
+    const isValidPhone =
+      validatePhoneNumber(cardDetails.phone, 'IN') ||
+      validatePhoneNumber(cardDetails.phone, 'JP');
+    const isValidEmail = validateEmail(cardDetails.email);
+
+    // Check if both phone and email are invalid
+    if (!isValidPhone && !isValidEmail) {
+      setPhoneBorder('Danger');
+      setEmailBorder('Danger');
+      setMandatoryFieldsEmpty(true);
+      return;
+    }
+
+    // Check if phone is invalid
+    if (!isValidPhone) {
+      setPhoneBorder('Danger');
+      setMandatoryFieldsEmpty(true);
+      return;
+    }
+
+    // Check if email is invalid
+    if (!isValidEmail) {
+      setEmailBorder('Danger');
+      setMandatoryFieldsEmpty(true);
+      return;
+    }
+    if (cardDetails.card_name != undefined && !cardDetails.card_name.trim()) {
+      setNameBorder('Danger');
+    }
     if (cardDetails.phone != undefined && !cardDetails.phone.trim()) {
       setPhoneBorder('Danger');
     }
@@ -119,17 +154,9 @@ const EditCardDetails = ({ route }: any) => {
     }
     if (
       (cardDetails.email != undefined && !cardDetails.email.trim()) ||
-      (cardDetails.phone != undefined && !cardDetails.phone.trim())
+      (cardDetails.phone != undefined && !cardDetails.phone.trim()) ||
+      (cardDetails.card_name != undefined && !cardDetails.card_name.trim())
     ) {
-      setMandatoryFieldsEmpty(true);
-      return;
-    }
-    if (!isValidPhoneNumber(cardDetails.phone)) {
-      setPhoneBorder('Danger');
-      setMandatoryFieldsEmpty(true);
-    }
-    if (!validateEmail(cardDetails.email)) {
-      setEmailBorder('Danger');
       setMandatoryFieldsEmpty(true);
       return;
     }
@@ -139,6 +166,7 @@ const EditCardDetails = ({ route }: any) => {
       //Card name editable only on create a new card page
       if (!cardDetails.card_name.trim()) {
         setMandatoryFieldsEmpty(true);
+        setNameBorder('Danger');
         return;
       }
       if (!mandatoryFieldsEmpty) {
@@ -165,10 +193,11 @@ const EditCardDetails = ({ route }: any) => {
     //setting non empty states for mandatory fields for entries
     if (key === 'card_name') {
       if (cardDetails.card_name && !cardDetails.card_name.trim()) {
-        setPhoneBorder('Danger');
+        setNameBorder('Danger');
         setMandatoryFieldsEmpty(true);
       }
       setMandatoryFieldsEmpty(false);
+      setNameBorder('Normal');
     }
     if (key === 'email') {
       if (cardDetails.email && !cardDetails.email.trim()) {
@@ -228,15 +257,36 @@ const EditCardDetails = ({ route }: any) => {
           backImageUri={cardDetails.img_back_link}
         />
       </View>
-      <View style={styles.cardNameHead}>
-        <EditCardNameComponent
-          placeholder={'Enter Card Name'}
-          value={cardDetails.card_name}
-          setter={(value: string) => handleInputChange('card_name', value)}
-          readonly={!route.params.create}
-        />
-      </View>
+      {!route.params.create && (
+        <View style={styles.cardNameHead}>
+          <EditCardNameComponent
+            placeholder={'Enter Card Name'}
+            value={cardDetails.card_name}
+            setter={(value: string) => handleInputChange('card_name', value)}
+            readonly={!route.params.create}
+          />
+        </View>
+      )}
       <View style={styles.inputFieldsContainer}>
+        {route.params.create && (
+          <View style={styles.iconField}>
+            <View style={styles.icon}>
+              <PersonIcon width={30} height={20} />
+            </View>
+            <View style={styles.input}>
+              <EditInputComponent
+                placeholder="Card Name"
+                header="Card Name"
+                hidden={false}
+                value={cardDetails.card_name}
+                setter={(value: string) =>
+                  handleInputChange('card_name', value)
+                }
+                borderType={nameBorder}
+              />
+            </View>
+          </View>
+        )}
         <View style={styles.iconField}>
           <View style={styles.icon}>
             <DesignationIcon width={30} height={20} />
