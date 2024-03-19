@@ -2,7 +2,11 @@ import React from 'react';
 import { View } from 'react-native';
 import Selected from '../assets/images/selected.svg';
 
-const RadioButton = (props: any) => {
+type PropsType = {
+  selected: boolean;
+};
+
+const RadioButton = (props: PropsType) => {
   return (
     <View
       style={[
