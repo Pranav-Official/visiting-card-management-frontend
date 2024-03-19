@@ -76,8 +76,7 @@ const ContactsPage = () => {
 
   const get = async () => {
     const user_id = (await getLocalItem(Constants.USER_ID)) || '';
-    const token = (await getLocalItem(Constants.USER_JWT)) || '';
-    const response = await getContactList(user_id, token);
+    const response = await getContactList(user_id);
     if (response.status === false) {
       return;
     } else {
@@ -209,7 +208,7 @@ const ContactsPage = () => {
       card_id: cardId,
     });
 
-    if (result.cardResp.data.length === 1) {
+    if (result.cardResp && result.cardResp.data.length === 1) {
       const cardId = result.cardResp.data[0].card_id;
       navigation.navigate('CardStack', {
         screen: 'CardDetailsScreen',

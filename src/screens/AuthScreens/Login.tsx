@@ -208,6 +208,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   midSection: {
+    marginTop: -80,
     width: '100%',
     gap: 15,
     flexDirection: 'column',

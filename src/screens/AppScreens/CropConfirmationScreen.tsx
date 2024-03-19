@@ -53,6 +53,7 @@ const CropConfirmationScreen = ({ route }) => {
       //   'GOLFERS PGA ASSOCIATION PGA TM AMERICA 1916 全米プロゴルフ協会 ケイシー・M・モートン 放送・新規メディアマーケティング担当部長 33418米国フロリダ州パームビーチガーデンズ市 アベニューオブザチャンピオンズ 100番地 : +1 (561 ) 624-8811 : +1 (561) 541-3342 FAX: +1 (561 ) 443-1234 Eメール: cma-pga@pgahq.com • www.pga.com';
       console.log('rawText', rawText);
       const response = await aiDetailsExtraction(rawText);
+      setIsModalVisible(false);
       if (response.status) {
         console.log('object received', response.data);
         const card_details = {
@@ -66,7 +67,6 @@ const CropConfirmationScreen = ({ route }) => {
           img_back_link: backImgPath,
         };
         console.log('object made', card_details);
-        setIsModalVisible(false);
         const popAction = StackActions.pop(2);
         navigation.dispatch(popAction);
         navigation.navigate('CardStack', {

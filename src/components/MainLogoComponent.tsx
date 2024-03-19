@@ -7,7 +7,7 @@ const MainLogoComponent = () => {
     <View>
       <Image
         style={styles.image}
-        source={require('../assets/images/experion-logo.png')}
+        source={require('../assets/images/appLogo3.png')}
       />
     </View>
   );
@@ -15,9 +15,9 @@ const MainLogoComponent = () => {
 
 const styles = StyleSheet.create({
   image: {
-    marginTop: 100,
-    width: 200,
-    height: 80,
+    marginTop: 0,
+    width: 250,
+    height: 300,
     objectFit: 'contain',
   },
 });
