@@ -4,27 +4,28 @@ import colors from '../utils/colorPallete';
 import SharePersonIcon from '..//assets/images/shareContactIcon.svg';
 interface ViewSharedButtonProps {
   title: string;
-  number: string;
+  number: number;
   onPressing: () => void;
-  
 }
 const ViewSharedButton: React.FC<ViewSharedButtonProps> = ({
-  
   title,
   number,
   onPressing,
-  
 }) => {
   return (
-    <TouchableOpacity onPress={() => onPressing()}  testID='sharedBtntest' style={styles.mainContainer}>
-        <View style={styles.lightBlueContainer} ></View>
-        <View style={styles.contentContainer}>
-          <Text style={styles.titleText}>{title}</Text>
-          <View style={styles.contactNumberContainer}>
-            <SharePersonIcon width={45} height={45} />
-            <Text style={styles.contactText}>{number} contacts</Text>
-          </View >
+    <TouchableOpacity
+      onPress={() => onPressing()}
+      testID="sharedBtntest"
+      style={styles.mainContainer}
+    >
+      <View style={styles.lightBlueContainer}></View>
+      <View style={styles.contentContainer}>
+        <Text style={styles.titleText}>{title}</Text>
+        <View style={styles.contactNumberContainer}>
+          <SharePersonIcon width={45} height={45} />
+          <Text style={styles.contactText}>{number} contacts</Text>
         </View>
+      </View>
     </TouchableOpacity>
   );
 };

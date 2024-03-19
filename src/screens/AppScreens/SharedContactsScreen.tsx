@@ -11,8 +11,11 @@ import {
 } from '@react-navigation/native';
 
 import colors from '../../utils/colorPallete';
+import { acceptedCardslist } from '../../hooks/getAcceptedCardsHook';
+import { getLocalItem } from '../../utils/Utils';
+import Constants from '../../utils/Constants';
 
-const SharedContactsScreen = ({ route }) => {
+const SharedContactsScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [acceptedCardList, setCardList] = useState<CardParameters[]>();
   const arr = [1, 2, 3, 4, 5, 6, 7];
@@ -37,8 +40,18 @@ const SharedContactsScreen = ({ route }) => {
 
   const fetchAcceptedCardList = async () => {
     try {
-      
-      setCardList(route.params.cardData);
+      const userId = (await getLocalItem(Constants.USER_ID)) ?? '';
+      const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
+
+      const result = await acceptedCardslist({
+        user_id: userId,
+        jwt_token: jwtToken,
+      });
+      if (result && result.cardResp && Array.isArray(result.cardResp.data)) {
+        setCardList(result.cardResp.data);
+      } else {
+        console.log('Invalid data format received');
+      }
       console.log(acceptedCardList);
       setIsLoading(false);
     } catch (error) {
@@ -88,7 +101,7 @@ const SharedContactsScreen = ({ route }) => {
           contentContainerStyle={styles.flatListStyle}
           showsVerticalScrollIndicator={false}
           data={arr}
-          renderItem={({ item }) => <ShimmerComponent />}
+          renderItem={() => <ShimmerComponent />}
           keyExtractor={(item) => item.toString()}
         />
       )}

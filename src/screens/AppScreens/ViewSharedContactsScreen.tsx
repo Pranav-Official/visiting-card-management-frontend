@@ -1,62 +1,86 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import ViewSharedButton from '../../components/ViewSharedButton';
 import {
   NavigationProp,
-  useFocusEffect,
+  RouteProp,
   useNavigation,
 } from '@react-navigation/native';
 import TopBackButton from '../../components/BackButton';
 import colors from '../../utils/colorPallete';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
-import { acceptedCardslist } from '../../hooks/getAcceptedCardsHook';
+import { getPendingCards } from '../../hooks/getPendingCardsHook';
+import { setCards } from '../../context/pendingCardsSlice';
+import { useDispatch } from 'react-redux';
 
-const ViewSharedContactsScreen = () => {
-  type CardReturn = {
-    card_id: string;
-    card_name: string;
-    email: string;
-    phone: string;
-    job_title: string;
-    company_name: string;
-  };
+type Card = {
+  card_id: string;
+  card_name: string;
+  img_front_link: string;
+  img_back_link: string;
+  job_title: string;
+  email: string;
+  phone: string;
+  company_name: string;
+  company_website: string;
+  contact_name: string;
+  user_id: string;
+};
+
+type UserData = {
+  user_id: string;
+  user_fullname: string;
+  user_email: string;
+  cards: Card[];
+};
+
+type RouteType = {
+  route: RouteProp<
+    {
+      params: {
+        totalPendingCards: number;
+        totalAcceptedCards: number;
+      };
+    },
+    'params'
+  >;
+};
+
+const ViewSharedContactsScreen = ({ route }: RouteType) => {
   const navigation = useNavigation<NavigationProp<any>>();
   const handlePress = () => {
-    if(noOfCards!=0){
-    navigation.navigate('CardStack', {
-      screen: 'SharedContactsScreen',
-      params: {cardData},
-    });}
-  };
-  const [noOfCards, setNoOfCards] = useState(0);
-  const [cardData, setCardData] = useState<CardReturn[]>([]);
-  const fetchAcceptedCardList = async () => {
-    try {
-      const userId = (await getLocalItem(Constants.USER_ID)) ?? '';
-      const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
-
-      const result = await acceptedCardslist({
-        user_id: userId,
-        jwt_token: jwtToken,
+    if (totalAcceptedCards != 0) {
+      navigation.navigate('CardStack', {
+        screen: 'SharedContactsScreen',
       });
+    }
+  };
+  const { totalPendingCards, totalAcceptedCards } = route.params;
+  const [pendingCardList, setPendingCardList] = useState<UserData[]>();
+  const dispatch = useDispatch();
 
-      if (result && result.cardResp && Array.isArray(result.cardResp.data)) {
-        setNoOfCards(result.cardResp.data.length);
-        setCardData(result.cardResp.data);
-      } else {
-        console.log('Invalid data format received');
+  const handlePendingPress = async () => {
+    const user_id = (await getLocalItem(Constants.USER_ID)) || '';
+    const jwtToken = (await getLocalItem(Constants.USER_JWT)) || '';
+    const pendingCards = await getPendingCards({ user_id, jwtToken });
+
+    if (pendingCards.statusCode === '200') {
+      if (
+        pendingCards.pendingCardList &&
+        pendingCards.pendingCardList.length > 0
+      ) {
+        setPendingCardList(pendingCards.pendingCardList);
+        dispatch(setCards(pendingCards.pendingCardList));
+
+        navigation.navigate('CardStack', {
+          screen: 'SaveShareCardScreen',
+          params: { pendingCardList },
+        });
       }
-    } catch (error) {
-      console.log(error);
     }
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchAcceptedCardList();
-    }, []),
-  );
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerContainer}>
@@ -66,13 +90,13 @@ const ViewSharedContactsScreen = () => {
       <View style={styles.shareContainer}>
         <ViewSharedButton
           title="Accepted Cards"
-          number={noOfCards.toString()}
+          number={totalAcceptedCards}
           onPressing={() => handlePress()}
         />
         <ViewSharedButton
           title="Pending Shares"
-          number="5"
-          onPressing={() => handlePress()}
+          number={totalPendingCards}
+          onPressing={() => handlePendingPress()}
         />
       </View>
     </View>
