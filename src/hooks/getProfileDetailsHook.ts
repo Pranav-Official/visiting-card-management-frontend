@@ -3,6 +3,9 @@ import api from './api';
 type UserData = {
   email: string;
   fullName: string;
+  phone: string;
+  job_title: string;
+  company_name: string;
   totalAcceptedCards: number;
   totalContacts: number;
   totalPendingCards: number;
@@ -10,7 +13,7 @@ type UserData = {
 
 type ResponseType = {
   userData: UserData;
-  status: boolean; 
+  status: boolean;
 };
 
 export async function getProfile(
