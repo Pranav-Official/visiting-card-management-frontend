@@ -1,33 +1,8 @@
-import { FlatList, TouchableOpacity, View } from 'react-native';
+import { FlatList, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 
-const contactList = [
-  {
-    card_id: '1',
-    contact_name: '',
-  },
-  {
-    card_id: '2',
-    contact_name: '',
-  },
-  {
-    card_id: '3',
-    contact_name: '',
-  },
-  {
-    card_id: '4',
-    contact_name: '',
-  },
-  {
-    card_id: '5',
-    contact_name: '',
-  },
-  {
-    card_id: '6',
-    contact_name: '',
-  },
-];
+const contactList = [1, 2, 3, 4, 5, 6];
 
 const ContactShimmer = () => {
   return (
@@ -35,7 +10,7 @@ const ContactShimmer = () => {
       showsVerticalScrollIndicator={false}
       style={{ marginTop: 20 }}
       data={contactList}
-      renderItem={({ item }) => (
+      renderItem={() => (
         <View
           style={{
             flexDirection: 'row',
@@ -59,7 +34,7 @@ const ContactShimmer = () => {
           ></ShimmerPlaceholder>
         </View>
       )}
-      keyExtractor={(item) => item.card_id}
+      keyExtractor={(item) => item.toString()}
     />
   );
 };
