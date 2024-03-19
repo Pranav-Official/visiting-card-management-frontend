@@ -1,3 +1,4 @@
+import axios from 'axios';
 import api from './api';
 
 export async function addProfileDetails(
@@ -7,7 +8,7 @@ export async function addProfileDetails(
   jobTitle: string,
   companyName: string,
 ) {
-  let statusCode = 400;
+  let statusCode: number;
   const detailsPayload = {
     user_id: userId,
     phone: phone,
@@ -38,7 +39,11 @@ export async function addProfileDetails(
     statusCode = addDetailsResponse.status;
     return statusCode;
   } catch (error) {
-    console.log(error);
-    return statusCode;
+    if (axios.isAxiosError(error)) {
+      console.log('Axios error:', error);
+      return error.response?.status;
+    } else {
+      console.log('Error Occured:', error);
+    }
   }
 }
