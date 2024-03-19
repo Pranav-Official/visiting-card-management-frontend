@@ -25,6 +25,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedCardIds } from '../../context/selectedCardsSlice';
 import { RootState } from '../../context/store';
 import { setSharingProcess } from '../../context/sharingProcessSlice';
+import { rejectCard } from '../../hooks/rejectCardHook';
 
 type Card = {
   card_id: string;
@@ -147,6 +148,7 @@ const SaveShareCardScreen = ({ route }: any) => {
         });
         setCardIdsToBeRejected(tempCardsIds);
         console.log('cards to be rejected', cardIdsToBeRejected);
+       
       } catch (error) {
         console.log('Error while handling save:', error);
       }
@@ -179,6 +181,20 @@ const SaveShareCardScreen = ({ route }: any) => {
       });
     }
   };
+
+  const handleRemoveCards = async () => {
+    try {  
+      const response = await rejectCard({
+      
+        card_ids: cardIdsToBeRejected,
+      });
+  
+      console.log('rejectCard API response:', response);
+    } catch (error) {
+      console.log('Error while rejecting cards:', error);
+    }
+  };
+  
 
   const fetchSimilarCards = async (card: Card) => {
     try {
@@ -223,6 +239,7 @@ const SaveShareCardScreen = ({ route }: any) => {
             'final if reject cards to be rejected',
             cardIdsToBeRejected,
           );
+          handleRemoveCards();          
         }
         dispatch(setSharingProcess(false));
         navigation.dispatch(

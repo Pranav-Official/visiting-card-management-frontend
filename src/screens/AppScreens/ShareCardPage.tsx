@@ -71,7 +71,7 @@ const ShareCardScreen = ({
       user_id,
       jwt_token,
       card_id: card_id,
-      receiver_user_ids: selectedUserIds,
+      receiver_user_ids: selectedUserIds, 
     };
 
     try {
