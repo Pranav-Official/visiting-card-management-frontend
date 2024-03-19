@@ -182,9 +182,9 @@ const Login = () => {
             </PrimaryButtonComponent>
           )}
         </View>
-        <TouchableOpacity style={styles.forgotPassword}>
+        {/* <TouchableOpacity style={styles.forgotPassword}>
           <Text>Forgot Password?</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       <BottomDialougeTouchable
         label="Don't have an account?"
