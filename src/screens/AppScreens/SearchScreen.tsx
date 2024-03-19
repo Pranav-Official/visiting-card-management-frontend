@@ -9,6 +9,7 @@ import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import {
   NavigationProp,
+  StackActions,
   //StackActions,
   useNavigation,
 } from '@react-navigation/native';
@@ -161,11 +162,13 @@ const SearchScreen = () => {
 
     if (result.cardResp.data.length === 1) {
       const cardId = result.cardResp.data[0].card_id;
+      navigation.dispatch(StackActions.popToTop());
       navigation.navigate('CardStack', {
         screen: 'CardDetailsScreen',
         params: { card_id: cardId },
       });
     } else {
+      navigation.dispatch(StackActions.popToTop());
       navigation.navigate('CardStack', {
         screen: 'CardListScreen',
         params: { card_id: id, name: name },
