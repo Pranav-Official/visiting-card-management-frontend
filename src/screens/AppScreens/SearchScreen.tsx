@@ -150,7 +150,6 @@ const SearchScreen = () => {
   }, [searchText]);
 
   const navigateToListOrDetails = async (id: string, name: string) => {
-    console.log('contactPage', id, name);
     const userId = (await getLocalItem(Constants.USER_ID)) ?? '';
     const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
     const cardId = id;
