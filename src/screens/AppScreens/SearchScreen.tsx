@@ -8,11 +8,12 @@ import { CardData, fetchSearchableList } from '../../hooks/searchListHook';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import {
-  CommonActions,
   NavigationProp,
-  StackActions,
+  //StackActions,
   useNavigation,
 } from '@react-navigation/native';
+import { TabParamList } from '../../types/navigationTypes';
+import { listCards } from '../../hooks/CardListHook';
 
 type filteredList = {
   matchIndex: number;
@@ -116,7 +117,7 @@ const SearchScreen = () => {
     filteredList[]
   >([]);
   const [searchText, setSearchText] = useState<string>('');
-  const navigation = useNavigation<NavigationProp<any>>();
+  const navigation = useNavigation<NavigationProp<TabParamList>>();
 
   useEffect(() => {
     const getSearchData = async () => {
@@ -148,12 +149,29 @@ const SearchScreen = () => {
     }
   }, [searchText]);
 
-  const navigateToCardList = (card_id: string, contact_name: string) => {
-    navigation.dispatch(StackActions.popToTop());
-    navigation.navigate('CardStack', {
-      screen: 'CardListScreen',
-      params: { card_id: card_id, name: contact_name },
+  const navigateToListOrDetails = async (id: string, name: string) => {
+    console.log('contactPage', id, name);
+    const userId = (await getLocalItem(Constants.USER_ID)) ?? '';
+    const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
+    const cardId = id;
+    const result = await listCards({
+      user_id: userId,
+      jwt_token: jwtToken,
+      card_id: cardId,
     });
+
+    if (result.cardResp.data.length === 1) {
+      const cardId = result.cardResp.data[0].card_id;
+      navigation.navigate('CardStack', {
+        screen: 'CardDetailsScreen',
+        params: { card_id: cardId },
+      });
+    } else {
+      navigation.navigate('CardStack', {
+        screen: 'CardListScreen',
+        params: { card_id: id, name: name },
+      });
+    }
   };
 
   return (
@@ -190,7 +208,7 @@ const SearchScreen = () => {
                 matchLength={searchText.length}
                 searchText={searchText}
                 onPress={() =>
-                  navigateToCardList(item.card_id, item.contact_name)
+                  navigateToListOrDetails(item.card_id, item.contact_name)
                 }
               />
             )}
@@ -208,7 +226,7 @@ const SearchScreen = () => {
                 matchLength={0}
                 searchText={searchText}
                 onPress={() =>
-                  navigateToCardList(item.card_id, item.contact_name)
+                  navigateToListOrDetails(item.card_id, item.contact_name)
                 }
               />
             )}
