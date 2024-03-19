@@ -1,4 +1,4 @@
-import { RouteProp } from '@react-navigation/native';
+import { NavigatorScreenParams, RouteProp } from '@react-navigation/native';
 import { Card, CardDetails, ContactCard } from './objectTypes';
 
 type RootStackParamList = {
@@ -18,9 +18,22 @@ type RootStackParamList = {
     cardDetails: Card;
     sharing: boolean;
   };
+  CardListScreen: {
+    card_id: string;
+    name: string;
+  };
 };
+type TabParamList = {
+  CardStack: NavigatorScreenParams<RootStackParamList>;
+  CardDetailsScreen: { card_id: string };
+  CardListScreen: {
+    card_id: string;
+    name: string;
+  };
+};
+
 type CardDetailScreenRouteProp = RouteProp<
   RootStackParamList,
   'CardDetailsScreen'
 >;
-export type { RootStackParamList, CardDetailScreenRouteProp };
+export type { RootStackParamList, TabParamList, CardDetailScreenRouteProp };
