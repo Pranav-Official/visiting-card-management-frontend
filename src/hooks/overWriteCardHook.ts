@@ -31,8 +31,6 @@ export async function overwriteExistingCard(
   let statusCode = '';
   let responseBody: OWCBodyType;
   try {
-    console.log('\n\nREACHED OWC', card_id);
-    console.log('\n\noverWriteCardPayload: ', overWriteCardPayload);
     const overwriteResponse = await api.patch(
       '/api/v1/editCard',
       overWriteCardPayload,
@@ -44,7 +42,6 @@ export async function overwriteExistingCard(
     );
     statusCode = overwriteResponse.status.toString();
     responseBody = overwriteResponse.data;
-    console.log('\nOverWriteHookResp :', overwriteResponse.data);
     return { statusCode, responseBody };
   } catch (error) {
     if (axios.isAxiosError(error)) {

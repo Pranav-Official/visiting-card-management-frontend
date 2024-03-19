@@ -5,12 +5,17 @@ interface EditCardProp {
   user_id: string;
   token: string;
   card_id: string;
-  updatedData: any;
+  updatedData: object;
 }
+type responseType = {
+  status: boolean;
+  message: string;
+  data: object;
+};
 
 interface EditCardResponse {
   statusCode: string;
-  editCardResp: any;
+  editCardResp: responseType;
 }
 
 export async function editCardDetails({
@@ -20,7 +25,7 @@ export async function editCardDetails({
   updatedData,
 }: EditCardProp): Promise<EditCardResponse> {
   let statusCode = '';
-  let editCardResp: any = '';
+  let editCardResp: responseType = { status: false, message: '', data: {} };
 
   try {
     const response = await api.patch(
@@ -44,6 +49,11 @@ export async function editCardDetails({
       console.log('Axios Error while editing:', error.response?.data);
     } else {
       console.log('Error while editing:', error);
+      editCardResp = {
+        status: false,
+        message: 'Error while editing',
+        data: {},
+      };
     }
   }
 

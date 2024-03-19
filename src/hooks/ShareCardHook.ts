@@ -24,7 +24,7 @@ export interface ShareCardProp {
 
 interface ShareCardResponse {
   statusCode: string;
-  shareCardResp: string[];
+  shareCardResp: string[] | { status: boolean; message: string };
 }
 
 export async function ShareCard({
@@ -34,7 +34,7 @@ export async function ShareCard({
   receiver_user_ids,
 }: ShareCardProp): Promise<ShareCardResponse> {
   let statusCode = '';
-  let shareCardResp: string[] | any = [];
+  let shareCardResp: string[] | { status: boolean; message: string } = [];
 
   const shareParams = {
     user_id: user_id,

@@ -24,8 +24,8 @@ function nameToColor(name: string): string {
 
 // Simple string hash function
 function hashString(str: string): number {
-  let hash: number = 0;
-  for (let i: number = 0; i < str.length; i++) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
     const char: number = str.charCodeAt(i);
     hash = (hash << 5) - hash + char;
     hash |= 0; // Convert to 32bit integer

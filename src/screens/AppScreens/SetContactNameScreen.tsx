@@ -152,36 +152,38 @@ const SetContactNameScreen = ({ route }: any) => {
             header="Contact Name"
           />
         </View>
-      </View>
-      <View style={styles.buttonContainer}>
-        {!imageUploadProcessing ? (
+        <View style={styles.buttonContainer}>
+          {!imageUploadProcessing ? (
+            <PrimaryButtonComponent
+              title="Save"
+              onPressing={() =>
+                sharing ? createCard(true) : createCard(false)
+              }
+            />
+          ) : (
+            <PrimaryButtonComponent
+              children={
+                <ActivityIndicator
+                  style={styles.loading}
+                  size="large"
+                  color={colors['secondary-light']}
+                />
+              }
+              title={''}
+            />
+          )}
           <PrimaryButtonComponent
-            title="Save"
-            onPressing={() => (sharing ? createCard(true) : createCard(false))}
+            title={'Go Back'}
+            onPressing={() => {
+              dispatch(setSharingProcess(false));
+              dispatch(removeAllSelectedCards());
+              navigation.dispatch(StackActions.pop(1));
+            }}
+            backgroundColor={colors['accent-white']}
+            textColor={colors['primary-text']}
+            isHighlighted={true}
           />
-        ) : (
-          <PrimaryButtonComponent
-            children={
-              <ActivityIndicator
-                style={styles.loading}
-                size="large"
-                color={colors['secondary-light']}
-              />
-            }
-            title={''}
-          />
-        )}
-        <PrimaryButtonComponent
-          title={'Go Back'}
-          onPressing={() => {
-            dispatch(setSharingProcess(false));
-            dispatch(removeAllSelectedCards());
-            navigation.dispatch(StackActions.pop(1));
-          }}
-          backgroundColor={colors['accent-white']}
-          textColor={colors['primary-text']}
-          isHighlighted={true}
-        />
+        </View>
       </View>
     </View>
   );
@@ -202,6 +204,7 @@ const styles = StyleSheet.create({
     padding: 25,
   },
   bottomContainer: {
+    position: 'relative',
     backgroundColor: colors['secondary-light'],
     padding: 18,
     paddingHorizontal: 30,
@@ -238,14 +241,14 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     position: 'absolute',
-    bottom: 40,
-    paddingHorizontal: 30,
+    marginTop: 450,
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingTop: 10,
-    height: 50,
+    // height: 50,
     width: '100%',
     gap: 10,
+    alignSelf: 'center',
   },
   inputText: {
     marginTop: 30,

@@ -17,7 +17,7 @@ type CardReturn = {
 
 interface CardListResponse {
   statusCode: string;
-  cardResp: { data: CardReturn[] };
+  cardResp?: { data: CardReturn[] };
 }
 
 export async function listCards({
@@ -43,6 +43,6 @@ export async function listCards({
     return { statusCode, cardResp };
   } catch (error) {
     console.log('error while fetching card list', error);
-    return { statusCode, cardResp };
+    return { statusCode };
   }
 }

@@ -30,11 +30,9 @@ export async function loginUser({
     user_email: loginUsername,
     password: loginPassword,
   };
-  console.log('logInPayload', logInPayload, process.env.BASE_URL);
   try {
     const logInResponse = await api.post('/userLogin', logInPayload);
     loginResp = logInResponse.data;
-    console.log(loginResp);
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log('Axios Error while signing in:', error);
@@ -69,7 +67,6 @@ export const SignUpUser = async ({
     user_email: signUpEmail,
     password: signUpPassword,
   };
-  console.log('signUpPayload', signUpPayload);
   try {
     const logInResponse = await api.post('/userRegistration', signUpPayload);
     signUpResp = logInResponse.data;
