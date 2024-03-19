@@ -7,7 +7,6 @@ type PropTypes = {
   selected: boolean;
 };
 const RadioButton = (props: PropTypes) => {
-
   return (
     <View
       style={[
@@ -23,7 +22,12 @@ const RadioButton = (props: PropTypes) => {
       ]}
     >
       {props.selected ? (
-        <Selected width={10} height={10} stroke={colors['primary-text']} />
+        <Selected
+          width={10}
+          height={10}
+          stroke={colors['primary-text']}
+          testID="selected-component"
+        />
       ) : null}
     </View>
   );
