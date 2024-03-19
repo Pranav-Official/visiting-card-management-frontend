@@ -24,6 +24,7 @@ import {
 import { editCardDetails } from '../../hooks/editCardHook';
 import NewCardComponent from '../../components/NewCardListScreenComponent';
 import Swiper from 'react-native-swiper';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const CardListScreen = ({ route }: any) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -179,13 +180,14 @@ const CardListScreen = ({ route }: any) => {
                     changeContact();
                   }}
                 >
-                  <Text style={styles.buttonText}>Apply</Text>
+                  
+                  <MaterialCommunityIcons name="check" color={'green'} size={32} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.buttonStyle}
                   onPress={() => setChangeContactName(false)}
                 >
-                  <Text style={styles.buttonText}>Cancel</Text>
+                  <MaterialCommunityIcons name="close" color={colors['primary-danger']} size={32} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -254,7 +256,7 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
   buttonStyle: {
-    padding: 15,
+    padding: 10,
     backgroundColor: colors['secondary-grey'],
     width: 120,
     height: 50,
