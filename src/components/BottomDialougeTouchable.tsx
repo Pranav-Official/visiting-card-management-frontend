@@ -3,12 +3,17 @@ import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import colors from '../utils/colorPallete';
 
+type PropTypes = {
+  navigateTo: string;
+  label: string;
+  mainText: string;
+};
 // Define the type for the navigation object
-const BottomDialougeTouchable = (props: any) => {
+const BottomDialougeTouchable = (props: PropTypes) => {
   const navigation = useNavigation();
 
   const onPress = () => {
-    navigation.navigate(props.navigateTo, {});
+    navigation.navigate(props.navigateTo as never);
   };
 
   return (

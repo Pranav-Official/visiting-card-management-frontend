@@ -1,12 +1,13 @@
 import React from 'react';
 import { View } from 'react-native';
 import Selected from '../assets/images/selected.svg';
+import colors from '../utils/colorPallete';
 
-type PropsType = {
+type PropTypes = {
   selected: boolean;
 };
+const RadioButton = (props: PropTypes) => {
 
-const RadioButton = (props: PropsType) => {
   return (
     <View
       style={[
@@ -15,14 +16,14 @@ const RadioButton = (props: PropsType) => {
           width: 24,
           borderRadius: 12,
           borderWidth: 2,
-          borderColor: '#000',
+          borderColor: colors['primary-text'],
           alignItems: 'center',
           justifyContent: 'center',
         },
       ]}
     >
       {props.selected ? (
-        <Selected width={10} height={10} stroke={'black'} />
+        <Selected width={10} height={10} stroke={colors['primary-text']} />
       ) : null}
     </View>
   );
