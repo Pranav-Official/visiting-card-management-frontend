@@ -4,50 +4,42 @@ import PrimaryButtonComponent from './PrimaryButtonComponent';
 import CardComponent from './CardComponent';
 import colors from '../utils/colorPallete';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { Card, ContactCard } from '../types/objectTypes';
+import { RootStackParamList } from '../types/navigationTypes';
 
-type Card = {
-  card_id: string;
-  card_name: string | null;
-  company_name: string | null;
-  company_website: string | null;
-  contact_name: string | null;
-  email: string | null;
-  img_back_link: string | null;
-  img_front_link: string | null;
-  job_title: string | null;
-  phone: string | null;
-  user_id: string | null;
+type propType = {
+  cardDetails: Card;
+  similarCardList: ContactCard[];
+  sharing: boolean;
+  modalVisibilitySetter: (value: boolean) => void;
 };
-type ContactCards = {
-  contact_name: string;
-  cards: Card[];
-};
-
-const SimilarCardsComponent = (props: any) => {
+const SimilarCardsComponent = (props: propType) => {
   const cardDetails = props.cardDetails;
-  const similarCardList: ContactCards = props.similarCardList;
+  const similarCardList: ContactCard[] = props.similarCardList;
   const sharing: boolean = props.sharing;
 
-  const navigation = useNavigation<NavigationProp<any>>();
-  console.log(
-    '\n\nCONSOLE FOR similarCardList from Component: ',
-    similarCardList,
-  );
+  const navigation =
+    useNavigation<
+      NavigationProp<
+        RootStackParamList,
+        'CardOverwriteScreen' | 'AddToContactScreen' | 'SetContactNameScreen'
+      >
+    >();
 
   //Render Item
-  const renderItem = ({ item }: any) => (
+  const renderItem = ({ item }: { item: ContactCard }) => (
     <View style={[styles.similarCardsContainer]}>
       <Text style={styles.contactNameInModal}>{item.contact_name}</Text>
 
-      {item.cards.map((card: any) => (
+      {item.cards.map((card: Card) => (
         <View style={styles.singleCard} key={card.card_id}>
           <CardComponent
             alignToSides={false}
-            job_position={card.job_title}
-            name={card.card_name}
-            email={card.email}
-            phone_number={card.phone}
-            company_name={card.company_name}
+            job_position={card.job_title ?? ''}
+            name={card.card_name ?? ''}
+            email={card.email ?? ''}
+            phone_number={card.phone ?? ''}
+            company_name={card.company_name ?? ''}
           />
         </View>
       ))}
@@ -61,7 +53,7 @@ const SimilarCardsComponent = (props: any) => {
       <FlatList
         data={similarCardList}
         renderItem={renderItem}
-        keyExtractor={(item) => item.cards}
+        keyExtractor={(item) => item.cards[0].card_id}
       />
       <View style={styles.buttonContainer}>
         <Text style={styles.similarCardsText}>Choose an Option</Text>
@@ -81,9 +73,10 @@ const SimilarCardsComponent = (props: any) => {
           title="Add to Existing Contacts"
           onPressing={() => {
             props.modalVisibilitySetter(false);
-            navigation.navigate('CardStack', {
-              screen: 'AddToContactScreen',
-              params: { similarCardList, cardDetails, sharing },
+            navigation.navigate('AddToContactScreen', {
+              similarCardList,
+              cardDetails,
+              sharing,
             });
           }}
           backgroundColor={colors['primary-accent']}
@@ -92,9 +85,9 @@ const SimilarCardsComponent = (props: any) => {
           title="Add as a New Contact"
           onPressing={() => {
             props.modalVisibilitySetter(false);
-            navigation.navigate('CardStack', {
-              screen: 'SetContactNameScreen',
-              params: { cardDetails, sharing },
+            navigation.navigate('SetContactNameScreen', {
+              cardDetails,
+              sharing,
             });
           }}
           backgroundColor={colors['primary-accent']}

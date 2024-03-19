@@ -20,6 +20,7 @@ import SearchScreen from '../screens/AppScreens/SearchScreen';
 import SharedContactsScreen from '../screens/AppScreens/SharedContactsScreen';
 import ViewSharedContactsScreen from '../screens/AppScreens/ViewSharedContactsScreen';
 import ChangePassword from '../screens/AuthScreens/ChangePassword';
+import AddProfileDetailsScreen from '../screens/AppScreens/AddProfileDetailsScreen';
 const StackNav = createNativeStackNavigator();
 const HomeStackNavigation = () => {
   return (
@@ -31,7 +32,7 @@ const HomeStackNavigation = () => {
       <StackNav.Screen name="Home" component={HomeBottomBarNavigation} />
       <StackNav.Screen name="SearchScreen" component={SearchScreen} />
       <StackNav.Screen name="CardStack" component={CardStackNavigation} />
-      <StackNav.Screen name="ChangePassword" component={ChangePassword}/>
+      <StackNav.Screen name="ChangePassword" component={ChangePassword} />
     </StackNav.Navigator>
   );
 };
@@ -93,7 +94,7 @@ const HomeBottomBarNavigation = () => {
             />
           ),
         }}
-      />       
+      />
     </BottomBarNavigation.Navigator>
   );
 };
@@ -119,8 +120,8 @@ const CardStackNavigation = () => {
         component={SetContactNameScreen}
       />
       <StackNav.Screen
-      name="SaveShareCardScreen"
-      component={SaveShareCardScreen}
+        name="SaveShareCardScreen"
+        component={SaveShareCardScreen}
       />
       <StackNav.Screen
         name="AddToContactScreen"
@@ -137,6 +138,10 @@ const CardStackNavigation = () => {
       <StackNav.Screen
         name="SharedContactsScreen"
         component={SharedContactsScreen}
+      />
+      <StackNav.Screen
+        name="AddProfileDetailsScreen"
+        component={AddProfileDetailsScreen}
       />
     </CardStackNav.Navigator>
   );

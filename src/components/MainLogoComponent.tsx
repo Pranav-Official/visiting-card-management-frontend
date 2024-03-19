@@ -2,9 +2,9 @@ import React from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 
 // Defining the type for the navigation object
-const MainLogoComponent = (props: any) => {
+const MainLogoComponent = () => {
   return (
-    <View style={styles.view}>
+    <View>
       <Image
         style={styles.image}
         source={require('../assets/images/experion-logo.png')}
@@ -20,7 +20,6 @@ const styles = StyleSheet.create({
     height: 80,
     objectFit: 'contain',
   },
-  view: {},
 });
 
 export default MainLogoComponent;

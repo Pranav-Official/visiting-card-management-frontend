@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
+  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -16,14 +17,22 @@ import { getLocalItem, setLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import { userLogin } from '../../context/userSlice';
 import { useDispatch } from 'react-redux';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import {
+  NavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
+import ProfileShimmer from '../../components/Shimmers/ProfileShimmer';
 
 type UserData = {
   email: string;
   fullName: string;
+  phone: string;
+  job_title: string;
+  company_name: string;
   totalAcceptedCards: number;
   totalContacts: number;
-  totalPendingCards: number
+  totalPendingCards: number;
 };
 
 type ResponseType = {
@@ -37,22 +46,31 @@ const ProfileScreen = () => {
   );
   const splittedName = profileResponse?.userData.fullName.split(' ');
   const firstName = splittedName ? splittedName[0] : '';
-  useEffect(() => {
-    const fetchProfileData = async () => {
-      try {
-        const user_id = (await getLocalItem(Constants.USER_ID)) ?? '';
-        const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
-        console.log('\n\nReached PROFILE SCREEN USE EFFECT');
+  const [userId, setUserId] = useState('');
+  const [jwtToken, setJwtToken] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
-        const response = await getProfile(user_id, jwtToken);
+  useFocusEffect(
+    useCallback(() => {
+      const fetchProfileData = async () => {
+        try {
+          const user_id = (await getLocalItem(Constants.USER_ID)) ?? '';
+          setUserId(user_id);
+          const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
+          setJwtToken(jwtToken);
 
-        setProfileResponse(response);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchProfileData();
-  }, []);
+          const response = await getProfile(user_id, jwtToken);
+
+          console.log('\nResponse Details: ', response);
+          setProfileResponse(response);
+          setIsLoading(false);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchProfileData();
+    }, []),
+  );
 
   const dispatch = useDispatch();
   const Logout = () => {
@@ -62,18 +80,33 @@ const ProfileScreen = () => {
     dispatch(userLogin(false));
   };
   const navigation = useNavigation<NavigationProp<any>>();
+
   const navigateSharedContactsScreen = () => {
     navigation.navigate('CardStack', {
       screen: 'ViewSharedContactsScreen',
-      
     });
   };
+
   const handleNav = () => {
     navigation.navigate('ChangePassword', {
-      email: profileResponse?.userData.email ??'',
+      email: profileResponse?.userData.email ?? '',
       jwtToken: Constants.USER_JWT,
-      
-  })};
+    });
+  };
+
+  const navigateToAddProfileDetails = () => {
+    navigation.navigate('CardStack', {
+      screen: 'AddProfileDetailsScreen',
+      params: {
+        userId: userId,
+        jwtToken: jwtToken,
+        phone: profileResponse?.userData.phone,
+        jobTitle: profileResponse?.userData.job_title,
+        companyName: profileResponse?.userData.company_name,
+      },
+    });
+  };
+
   return (
     <ScrollView style={styles.profileMainContainer}>
       <View style={styles.profileContainer}>
@@ -82,29 +115,82 @@ const ProfileScreen = () => {
             <Text style={styles.profileText}>
               {profileResponse?.userData.fullName[0]}
             </Text>
+            <TouchableOpacity
+              style={styles.editButton}
+              onPress={navigateToAddProfileDetails}
+            >
+              <Image
+                source={require('../../assets/images/editIcon.png')}
+                style={styles.editIcon}
+              ></Image>
+            </TouchableOpacity>
           </View>
+          {isLoading ? (
+            <ProfileShimmer />
+          ) : (
+            <View style={styles.details}>
+              <Text style={styles.userName}>Hi {firstName}!</Text>
+              <Text style={styles.userEmail}>
+                {profileResponse?.userData.email}
+              </Text>
 
-          <View style={styles.details}>
-            <Text style={styles.userName}>Hi {firstName}!</Text>
-            <Text style={styles.userEmail}>
-              {profileResponse?.userData.email}
-            </Text>
+              <View style={styles.contactInfoContainer}>
+                {profileResponse?.userData.phone == null ||
+                profileResponse?.userData.phone == '' ? (
+                  <TouchableOpacity
+                    style={styles.contactInfo}
+                    onPress={navigateToAddProfileDetails}
+                  >
+                    <Phone color={'primary-text'} style={styles.icons} />
+                    <Text style={styles.phoneText}>Add Phone Number</Text>
+                  </TouchableOpacity>
+                ) : (
+                  <View style={styles.contactInfo}>
+                    <Phone color={'primary-text'} style={styles.icons} />
+                    <Text style={styles.phoneTextFilled}>
+                      {profileResponse?.userData.phone}
+                    </Text>
+                  </View>
+                )}
 
-            <View style={styles.contactInfoContainer}>
-              <TouchableOpacity style={styles.contactInfo}>
-                <Person color={'primary-text'} style={styles.icons} />
-                <Text style={styles.phoneText}>Add Job Title</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.contactInfo}>
-                <Phone color={'primary-text'} style={styles.icons} />
-                <Text style={styles.phoneText}>Add Phone Number</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.contactInfo}>
-                <Company color={'primary-text'} style={styles.icons} />
-                <Text style={styles.phoneText}>Add Company Name</Text>
-              </TouchableOpacity>
+                {profileResponse?.userData.job_title == null ||
+                profileResponse?.userData.job_title == '' ? (
+                  <TouchableOpacity
+                    style={styles.contactInfo}
+                    onPress={navigateToAddProfileDetails}
+                  >
+                    <Person color={'primary-text'} style={styles.icons} />
+                    <Text style={styles.phoneText}>Add Job Title</Text>
+                  </TouchableOpacity>
+                ) : (
+                  <View style={styles.contactInfo}>
+                    <Person color={'primary-text'} style={styles.icons} />
+                    <Text style={styles.phoneTextFilled}>
+                      {profileResponse?.userData.job_title}
+                    </Text>
+                  </View>
+                )}
+
+                {profileResponse?.userData.company_name == null ||
+                profileResponse?.userData.company_name == '' ? (
+                  <TouchableOpacity
+                    style={styles.contactInfo}
+                    onPress={navigateToAddProfileDetails}
+                  >
+                    <Company color={'primary-text'} style={styles.icons} />
+                    <Text style={styles.phoneText}>Add Company Name</Text>
+                  </TouchableOpacity>
+                ) : (
+                  <View style={styles.contactInfo}>
+                    <Company color={'primary-text'} style={styles.icons} />
+                    <Text style={styles.phoneTextFilled}>
+                      {profileResponse?.userData.company_name}
+                    </Text>
+                  </View>
+                )}
+              </View>
             </View>
-          </View>
+          )}
         </View>
 
         <View style={styles.middleContainer}>
@@ -119,14 +205,14 @@ const ProfileScreen = () => {
             title={'View Shared Contacts'}
             backgroundColor={colors['accent-white']}
             isHighlighted={true}
-            onPressing={() =>navigateSharedContactsScreen()}
+            onPressing={() => navigateSharedContactsScreen()}
           />
           <PrimaryButtonComponent
             title={'Change Password'}
             backgroundColor={colors['accent-white']}
             textColor={colors['primary-danger']}
             isHighlighted={true}
-            onPressing={() =>handleNav()}
+            onPressing={() => handleNav()}
           />
           <PrimaryButtonComponent
             title={'Logout'}
@@ -144,6 +230,7 @@ const styles = StyleSheet.create({
   profileMainContainer: {
     backgroundColor: colors['secondary-light'],
     height: '100%',
+    flex: 1,
   },
   profileContainer: {
     marginTop: 110,
@@ -151,7 +238,20 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     gap: 45,
   },
+  editButton: {
+    height: 30,
+    width: 30,
+    borderRadius: 50,
+    position: 'absolute',
+    left: 200,
+    bottom: -10,
+  },
+  editIcon: {
+    height: 30,
+    width: 30,
+  },
   profileImageContainer: {
+    position: 'relative',
     marginTop: -80,
     alignItems: 'center',
     justifyContent: 'center',
@@ -222,6 +322,10 @@ const styles = StyleSheet.create({
     color: colors['primary-text'],
     textDecorationLine: 'underline',
   },
+  phoneTextFilled: {
+    fontSize: 18,
+    color: colors['primary-text'],
+  },
   middleContainer: {
     alignItems: 'center',
   },
@@ -239,6 +343,7 @@ const styles = StyleSheet.create({
     gap: 10,
     marginBottom: 20,
     height: 200,
+    flex: 1,
   },
 });
 
