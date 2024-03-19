@@ -39,14 +39,9 @@ import TranslateText, {
 } from '@react-native-ml-kit/translate-text';
 import IdentifyLanguages from '@react-native-ml-kit/identify-languages';
 import { CardDetails } from '../../types/objectTypes';
-import {
-  CardDetailScreenRouteProp,
-  RootStackParamList,
-} from '../../types/navigationTypes';
+import { RootStackParamList } from '../../types/navigationTypes';
 
-const CardDetailPage: React.FC<{ route: CardDetailScreenRouteProp }> = ({
-  route,
-}) => {
+const CardDetailPage = ({ route }: any) => {
   const [cardDetail, setCardDetail] = useState<CardDetails>({ card_name: '' });
   const [translatedCardDetails, setTranslatedCardDetails] =
     useState<CardDetails>({ card_name: '' });
