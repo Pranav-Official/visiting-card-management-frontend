@@ -48,7 +48,8 @@ const CardDetailPage: React.FC<{ route: CardDetailScreenRouteProp }> = ({
   route,
 }) => {
   const [cardDetail, setCardDetail] = useState<CardDetails>({ card_name: '' });
-  const [translatedCardDetails, setTranslatedCardDetails] = useState();
+  const [translatedCardDetails, setTranslatedCardDetails] =
+    useState<CardDetails>({ card_name: '' });
   const [showTranslated, setShowtranslated] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -154,13 +155,11 @@ const CardDetailPage: React.FC<{ route: CardDetailScreenRouteProp }> = ({
     }
   };
   const handleTranslate = async () => {
-    console.log('Initialte Translation');
     let enToJp = true;
 
     const lang = await IdentifyLanguages.identify(
       cardDetail.card_name + cardDetail.job_title + cardDetail.company_name,
     );
-    console.log('identified language : ', lang);
     if (lang == 'ja') {
       enToJp = false;
     } else {
@@ -187,19 +186,13 @@ const CardDetailPage: React.FC<{ route: CardDetailScreenRouteProp }> = ({
         text: cardDetail.company_name ?? '',
         ...translationOptions,
       });
-      console.log(
-        'After translation',
-        translatedCardName,
-        translatedCompanyName,
-        translatedJobTitle,
-      );
       const translatedCardDetails = {
         ...cardDetail,
         card_name: translatedCardName,
         job_title: translatedJobTitle,
         company_name: translatedCompanyName,
       };
-      setTranslatedCardDetails(translatedCardDetails);
+      setTranslatedCardDetails(translatedCardDetails as CardDetails);
       setShowtranslated(!showTranslated);
     } catch (error) {
       console.log('Error in translation', error);
@@ -287,7 +280,7 @@ const CardDetailPage: React.FC<{ route: CardDetailScreenRouteProp }> = ({
           }}
           card_detail={
             showTranslated
-              ? translatedCardDetails.company_name
+              ? translatedCardDetails.company_name || 'Add Company Name'
               : cardDetail.company_name
               ? cardDetail.company_name
               : 'Add Company Name'
@@ -480,24 +473,6 @@ const styles = StyleSheet.create({
   },
   shimmerContainer: {
     marginBottom: 10,
-  },
-  cardButton: {
-    alignItems: 'center',
-    backgroundColor: colors['secondary-grey'],
-    height: 50,
-    width: 30,
-    borderRadius: 8,
-    flex: 0.5,
-    padding: 10,
-    fontWeight: '700',
-    justifyContent: 'center',
-    marginRight: 10,
-  },
-  cardButtonTitle: {
-    fontWeight: 'bold',
-    color: colors['primary-text'],
-    alignSelf: 'center',
-    fontSize: 18,
   },
   editButtons: {
     flexDirection: 'row',
