@@ -33,24 +33,28 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import { isValidWebsiteUrl } from '../../utils/regexCheck';
 import BottomSheetComponent from '../../components/BottomSheetComponent';
 import { deleteCard } from '../../hooks/deleteCardHook';
+import Toast from 'react-native-root-toast';
+import TranslateText, {
+  TranslateLanguage,
+} from '@react-native-ml-kit/translate-text';
+import IdentifyLanguages from '@react-native-ml-kit/identify-languages';
+import { CardDetails } from '../../types/objectTypes';
+import {
+  CardDetailScreenRouteProp,
+  RootStackParamList,
+} from '../../types/navigationTypes';
 
-type CardDetails = {
-  card_name: string;
-  img_front_link?: string;
-  img_back_link?: string;
-  job_title?: string;
-  email?: string;
-  phone?: string;
-  company_name?: string;
-  company_website?: string;
-  description?: string | null;
-};
-
-const CardDetailPage = ({ route }: any) => {
-  const [cardDetail, setCardDetail] = useState<CardDetails>({});
+const CardDetailPage: React.FC<{ route: CardDetailScreenRouteProp }> = ({
+  route,
+}) => {
+  const [cardDetail, setCardDetail] = useState<CardDetails>({ card_name: '' });
+  const [translatedCardDetails, setTranslatedCardDetails] =
+    useState<CardDetails>({ card_name: '' });
+  const [showTranslated, setShowtranslated] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const navigation = useNavigation<NavigationProp<any>>();
+  const navigation =
+    useNavigation<NavigationProp<RootStackParamList, 'EditCardScreen'>>();
   const [ShareModalVisible, setShareModalVisible] = useState(false);
 
   const toggleShareModal = () => {
@@ -64,16 +68,14 @@ const CardDetailPage = ({ route }: any) => {
   const fetchData = async () => {
     try {
       const userId = (await getLocalItem(Constants.USER_ID)) ?? '{}';
-      const userToken = (await getLocalItem(Constants.USER_JWT)) ?? '{}';
       const card_id = route.params.card_id;
 
       const { cardDetailsResp } = await listCardDetails({
         user_id: userId,
-        jwtToken: userToken,
         card_id: card_id,
       });
 
-      setCardDetail(cardDetailsResp.data);
+      setCardDetail(cardDetailsResp);
       setIsLoading(false);
     } catch (error) {
       console.log('Error fetching contacts:', error);
@@ -101,6 +103,7 @@ const CardDetailPage = ({ route }: any) => {
       });
 
       if (statusCode === '200') {
+        Toast.show('Card deleted successfully');
         navigation.goBack();
       } else {
         console.log('Delete card failed:', deleteCardResp);
@@ -151,7 +154,50 @@ const CardDetailPage = ({ route }: any) => {
       console.error('Error copying to clipboard:', error);
     }
   };
+  const handleTranslate = async () => {
+    let enToJp = true;
 
+    const lang = await IdentifyLanguages.identify(
+      cardDetail.card_name + cardDetail.job_title + cardDetail.company_name,
+    );
+    if (lang == 'ja') {
+      enToJp = false;
+    } else {
+      enToJp = true;
+    }
+    const translationOptions = {
+      sourceLanguage:
+        enToJp != true ? TranslateLanguage.JAPANESE : TranslateLanguage.ENGLISH,
+      targetLanguage:
+        enToJp != true ? TranslateLanguage.ENGLISH : TranslateLanguage.JAPANESE,
+      downloadModelIfNeeded: true,
+      requireWifi: true,
+    };
+    try {
+      const translatedCardName = await TranslateText.translate({
+        text: cardDetail.card_name,
+        ...translationOptions,
+      });
+      const translatedJobTitle = await TranslateText.translate({
+        text: cardDetail.job_title ?? '',
+        ...translationOptions,
+      });
+      const translatedCompanyName = await TranslateText.translate({
+        text: cardDetail.company_name ?? '',
+        ...translationOptions,
+      });
+      const translatedCardDetails = {
+        ...cardDetail,
+        card_name: translatedCardName,
+        job_title: translatedJobTitle,
+        company_name: translatedCompanyName,
+      };
+      setTranslatedCardDetails(translatedCardDetails as CardDetails);
+      setShowtranslated(!showTranslated);
+    } catch (error) {
+      console.log('Error in translation', error);
+    }
+  };
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -181,7 +227,11 @@ const CardDetailPage = ({ route }: any) => {
           </>
         ) : (
           <>
-            <Text style={styles.cardName}>{cardDetail.card_name}</Text>
+            <Text style={styles.cardName}>
+              {showTranslated
+                ? translatedCardDetails.card_name
+                : cardDetail.card_name}
+            </Text>
             <Text
               style={styles.jobTitle}
               onPress={() => {
@@ -194,14 +244,18 @@ const CardDetailPage = ({ route }: any) => {
                 }
               }}
             >
-              {cardDetail.job_title ? cardDetail.job_title : 'Add Job title'}
+              {showTranslated
+                ? translatedCardDetails.job_title
+                : cardDetail.job_title
+                ? cardDetail.job_title
+                : 'Add Job title'}
             </Text>
           </>
         )}
       </View>
 
       <View style={styles.headerStyle}>
-        <TouchableOpacity style={styles.buttonStyle}>
+        <TouchableOpacity style={styles.buttonStyle} onPress={handleTranslate}>
           <Text style={styles.buttonText}>Translate</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -225,7 +279,9 @@ const CardDetailPage = ({ route }: any) => {
               longPressToCopy(cardDetail.company_name || '');
           }}
           card_detail={
-            cardDetail.company_name
+            showTranslated
+              ? translatedCardDetails.company_name || 'Add Company Name'
+              : cardDetail.company_name
               ? cardDetail.company_name
               : 'Add Company Name'
           }
@@ -417,24 +473,6 @@ const styles = StyleSheet.create({
   },
   shimmerContainer: {
     marginBottom: 10,
-  },
-  cardButton: {
-    alignItems: 'center',
-    backgroundColor: colors['secondary-grey'],
-    height: 50,
-    width: 30,
-    borderRadius: 8,
-    flex: 0.5,
-    padding: 10,
-    fontWeight: '700',
-    justifyContent: 'center',
-    marginRight: 10,
-  },
-  cardButtonTitle: {
-    fontWeight: 'bold',
-    color: colors['primary-text'],
-    alignSelf: 'center',
-    fontSize: 18,
   },
   editButtons: {
     flexDirection: 'row',

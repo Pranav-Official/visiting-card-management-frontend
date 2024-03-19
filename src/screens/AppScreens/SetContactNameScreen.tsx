@@ -28,6 +28,7 @@ import {
 } from '../../context/selectedCardsSlice';
 import { removeCardById } from '../../context/pendingCardsSlice';
 import { setSharingProcess } from '../../context/sharingProcessSlice';
+import InputComponent from '../../components/InputComponent';
 
 const SetContactNameScreen = ({ route }: any) => {
   const dispatch = useDispatch();
@@ -129,25 +130,47 @@ const SetContactNameScreen = ({ route }: any) => {
   };
 
   return (
-    <View style={styles.container}>
-      <CardComponent
-        name={cardDetails.card_name}
-        job_position={cardDetails.job_title}
-        email={cardDetails.email}
-        phone_number={cardDetails.Phone}
-        company_name={cardDetails.company_name}
-      ></CardComponent>
-      <Text style={styles.chooseText}>Choose a Name for the</Text>
-      <Text style={styles.newContact}>New Contact</Text>
-      <View style={styles.inputText}>
-        <TextInput
-          placeholder={'New Contact Name'}
-          style={styles.contactName}
-          value={newContactName}
-          onChangeText={(text) => setNewContactName(text)}
-        />
+    <View style={styles.mainContainer}>
+      {/* <Text style={styles.headerText}>Current Card</Text> */}
+      <View style={styles.newCardContainer}>
+        <CardComponent
+          name={cardDetails.card_name}
+          job_position={cardDetails.job_title}
+          phone_number={cardDetails.phone}
+          email={cardDetails.email}
+          company_name={cardDetails.company_name}
+        ></CardComponent>
+      </View>
+      <View style={styles.bottomContainer}>
+        <Text style={styles.chooseText}>Choose a Name for the</Text>
+        <Text style={styles.newContact}>New Contact</Text>
+        <View style={styles.inputText}>
+          <InputComponent
+            placeholder="Contact Name"
+            value={newContactName}
+            setter={setNewContactName}
+            header="Contact Name"
+          />
+        </View>
       </View>
       <View style={styles.buttonContainer}>
+        {!imageUploadProcessing ? (
+          <PrimaryButtonComponent
+            title="Save"
+            onPressing={() => (sharing ? createCard(true) : createCard(false))}
+          />
+        ) : (
+          <PrimaryButtonComponent
+            children={
+              <ActivityIndicator
+                style={styles.loading}
+                size="large"
+                color={colors['secondary-light']}
+              />
+            }
+            title={''}
+          />
+        )}
         <PrimaryButtonComponent
           title={'Go Back'}
           onPressing={() => {
@@ -159,24 +182,42 @@ const SetContactNameScreen = ({ route }: any) => {
           textColor={colors['primary-text']}
           isHighlighted={true}
         />
-        {!imageUploadProcessing ? (
-          <PrimaryButtonComponent
-            title="Save"
-            onPressing={() => (sharing ? createCard(true) : createCard(false))}
-          />
-        ) : (
-          <ActivityIndicator
-            style={styles.loading}
-            size="large"
-            color={colors['secondary-light']}
-          />
-        )}
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  headerText: {
+    fontSize: 30,
+    color: colors['primary-text'],
+    alignSelf: 'center',
+  },
+  mainContainer: {
+    backgroundColor: colors['primary-accent'],
+    flex: 1,
+  },
+  newCardContainer: {
+    paddingVertical: 50,
+    padding: 25,
+  },
+  bottomContainer: {
+    backgroundColor: colors['secondary-light'],
+    padding: 18,
+    paddingHorizontal: 30,
+    flex: 1,
+    borderTopRightRadius: 25,
+    borderTopLeftRadius: 25,
+
+    shadowColor: colors['primary-text'],
+    shadowOffset: {
+      width: 0,
+      height: -4,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
   container: {
     backgroundColor: colors['secondary-light'],
     flex: 1,
@@ -184,6 +225,8 @@ const styles = StyleSheet.create({
     paddingTop: '40%',
   },
   chooseText: {
+    marginTop: 20,
+    alignSelf: 'center',
     color: colors['primary-text'],
     fontSize: 30,
   },
@@ -194,27 +237,24 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   buttonContainer: {
-    marginTop: '50%',
+    position: 'absolute',
+    bottom: 40,
+    paddingHorizontal: 30,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     paddingTop: 10,
-    height: '100%',
+    height: 50,
+    width: '100%',
     gap: 10,
   },
   inputText: {
-    borderWidth: 1.5,
     marginTop: 30,
-    borderRadius: 5,
   },
   contactName: {
     fontSize: 22,
     color: colors['primary-text'],
   },
-  loading: {
-    backgroundColor: colors['primary-accent'],
-    width: '100%',
-    height: 50,
-    borderRadius: 5,
-    marginTop: 15,
-  },
+  loading: {},
 });
 
 export default SetContactNameScreen;

@@ -6,8 +6,8 @@ import CardDetailsShimmer from './Shimmers/CardDetailsShimmer';
 interface CardDetail {
   children: ReactNode;
   card_detail: string;
-  onPress?: () => any;
-  onLongPress?: () => any;
+  onPress?: () => void;
+  onLongPress?: () => void;
   isPlaceholder?: boolean;
   isLoading: boolean;
 }
@@ -45,7 +45,7 @@ const CardDetailComponent: React.FC<CardDetail> = ({
     },
   });
   return (
-    <TouchableOpacity onLongPress={onLongPress} onPress={onPress}>
+    <TouchableOpacity onLongPress={onLongPress} onPress={onPress} testID='CardDetailComponent'>
       <View style={styles.component}>
         <View style={styles.iconBox}>{children}</View>
         {isLoading ? (

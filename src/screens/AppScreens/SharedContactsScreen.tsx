@@ -4,18 +4,17 @@ import TopBackButton from '../../components/BackButton';
 import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 import LinearGradient from 'react-native-linear-gradient';
 import CardComponent from '../../components/CardComponent';
-import { getLocalItem } from '../../utils/Utils';
-import Constants from '../../utils/Constants';
 import {
   NavigationProp,
   useFocusEffect,
   useNavigation,
 } from '@react-navigation/native';
-import { acceptedCardslist } from '../../hooks/getAcceptedCardsHook';
+
 import colors from '../../utils/colorPallete';
 
-const SharedContactsScreen = () => {
+const SharedContactsScreen = ({ route }) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [acceptedCardList, setCardList] = useState<CardParameters[]>();
   const arr = [1, 2, 3, 4, 5, 6, 7];
   const ShimmerComponent = () => {
     return (
@@ -38,23 +37,15 @@ const SharedContactsScreen = () => {
 
   const fetchAcceptedCardList = async () => {
     try {
-      const userId = (await getLocalItem(Constants.USER_ID)) ?? '';
-      const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
-
-      const result = await acceptedCardslist({
-        user_id: userId,
-        jwt_token: jwtToken,
-      });
-      if (result.cardResp.data.length == 0) {
-        navigation.goBack();
-      }
-      setCardList(result.cardResp.data);
+      
+      setCardList(route.params.cardData);
+      console.log(acceptedCardList);
       setIsLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
-  const [acceptedCardList, setCardList] = useState<CardParameters[]>([]);
+
   useFocusEffect(
     useCallback(() => {
       fetchAcceptedCardList();
@@ -89,7 +80,6 @@ const SharedContactsScreen = () => {
               clickFunc={() => handlePress(item.card_id)}
               alignToSides={true}
             />
-           
           )}
           keyExtractor={(item) => item.card_id}
         />
@@ -108,8 +98,7 @@ const SharedContactsScreen = () => {
 const styles = StyleSheet.create({
   mainContainer: {
     height: '100%',
-    backgroundColor:colors['secondary-light'],
-   
+    backgroundColor: colors['secondary-light'],
   },
   cardcontainer: {
     width: '100%',
@@ -117,13 +106,12 @@ const styles = StyleSheet.create({
     elevation: 5,
     paddingRight: 20,
     paddingTop: 10,
-    
   },
   flatListStyle: {
     gap: 20,
     paddingHorizontal: 10,
     paddingVertical: 20,
-    paddingLeft:20,
+    paddingLeft: 20,
   },
   headerContainer: {
     flexDirection: 'row',
@@ -132,7 +120,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     paddingBottom: 20,
     paddingTop: 20,
-    backgroundColor:colors['primary-accent'],
+    backgroundColor: colors['primary-accent'],
   },
   heading: {
     fontSize: 30,
