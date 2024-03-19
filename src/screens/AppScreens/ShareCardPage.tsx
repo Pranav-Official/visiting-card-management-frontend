@@ -20,9 +20,9 @@ const ShareCardScreen = ({
   cardDetails,
 }: ShareCardProp) => {
   const [shareList, setShareList] = useState<ShareProp[]>([]);
-  const [filteredShareList, setFilteredShareList] = useState<ShareProp[]>([]); //new
+  const [filteredShareList, setFilteredShareList] = useState<ShareProp[]>([]);
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
-  const [searchQuery, setSearchQuery] = useState<string>(''); //new
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,10 +31,10 @@ const ShareCardScreen = ({
         const jwt_token = (await getLocalItem(Constants.USER_JWT)) ?? '';
 
         const result = await listUsers({ user_id, jwt_token });
-        console.log('result:', result);
         setShareList(result.userResp);
       } catch (error) {
         console.log(error);
+        setShareList([]);
       }
     };
     fetchData();
@@ -54,7 +54,16 @@ const ShareCardScreen = ({
       setSelectedUserIds([...selectedUserIds, user_id]);
     }
   };
+  //call function according to selected user id array
+  const handleShare = async () => {
+    if (selectedUserIds.length > 0) {
+      await handleShareInternally();
+    } else {
+      handleShareExternally();
+    }
+  };
 
+  //function to share cards internally
   const handleShareInternally = async () => {
     const user_id = (await getLocalItem(Constants.USER_ID)) ?? '';
     const jwt_token = (await getLocalItem(Constants.USER_JWT)) ?? '';
@@ -62,22 +71,18 @@ const ShareCardScreen = ({
       user_id,
       jwt_token,
       card_id: card_id,
-      receiver_user_ids: selectedUserIds,
+      receiver_user_ids: selectedUserIds, 
     };
-    console.log('card_id handle press', card_id),
-      console.log('receiver user id handle press', selectedUserIds);
 
     try {
       const shareCardResponse = await ShareCard(shareCardProps);
-      console.log('Share Card Response:', shareCardResponse);
-      // Handle the response accordingly
       visibilitySetter && visibilitySetter();
     } catch (error) {
       console.error('Error sharing card Internally:', error);
-      // Handle errors
     }
   };
 
+  //function to share cards externally
   const handleShareExternally = () => {
     const filteredDetails: any = {};
     for (const key in cardDetails) {
@@ -124,14 +129,8 @@ const ShareCardScreen = ({
       <View style={styles.button_container}>
         <View style={styles.profile_button_container}>
           <PrimaryButtonComponent
-            title={'Share Internally'}
-            onPressing={handleShareInternally}
-          ></PrimaryButtonComponent>
-        </View>
-        <View style={styles.main_button_container}>
-          <PrimaryButtonComponent
-            title={'Share Externally'}
-            onPressing={handleShareExternally}
+            title={selectedUserIds.length > 0 ? 'Share Internally' : 'Share Externally'}
+            onPressing={handleShare}
           ></PrimaryButtonComponent>
         </View>
       </View>
@@ -160,12 +159,12 @@ const styles = StyleSheet.create({
   contact_area: {
     width: '100%',
     paddingHorizontal: 10,
-    height: 450,
+    height: 480,
   },
   button_container: {
     position: 'absolute',
     width: '100%',
-    height: 120,
+    height: 70,
     bottom: 50,
   },
   profile_button_container: {
@@ -174,11 +173,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     // top:500,
   },
-  main_button_container: {
-    marginBottom: 0,
-    height: 70,
-    paddingHorizontal: 20,
-  },
+  
 });
 
 export default ShareCardScreen;

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import api from './api';
 
+//hook to change password by user
 export interface changePasswordProp {
   email: string;
   new_password: string;

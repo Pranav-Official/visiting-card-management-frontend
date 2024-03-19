@@ -136,7 +136,6 @@ interface Prop {
   clickFunc?: () => void;
 }
 
-// type Card = {card_name:string,job_role:string,email:string,company_name:string}
 const CardComponent: React.FC<Prop> = ({
   alignToSides,
   name,
@@ -147,7 +146,7 @@ const CardComponent: React.FC<Prop> = ({
   clickFunc,
 }): JSX.Element => {
   return (
-    <TouchableOpacity style={styles.card_container} onPress={clickFunc}>
+    <TouchableOpacity style={styles.card_container} onPress={clickFunc} testID='card'>
       <View
         style={[
           styles.first_row,

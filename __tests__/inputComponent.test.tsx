@@ -6,7 +6,7 @@ describe('InputComponent', () => {
   const user = userEvent.setup();
   test('renders correctly with default props', () => {
     const { getByPlaceholderText, getByText } = render(
-      <InputComponent header="Header" value="" setter={() => {}} />,
+      <InputComponent header="Header" value="" setter={() => {}} />, 
     );
 
     expect(getByPlaceholderText('')).toBeTruthy();

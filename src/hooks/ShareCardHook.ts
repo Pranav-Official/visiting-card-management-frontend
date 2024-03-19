@@ -10,10 +10,10 @@ type CardDetails = {
   phone?: string;
   company_name?: string;
   company_website?: string;
-  description?: string | null;
+  description?: string | null; 
 };
 
-export interface ShareCardProp {
+export interface ShareCardProp { 
   user_id: string;
   jwt_token: string;
   card_id: string;
