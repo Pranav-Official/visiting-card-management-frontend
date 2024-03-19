@@ -41,9 +41,19 @@ type ResponseType = {
 };
 
 const ProfileScreen = () => {
-  const [profileResponse, setProfileResponse] = useState<ResponseType | null>(
-    null,
-  );
+  const [profileResponse, setProfileResponse] = useState<ResponseType>({
+    userData: {
+      email: '',
+      fullName: '',
+      phone: '',
+      job_title: '',
+      company_name: '',
+      totalAcceptedCards: 0,
+      totalContacts: 0,
+      totalPendingCards: 0,
+    },
+    status: false,
+  });
   const splittedName = profileResponse?.userData.fullName.split(' ');
   const firstName = splittedName ? splittedName[0] : '';
   const [userId, setUserId] = useState('');
@@ -84,6 +94,10 @@ const ProfileScreen = () => {
   const navigateSharedContactsScreen = () => {
     navigation.navigate('CardStack', {
       screen: 'ViewSharedContactsScreen',
+      params: {
+        totalPendingCards: profileResponse.userData.totalPendingCards,
+        totalAcceptedCards: profileResponse.userData.totalAcceptedCards,
+      },
     });
   };
 
