@@ -1,3 +1,4 @@
+import axios from 'axios';
 import api from './api';
 
 interface DeleteCardProp {
@@ -5,10 +6,14 @@ interface DeleteCardProp {
   jwtToken: string;
   card_id: string;
 }
-
+type responseType = {
+  status: boolean;
+  message: string;
+  data: object;
+};
 interface DeleteCardResponse {
   statusCode: string;
-  deleteCardResp: any;
+  deleteCardResp: responseType;
 }
 
 export async function deleteCard({
@@ -17,7 +22,11 @@ export async function deleteCard({
   card_id,
 }: DeleteCardProp): Promise<DeleteCardResponse> {
   let statusCode = '';
-  let deleteCardResp: any = '';
+  let deleteCardResp: responseType = {
+    status: false,
+    message: '',
+    data: {},
+  };
   try {
     const response = await api.patch(
       'api/v1//deleteCard',
@@ -34,9 +43,18 @@ export async function deleteCard({
 
     statusCode = response.status.toString();
     deleteCardResp = response.data;
-  } catch (error: any) {
-    console.log('Error while editing:', error.response);
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log('Axios Error while deleting:', error);
+      deleteCardResp = error.response?.data;
+    } else {
+      console.log('Error while deleting', error);
+      deleteCardResp = {
+        status: false,
+        message: 'Error while deleting',
+        data: {},
+      };
+    }
   }
-
   return { statusCode, deleteCardResp };
 }
