@@ -28,16 +28,16 @@ import { setSharingProcess } from '../../context/sharingProcessSlice';
 
 type Card = {
   card_id: string;
-  card_name: string | null;
-  company_name: string | null;
-  company_website: string | null;
-  contact_name: string | null;
-  email: string | null;
-  img_back_link: string | null;
-  img_front_link: string | null;
-  job_title: string | null;
-  phone: string | null;
-  user_id: string | null;
+  card_name: string | '';
+  company_name: string | '';
+  company_website: string |'';
+  contact_name: string | '';
+  email: string | '';
+  img_back_link: string | '';
+  img_front_link: string | '';
+  job_title: string | '';
+  phone: string | '';
+  user_id: string | '';
 };
 
 type UserData = {

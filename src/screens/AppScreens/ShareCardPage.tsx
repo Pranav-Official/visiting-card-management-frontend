@@ -7,8 +7,7 @@ import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import { ShareCard, ShareCardProp } from '../../hooks/ShareCardHook';
-import Share from 'react-native-share';
-import { shareCardDetails, shareExternally } from '../../hooks/externalShare';
+import {shareExternally } from '../../hooks/externalShare';
 
 type ShareProp = {
   user_fullname: string;
