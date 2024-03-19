@@ -33,24 +33,20 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import { isValidWebsiteUrl } from '../../utils/regexCheck';
 import BottomSheetComponent from '../../components/BottomSheetComponent';
 import { deleteCard } from '../../hooks/deleteCardHook';
+import { CardDetails } from '../../types/objectTypes';
+import {
+  CardDetailScreenRouteProp,
+  RootStackParamList,
+} from '../../types/navigationTypes';
 
-type CardDetails = {
-  card_name: string;
-  img_front_link?: string;
-  img_back_link?: string;
-  job_title?: string;
-  email?: string;
-  phone?: string;
-  company_name?: string;
-  company_website?: string;
-  description?: string | null;
-};
-
-const CardDetailPage = ({ route }: any) => {
-  const [cardDetail, setCardDetail] = useState<CardDetails>({});
+const CardDetailPage: React.FC<{ route: CardDetailScreenRouteProp }> = ({
+  route,
+}) => {
+  const [cardDetail, setCardDetail] = useState<CardDetails>({ card_name: '' });
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const navigation = useNavigation<NavigationProp<any>>();
+  const navigation =
+    useNavigation<NavigationProp<RootStackParamList, 'EditCardScreen'>>();
   const [ShareModalVisible, setShareModalVisible] = useState(false);
 
   const toggleShareModal = () => {
@@ -64,16 +60,14 @@ const CardDetailPage = ({ route }: any) => {
   const fetchData = async () => {
     try {
       const userId = (await getLocalItem(Constants.USER_ID)) ?? '{}';
-      const userToken = (await getLocalItem(Constants.USER_JWT)) ?? '{}';
       const card_id = route.params.card_id;
 
       const { cardDetailsResp } = await listCardDetails({
         user_id: userId,
-        jwtToken: userToken,
         card_id: card_id,
       });
 
-      setCardDetail(cardDetailsResp.data);
+      setCardDetail(cardDetailsResp);
       setIsLoading(false);
     } catch (error) {
       console.log('Error fetching contacts:', error);
