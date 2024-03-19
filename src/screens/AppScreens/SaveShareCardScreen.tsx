@@ -113,11 +113,9 @@ const SaveShareCardScreen = ({ route }: any) => {
   );
   const [similarModalVisibility, setSimilarModalVisibility] =
     React.useState(false);
-
   const pendingCardList = useSelector(
     (state: RootState) => state.pendingCardsReducer.pendingCardList,
   );
-
   const [similarCardList, setSimilarCardList] = React.useState<ContactCards>({
     contact_name: '',
     cards: [],
@@ -128,12 +126,27 @@ const SaveShareCardScreen = ({ route }: any) => {
     (state: RootState) => state.selectedCardReducer.selectedCardIds,
   );
   const navigation = useNavigation<NavigationProp<any>>();
+  // let cardIdsToBeRejected: string[] = [];
+  const [cardIdsToBeRejected, setCardIdsToBeRejected] = useState<string[]>([]);
 
   const handleSave = async () => {
+    console.log('reject value', reject);
     if (selected.length > 0) {
       try {
         dispatch(setSharingProcess(true));
         dispatch(setSelectedCardIds(selected));
+        let tempCardsIds: string[] = [];
+        pendingCardList.forEach((user) => {
+          user.cards.forEach((card) => {
+            selected.forEach((reduxCardID) => {
+              if (card.card_id != reduxCardID) {
+                tempCardsIds.push(card.card_id);
+              }
+            });
+          });
+        });
+        setCardIdsToBeRejected(tempCardsIds);
+        console.log('cards to be rejected', cardIdsToBeRejected);
       } catch (error) {
         console.log('Error while handling save:', error);
       }
@@ -202,9 +215,15 @@ const SaveShareCardScreen = ({ route }: any) => {
         setSelected(reduxSelectedCardIds);
         saveMultipleCards(reduxSelectedCardIds[0]);
       } else if (
-        reduxSelectedCardIds.length == 0 &&
+        reduxSelectedCardIds.length === 0 &&
         reduxSharingProcess === true
       ) {
+        if (reject) {
+          console.log(
+            'final if reject cards to be rejected',
+            cardIdsToBeRejected,
+          );
+        }
         dispatch(setSharingProcess(false));
         navigation.dispatch(
           CommonActions.reset({
@@ -216,6 +235,11 @@ const SaveShareCardScreen = ({ route }: any) => {
       }
     }, [reduxSelectedCardIds]),
   );
+
+  const [reject, setReject] = useState(false);
+  const handleReject = () => {
+    setReject(!reject);
+  };
 
   return (
     <View style={{ padding: 18, flex: 1 }}>
@@ -230,6 +254,12 @@ const SaveShareCardScreen = ({ route }: any) => {
       >
         Choose the cards to save
       </Text>
+      <View style={styles.delete_card}>
+        <TouchableOpacity onPress={handleReject}>
+          <RadioButton selected={reject}></RadioButton>
+        </TouchableOpacity>
+        <Text style={styles.delete_text}>Delete Unselected cards</Text>
+      </View>
       <FlatList
         data={pendingCardList}
         renderItem={({ item }) => {
@@ -312,6 +342,16 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     width: '100%',
     paddingHorizontal: 10,
+  },
+  delete_card: {
+    flexDirection: 'row',
+    marginBottom: 10,
+    justifyContent: 'center',
+  },
+  delete_text: {
+    fontFamily: 'Roboto',
+    fontSize: 20,
+    marginLeft: 10,
   },
 });
 
