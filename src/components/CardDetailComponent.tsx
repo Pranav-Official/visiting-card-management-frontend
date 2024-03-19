@@ -6,8 +6,8 @@ import CardDetailsShimmer from './Shimmers/CardDetailsShimmer';
 interface CardDetail {
   children: ReactNode;
   card_detail: string;
-  onPress?: () => any;
-  onLongPress?: () => any;
+  onPress?: () => void;
+  onLongPress?: () => void;
   isPlaceholder?: boolean;
   isLoading: boolean;
 }
