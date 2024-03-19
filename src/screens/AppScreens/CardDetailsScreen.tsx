@@ -465,6 +465,7 @@ const styles = StyleSheet.create({
   jobTitle: {
     color: colors['accent-grey'],
     fontSize: 24,
+    paddingHorizontal: 40,
   },
   shimmerContainer: {
     marginBottom: 10,

@@ -31,7 +31,7 @@ type Card = {
   card_id: string;
   card_name: string | '';
   company_name: string | '';
-  company_website: string |'';
+  company_website: string | '';
   contact_name: string | '';
   email: string | '';
   img_back_link: string | '';
@@ -88,7 +88,7 @@ const RenderItem = ({ item, selected, setter }: renderItemType) => {
             {selected?.includes(card.card_id) ? (
               <RadioButton selected={true} />
             ) : (
-              <RadioButton />
+              <RadioButton selected={false} />
             )}
           </TouchableOpacity>
           <View style={{ flex: 6 }}>
@@ -148,7 +148,6 @@ const SaveShareCardScreen = ({ route }: any) => {
         });
         setCardIdsToBeRejected(tempCardsIds);
         console.log('cards to be rejected', cardIdsToBeRejected);
-       
       } catch (error) {
         console.log('Error while handling save:', error);
       }
@@ -156,7 +155,19 @@ const SaveShareCardScreen = ({ route }: any) => {
   };
 
   const saveMultipleCards = async (card_id: string) => {
-    let selectCard: Card = {};
+    let selectCard: Card = {
+      card_id: '',
+      card_name: '',
+      company_name: '',
+      company_website: '',
+      contact_name: '',
+      email: '',
+      img_back_link: '',
+      img_front_link: '',
+      job_title: '',
+      phone: '',
+      user_id: '',
+    };
     pendingCardList.forEach((pendingCardItem) => {
       pendingCardItem.cards.forEach((card) => {
         if (card.card_id === card_id) {
@@ -183,18 +194,16 @@ const SaveShareCardScreen = ({ route }: any) => {
   };
 
   const handleRemoveCards = async () => {
-    try {  
+    try {
       const response = await rejectCard({
-      
         card_ids: cardIdsToBeRejected,
       });
-  
+
       console.log('rejectCard API response:', response);
     } catch (error) {
       console.log('Error while rejecting cards:', error);
     }
   };
-  
 
   const fetchSimilarCards = async (card: Card) => {
     try {
@@ -239,7 +248,7 @@ const SaveShareCardScreen = ({ route }: any) => {
             'final if reject cards to be rejected',
             cardIdsToBeRejected,
           );
-          handleRemoveCards();          
+          handleRemoveCards();
         }
         dispatch(setSharingProcess(false));
         navigation.dispatch(

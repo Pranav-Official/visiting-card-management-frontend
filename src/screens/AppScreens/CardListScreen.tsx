@@ -178,13 +178,17 @@ const CardListScreen = ({ route }: any) => {
                     changeContact();
                   }}
                 >
-                 <MaterialIcons name='check' size={32} color={'green'}/>
+                  <MaterialIcons name="check" size={32} color={'green'} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.buttonStyle}
                   onPress={() => setChangeContactName(false)}
                 >
-                 <MaterialIcons name='close' size={32} color={colors['primary-danger']}/>
+                  <MaterialIcons
+                    name="close"
+                    size={32}
+                    color={colors['primary-danger']}
+                  />
                 </TouchableOpacity>
               </View>
             </View>

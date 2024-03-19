@@ -182,9 +182,9 @@ const Login = () => {
             </PrimaryButtonComponent>
           )}
         </View>
-        <TouchableOpacity style={styles.forgotPassword}>
+        {/* <TouchableOpacity style={styles.forgotPassword}>
           <Text>Forgot Password?</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       <BottomDialougeTouchable
         label="Don't have an account?"
@@ -208,6 +208,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   midSection: {
+    marginTop: -80,
     width: '100%',
     gap: 15,
     flexDirection: 'column',

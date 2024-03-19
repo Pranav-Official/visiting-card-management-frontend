@@ -32,11 +32,17 @@ const SignUp = () => {
   const [emailBorder, setEmailBorder] = useState<BorderTypes>('Normal');
   const [fullnameBorder, setNameBorder] = useState<BorderTypes>('Normal');
   const [passwordBorder, setPasswordBorder] = useState<BorderTypes>('Normal');
-  const [confirmPasswordBorder, setConfirmPasswordBorder] = useState<BorderTypes>('Normal');
+  const [confirmPasswordBorder, setConfirmPasswordBorder] =
+    useState<BorderTypes>('Normal');
   const [loading, setLoading] = useState(false);
 
   const SignUpMain = async () => {
-    if (email === '' || password === '' || fullname === '' || confirmPassword === '') {
+    if (
+      email === '' ||
+      password === '' ||
+      fullname === '' ||
+      confirmPassword === ''
+    ) {
       if (email === '') setEmailBorder('Danger');
       if (password === '') setPasswordBorder('Danger');
       if (fullname === '') setNameBorder('Danger');
@@ -126,71 +132,73 @@ const SignUp = () => {
   };
 
   return (
-    <SafeAreaView style={styles.safeAreaView}>
-      <MainLogoComponent />
-      <View style={styles.midSection}>
-        <InputComponent
-          hidden={false}
-          header="Fullname"
-          value={fullname}
-          setter={(val) => {
-            setFullname(val);
-            setNameBorder('Normal');
-          }}
-          borderType={fullnameBorder}
-          placeholder="Enter Full Name"
-        />
-        <InputComponent
-          hidden={false}
-          header="Email"
-          value={email}
-          setter={(val) => {
-            setEmail(val);
-            setEmailBorder('Normal');
-          }}
-          borderType={emailBorder}
-          placeholder="Enter Email"
-        />
-        <InputComponent
-          header="Password"
-          hidden={true}
-          value={password}
-          setter={(val) => {
-            setPassword(val);
-            setPasswordBorder('Normal');
-          }}
-          borderType={passwordBorder}
-          placeholder="Enter Password"
-        />
-        <InputComponent
-          header="Confirm Password"
-          hidden={true}
-          value={confirmPassword}
-          setter={(val) => {
-            setConfirmPassword(val);
-            setConfirmPasswordBorder('Normal');
-          }}
-          borderType={confirmPasswordBorder}
-          placeholder="Confirm Password"
-        />
-        {!loading ? (
-          <View style={styles.buttonContainer}>
-            <ButtonComponent onPressing={SignUpMain} title="Sign Up" />
-          </View>
-        ) : (
-          <ActivityIndicator
-            style={styles.loading}
-            size="large"
-            color={colors['secondary-light']}
+    <ScrollView>
+      <SafeAreaView style={styles.safeAreaView}>
+        <MainLogoComponent />
+        <View style={styles.midSection}>
+          <InputComponent
+            hidden={false}
+            header="Fullname"
+            value={fullname}
+            setter={(val) => {
+              setFullname(val);
+              setNameBorder('Normal');
+            }}
+            borderType={fullnameBorder}
+            placeholder="Enter Full Name"
           />
-        )}
-      </View>
-      <BottomDialougeTouchable
-        label="Already have an account?"
-        mainText="Login!"
-        navigateTo="Login"
-      />
-    </SafeAreaView>
+          <InputComponent
+            hidden={false}
+            header="Email"
+            value={email}
+            setter={(val) => {
+              setEmail(val);
+              setEmailBorder('Normal');
+            }}
+            borderType={emailBorder}
+            placeholder="Enter Email"
+          />
+          <InputComponent
+            header="Password"
+            hidden={true}
+            value={password}
+            setter={(val) => {
+              setPassword(val);
+              setPasswordBorder('Normal');
+            }}
+            borderType={passwordBorder}
+            placeholder="Enter Password"
+          />
+          <InputComponent
+            header="Confirm Password"
+            hidden={true}
+            value={confirmPassword}
+            setter={(val) => {
+              setConfirmPassword(val);
+              setConfirmPasswordBorder('Normal');
+            }}
+            borderType={confirmPasswordBorder}
+            placeholder="Confirm Password"
+          />
+          {!loading ? (
+            <View style={styles.buttonContainer}>
+              <ButtonComponent onPressing={SignUpMain} title="Sign Up" />
+            </View>
+          ) : (
+            <ActivityIndicator
+              style={styles.loading}
+              size="large"
+              color={colors['secondary-light']}
+            />
+          )}
+        </View>
+        <BottomDialougeTouchable
+          label="Already have an account?"
+          mainText="Login!"
+          navigateTo="Login"
+        />
+      </SafeAreaView>
+    </ScrollView>
   );
 };
 
@@ -227,4 +235,3 @@ const styles = StyleSheet.create({
 });
 
 export default SignUp;
-
