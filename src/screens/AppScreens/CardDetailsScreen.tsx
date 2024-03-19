@@ -33,6 +33,11 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import { isValidWebsiteUrl } from '../../utils/regexCheck';
 import BottomSheetComponent from '../../components/BottomSheetComponent';
 import { deleteCard } from '../../hooks/deleteCardHook';
+import Toast from 'react-native-root-toast';
+import TranslateText, {
+  TranslateLanguage,
+} from '@react-native-ml-kit/translate-text';
+import IdentifyLanguages from '@react-native-ml-kit/identify-languages';
 import { CardDetails } from '../../types/objectTypes';
 import {
   CardDetailScreenRouteProp,
@@ -43,6 +48,8 @@ const CardDetailPage: React.FC<{ route: CardDetailScreenRouteProp }> = ({
   route,
 }) => {
   const [cardDetail, setCardDetail] = useState<CardDetails>({ card_name: '' });
+  const [translatedCardDetails, setTranslatedCardDetails] = useState();
+  const [showTranslated, setShowtranslated] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const navigation =
@@ -95,6 +102,7 @@ const CardDetailPage: React.FC<{ route: CardDetailScreenRouteProp }> = ({
       });
 
       if (statusCode === '200') {
+        Toast.show('Card deleted successfully');
         navigation.goBack();
       } else {
         console.log('Delete card failed:', deleteCardResp);
@@ -145,7 +153,58 @@ const CardDetailPage: React.FC<{ route: CardDetailScreenRouteProp }> = ({
       console.error('Error copying to clipboard:', error);
     }
   };
+  const handleTranslate = async () => {
+    console.log('Initialte Translation');
+    let enToJp = true;
 
+    const lang = await IdentifyLanguages.identify(
+      cardDetail.card_name + cardDetail.job_title + cardDetail.company_name,
+    );
+    console.log('identified language : ', lang);
+    if (lang == 'ja') {
+      enToJp = false;
+    } else {
+      enToJp = true;
+    }
+    const translationOptions = {
+      sourceLanguage:
+        enToJp != true ? TranslateLanguage.JAPANESE : TranslateLanguage.ENGLISH,
+      targetLanguage:
+        enToJp != true ? TranslateLanguage.ENGLISH : TranslateLanguage.JAPANESE,
+      downloadModelIfNeeded: true,
+      requireWifi: true,
+    };
+    try {
+      const translatedCardName = await TranslateText.translate({
+        text: cardDetail.card_name,
+        ...translationOptions,
+      });
+      const translatedJobTitle = await TranslateText.translate({
+        text: cardDetail.job_title ?? '',
+        ...translationOptions,
+      });
+      const translatedCompanyName = await TranslateText.translate({
+        text: cardDetail.company_name ?? '',
+        ...translationOptions,
+      });
+      console.log(
+        'After translation',
+        translatedCardName,
+        translatedCompanyName,
+        translatedJobTitle,
+      );
+      const translatedCardDetails = {
+        ...cardDetail,
+        card_name: translatedCardName,
+        job_title: translatedJobTitle,
+        company_name: translatedCompanyName,
+      };
+      setTranslatedCardDetails(translatedCardDetails);
+      setShowtranslated(!showTranslated);
+    } catch (error) {
+      console.log('Error in translation', error);
+    }
+  };
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -175,7 +234,11 @@ const CardDetailPage: React.FC<{ route: CardDetailScreenRouteProp }> = ({
           </>
         ) : (
           <>
-            <Text style={styles.cardName}>{cardDetail.card_name}</Text>
+            <Text style={styles.cardName}>
+              {showTranslated
+                ? translatedCardDetails.card_name
+                : cardDetail.card_name}
+            </Text>
             <Text
               style={styles.jobTitle}
               onPress={() => {
@@ -188,14 +251,18 @@ const CardDetailPage: React.FC<{ route: CardDetailScreenRouteProp }> = ({
                 }
               }}
             >
-              {cardDetail.job_title ? cardDetail.job_title : 'Add Job title'}
+              {showTranslated
+                ? translatedCardDetails.job_title
+                : cardDetail.job_title
+                ? cardDetail.job_title
+                : 'Add Job title'}
             </Text>
           </>
         )}
       </View>
 
       <View style={styles.headerStyle}>
-        <TouchableOpacity style={styles.buttonStyle}>
+        <TouchableOpacity style={styles.buttonStyle} onPress={handleTranslate}>
           <Text style={styles.buttonText}>Translate</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -219,7 +286,9 @@ const CardDetailPage: React.FC<{ route: CardDetailScreenRouteProp }> = ({
               longPressToCopy(cardDetail.company_name || '');
           }}
           card_detail={
-            cardDetail.company_name
+            showTranslated
+              ? translatedCardDetails.company_name
+              : cardDetail.company_name
               ? cardDetail.company_name
               : 'Add Company Name'
           }
