@@ -18,6 +18,7 @@ const isValidWebsiteUrl = (url: string): boolean => {
 //function for phone number validation
 function validatePhoneNumber(phoneNumber: string, country: CountryCode) {
   phoneNumber = phoneNumber.replace(/[\s()-]+/g, '');
+  const internationalRegex = /^\+?[0-9](?:[0-9] ?){5,13}[0-9]$/;
   if (phoneNumber.length >= 7 && phoneNumber.length <= 15) {
     // Check if the input consists of numeric characters (except for the optional leading "+" sign)
     if (!/^\+?\d+$/.test(phoneNumber)) {
@@ -25,9 +26,9 @@ function validatePhoneNumber(phoneNumber: string, country: CountryCode) {
     }
     try {
       // Parse the sanitized phone number
-      const phoneNumberObj = parsePhoneNumberFromString(phoneNumber, country);
-      console.log('Phone Number Object', phoneNumberObj);
-      if (phoneNumberObj && phoneNumberObj.isValid()) {
+      // const phoneNumberObj = parsePhoneNumberFromString(phoneNumber, country);
+      // console.log('Phone Number Object', phoneNumberObj);
+      if (phoneNumber && internationalRegex.test(phoneNumber)) {
         return true;
       }
     } catch (error) {

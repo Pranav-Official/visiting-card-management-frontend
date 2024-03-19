@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { listCards } from '../../hooks/CardListHook';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
@@ -23,14 +23,18 @@ import {
 } from '@react-navigation/native';
 import { editCardDetails } from '../../hooks/editCardHook';
 import NewCardComponent from '../../components/NewCardListScreenComponent';
+import Swiper from 'react-native-swiper';
+import { RootStackParamList } from '../../types/navigationTypes';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const CardListScreen = ({ route }: any) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [key, setKey] = useState(0);
   const arr = [1, 2, 3, 4, 5, 6];
   const [changeContactName, setChangeContactName] = useState(false);
   const [contactName, setContactName] = useState(route.params.name ?? '');
   const [temporaryContactName, setTemporaryContactName] = useState(contactName);
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [totalCards, setTotalCards] = useState(0);
   const changeContactNameFunction = () => {
     setChangeContactName(true);
   };
@@ -110,12 +114,20 @@ const CardListScreen = ({ route }: any) => {
       fetchCardList();
     }, []),
   );
-  const navigation = useNavigation<NavigationProp<any>>();
+  const navigation =
+    useNavigation<NavigationProp<RootStackParamList, 'CardDetailsScreen'>>();
   const handlePress = (card_id: string) => {
-    navigation.navigate('CardStack', {
-      screen: 'CardDetailsScreen',
-      params: { card_id: card_id },
-    });
+    navigation.navigate('CardDetailsScreen', { card_id: card_id });
+  };
+
+  useEffect(() => {
+    // Update total number of cards when cardList changes
+    setTotalCards(cardList.length);
+  }, [cardList]);
+
+  // Function to handle card swipe
+  const handleCardSwipe = (index: number) => {
+    setCurrentCardIndex(index);
   };
 
   return (
@@ -166,50 +178,65 @@ const CardListScreen = ({ route }: any) => {
                     changeContact();
                   }}
                 >
-                  <Text style={styles.buttonText}>Apply</Text>
+                 <MaterialIcons name='check' size={32} color={'green'}/>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.buttonStyle}
                   onPress={() => setChangeContactName(false)}
                 >
-                  <Text style={styles.buttonText}>Cancel</Text>
+                 <MaterialIcons name='close' size={32} color={colors['primary-danger']}/>
                 </TouchableOpacity>
               </View>
             </View>
           )}
           <Text style={styles.cardHeading}>Cards</Text>
           {!isLoading ? (
-            <FlatList
-              contentContainerStyle={styles.flatListStyle}
-              showsVerticalScrollIndicator={false}
-              data={cardList}
-              renderItem={({ item }) => (
-                <NewCardComponent
-                  name={item.card_name ? item.card_name : 'Add Card Name'}
-                  job_position={
-                    item.job_title ? item.job_title : 'Add Job Title'
-                  }
-                  email={item.email ? item.email : 'Add Email'}
-                  phone_number={item.phone ? item.phone : 'Add Contact Number'}
-                  company_name={
-                    item.company_name ? item.company_name : 'Add Company Name'
-                  }
-                  clickFunc={() => handlePress(item.card_id)}
-                  alignToSides={true}
-                />
-              )}
-              keyExtractor={(item) => item.card_id}
-            />
+            <Swiper
+              style={styles.flatListStyle}
+              horizontal={true}
+              showsPagination={false}
+              loop={false}
+              onIndexChanged={handleCardSwipe}
+              snapToOffsets={[0, 390, 740]}
+            >
+              {cardList.map((item, index) => (
+                <View style={styles.swiperList}>
+                  <NewCardComponent
+                    key={index}
+                    name={item.card_name ? item.card_name : 'Add Card Name'}
+                    job_position={
+                      item.job_title ? item.job_title : 'Add Job Title'
+                    }
+                    email={item.email ? item.email : 'Add Email'}
+                    phone_number={
+                      item.phone ? item.phone : 'Add Contact Number'
+                    }
+                    company_name={
+                      item.company_name ? item.company_name : 'Add Company Name'
+                    }
+                    clickFunc={() => handlePress(item.card_id)}
+                    alignToSides={true}
+                  />
+                  <View style={styles.swiperList}></View>
+                </View>
+              ))}
+            </Swiper>
           ) : (
             <FlatList
               contentContainerStyle={styles.flatListStyle}
-              showsVerticalScrollIndicator={false}
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
               data={arr}
-              renderItem={({ item }) => <ShimmerComponent />}
+              renderItem={() => <ShimmerComponent />}
               keyExtractor={(item) => item.toString()}
             />
           )}
         </View>
+      </View>
+      <View style={styles.bottomCounterContainer}>
+        <Text style={styles.bottomCounterText}>{`${
+          currentCardIndex + 1
+        } of ${totalCards}`}</Text>
       </View>
     </View>
   );
@@ -226,7 +253,7 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
   buttonStyle: {
-    padding: 15,
+    padding: 10,
     backgroundColor: colors['secondary-grey'],
     width: 120,
     height: 50,
@@ -238,9 +265,6 @@ const styles = StyleSheet.create({
     color: colors['primary-text'],
     fontSize: 16,
     fontWeight: '500',
-  },
-  contactNameSetButton: {
-    top: '35%',
   },
   cardcontainer: {
     width: '100%',
@@ -299,12 +323,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   flatListStyle: {
-    gap: 20,
-    paddingHorizontal: 20,
+    gap: 40,
     paddingBottom: 150,
   },
-  itemSeparator: {
-    width: 20,
+  swiperList: {
+    paddingHorizontal: 15,
   },
   contactName: {
     color: colors['primary-text'],
@@ -317,6 +340,19 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 20,
     paddingHorizontal: 10,
+  },
+  bottomCounterContainer: {
+    position: 'absolute',
+    bottom: 20,
+    alignSelf: 'center',
+    backgroundColor: colors['accent-grey'],
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+  },
+  bottomCounterText: {
+    color: colors['accent-white'],
+    fontSize: 16,
   },
 });
 export default CardListScreen;

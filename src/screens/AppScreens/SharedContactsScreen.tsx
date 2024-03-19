@@ -4,18 +4,20 @@ import TopBackButton from '../../components/BackButton';
 import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 import LinearGradient from 'react-native-linear-gradient';
 import CardComponent from '../../components/CardComponent';
-import { getLocalItem } from '../../utils/Utils';
-import Constants from '../../utils/Constants';
 import {
   NavigationProp,
   useFocusEffect,
   useNavigation,
 } from '@react-navigation/native';
-import { acceptedCardslist } from '../../hooks/getAcceptedCardsHook';
+
 import colors from '../../utils/colorPallete';
+import { acceptedCardslist } from '../../hooks/getAcceptedCardsHook';
+import { getLocalItem } from '../../utils/Utils';
+import Constants from '../../utils/Constants';
 
 const SharedContactsScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [acceptedCardList, setCardList] = useState<CardParameters[]>();
   const arr = [1, 2, 3, 4, 5, 6, 7];
   const ShimmerComponent = () => {
     return (
@@ -45,16 +47,18 @@ const SharedContactsScreen = () => {
         user_id: userId,
         jwt_token: jwtToken,
       });
-      if (result.cardResp.data.length == 0) {
-        navigation.goBack();
+      if (result && result.cardResp && Array.isArray(result.cardResp.data)) {
+        setCardList(result.cardResp.data);
+      } else {
+        console.log('Invalid data format received');
       }
-      setCardList(result.cardResp.data);
+      console.log(acceptedCardList);
       setIsLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
-  const [acceptedCardList, setCardList] = useState<CardParameters[]>([]);
+
   useFocusEffect(
     useCallback(() => {
       fetchAcceptedCardList();
@@ -89,7 +93,6 @@ const SharedContactsScreen = () => {
               clickFunc={() => handlePress(item.card_id)}
               alignToSides={true}
             />
-           
           )}
           keyExtractor={(item) => item.card_id}
         />
@@ -98,7 +101,7 @@ const SharedContactsScreen = () => {
           contentContainerStyle={styles.flatListStyle}
           showsVerticalScrollIndicator={false}
           data={arr}
-          renderItem={({ item }) => <ShimmerComponent />}
+          renderItem={() => <ShimmerComponent />}
           keyExtractor={(item) => item.toString()}
         />
       )}
@@ -108,8 +111,7 @@ const SharedContactsScreen = () => {
 const styles = StyleSheet.create({
   mainContainer: {
     height: '100%',
-    backgroundColor:colors['secondary-light'],
-   
+    backgroundColor: colors['secondary-light'],
   },
   cardcontainer: {
     width: '100%',
@@ -117,13 +119,12 @@ const styles = StyleSheet.create({
     elevation: 5,
     paddingRight: 20,
     paddingTop: 10,
-    
   },
   flatListStyle: {
     gap: 20,
     paddingHorizontal: 10,
     paddingVertical: 20,
-    paddingLeft:20,
+    paddingLeft: 20,
   },
   headerContainer: {
     flexDirection: 'row',
@@ -132,7 +133,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     paddingBottom: 20,
     paddingTop: 20,
-    backgroundColor:colors['primary-accent'],
+    backgroundColor: colors['primary-accent'],
   },
   heading: {
     fontSize: 30,
