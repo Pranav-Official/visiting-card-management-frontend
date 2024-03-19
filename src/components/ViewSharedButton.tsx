@@ -1,11 +1,11 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import colors from '../utils/colorPallete';
 import SharePersonIcon from '..//assets/images/shareContactIcon.svg';
 interface ViewSharedButtonProps {
   title: string;
   number: string;
-  onPressing: () => any;
+  onPressing: () => void;
   
 }
 const ViewSharedButton: React.FC<ViewSharedButtonProps> = ({
