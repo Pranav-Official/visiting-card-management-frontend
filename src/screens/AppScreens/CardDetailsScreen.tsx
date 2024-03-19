@@ -38,26 +38,23 @@ import TranslateText, {
   TranslateLanguage,
 } from '@react-native-ml-kit/translate-text';
 import IdentifyLanguages from '@react-native-ml-kit/identify-languages';
+import { CardDetails } from '../../types/objectTypes';
+import {
+  CardDetailScreenRouteProp,
+  RootStackParamList,
+} from '../../types/navigationTypes';
 
-type CardDetails = {
-  card_name: string;
-  img_front_link?: string;
-  img_back_link?: string;
-  job_title?: string;
-  email?: string;
-  phone?: string;
-  company_name?: string;
-  company_website?: string;
-  description?: string | null;
-};
-
-const CardDetailPage = ({ route }: any) => {
-  const [cardDetail, setCardDetail] = useState<CardDetails>({});
-  const [translatedCardDetails, setTranslatedCardDetails] = useState();
+const CardDetailPage: React.FC<{ route: CardDetailScreenRouteProp }> = ({
+  route,
+}) => {
+  const [cardDetail, setCardDetail] = useState<CardDetails>({ card_name: '' });
+  const [translatedCardDetails, setTranslatedCardDetails] =
+    useState<CardDetails>({ card_name: '' });
   const [showTranslated, setShowtranslated] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const navigation = useNavigation<NavigationProp<any>>();
+  const navigation =
+    useNavigation<NavigationProp<RootStackParamList, 'EditCardScreen'>>();
   const [ShareModalVisible, setShareModalVisible] = useState(false);
 
   const toggleShareModal = () => {
@@ -71,16 +68,14 @@ const CardDetailPage = ({ route }: any) => {
   const fetchData = async () => {
     try {
       const userId = (await getLocalItem(Constants.USER_ID)) ?? '{}';
-      const userToken = (await getLocalItem(Constants.USER_JWT)) ?? '{}';
       const card_id = route.params.card_id;
 
       const { cardDetailsResp } = await listCardDetails({
         user_id: userId,
-        jwtToken: userToken,
         card_id: card_id,
       });
 
-      setCardDetail(cardDetailsResp.data);
+      setCardDetail(cardDetailsResp);
       setIsLoading(false);
     } catch (error) {
       console.log('Error fetching contacts:', error);
@@ -160,13 +155,11 @@ const CardDetailPage = ({ route }: any) => {
     }
   };
   const handleTranslate = async () => {
-    console.log('Initialte Translation');
     let enToJp = true;
 
     const lang = await IdentifyLanguages.identify(
       cardDetail.card_name + cardDetail.job_title + cardDetail.company_name,
     );
-    console.log('identified language : ', lang);
     if (lang == 'ja') {
       enToJp = false;
     } else {
@@ -193,19 +186,13 @@ const CardDetailPage = ({ route }: any) => {
         text: cardDetail.company_name ?? '',
         ...translationOptions,
       });
-      console.log(
-        'After translation',
-        translatedCardName,
-        translatedCompanyName,
-        translatedJobTitle,
-      );
       const translatedCardDetails = {
         ...cardDetail,
         card_name: translatedCardName,
         job_title: translatedJobTitle,
         company_name: translatedCompanyName,
       };
-      setTranslatedCardDetails(translatedCardDetails);
+      setTranslatedCardDetails(translatedCardDetails as CardDetails);
       setShowtranslated(!showTranslated);
     } catch (error) {
       console.log('Error in translation', error);
@@ -293,7 +280,7 @@ const CardDetailPage = ({ route }: any) => {
           }}
           card_detail={
             showTranslated
-              ? translatedCardDetails.company_name
+              ? translatedCardDetails.company_name || 'Add Company Name'
               : cardDetail.company_name
               ? cardDetail.company_name
               : 'Add Company Name'
@@ -486,24 +473,6 @@ const styles = StyleSheet.create({
   },
   shimmerContainer: {
     marginBottom: 10,
-  },
-  cardButton: {
-    alignItems: 'center',
-    backgroundColor: colors['secondary-grey'],
-    height: 50,
-    width: 30,
-    borderRadius: 8,
-    flex: 0.5,
-    padding: 10,
-    fontWeight: '700',
-    justifyContent: 'center',
-    marginRight: 10,
-  },
-  cardButtonTitle: {
-    fontWeight: 'bold',
-    color: colors['primary-text'],
-    alignSelf: 'center',
-    fontSize: 18,
   },
   editButtons: {
     flexDirection: 'row',
