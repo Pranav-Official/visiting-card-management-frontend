@@ -1,25 +1,26 @@
 import React, { useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  TouchableWithoutFeedback,
-} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, TouchableWithoutFeedback } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import colors from '../utils/colorPallete';
 import Modal from 'react-native-modal';
 
-const TopMenuButton = ({ options }) => {
-  const navigation = useNavigation();
+interface Option {
+  label: string;
+  onSelect?: () => void;
+}
+
+interface Props {
+  options: Option[];
+}
+
+const TopMenuButton = ({ options }: Props) => {
   const [isModalVisible, setModalVisible] = useState(false);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
 
-  const handleOptionClick = (option) => {
+  const handleOptionClick = (option: Option) => {
     if (option.onSelect) {
       option.onSelect();
     }
