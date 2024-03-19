@@ -24,10 +24,10 @@ import {
 import { editCardDetails } from '../../hooks/editCardHook';
 import NewCardComponent from '../../components/NewCardListScreenComponent';
 import Swiper from 'react-native-swiper';
+import { RootStackParamList } from '../../types/navigationTypes';
 
 const CardListScreen = ({ route }: any) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [key, setKey] = useState(0);
   const arr = [1, 2, 3, 4, 5, 6];
   const [changeContactName, setChangeContactName] = useState(false);
   const [contactName, setContactName] = useState(route.params.name ?? '');
@@ -113,12 +113,10 @@ const CardListScreen = ({ route }: any) => {
       fetchCardList();
     }, []),
   );
-  const navigation = useNavigation<NavigationProp<any>>();
+  const navigation =
+    useNavigation<NavigationProp<RootStackParamList, 'CardDetailsScreen'>>();
   const handlePress = (card_id: string) => {
-    navigation.navigate('CardStack', {
-      screen: 'CardDetailsScreen',
-      params: { card_id: card_id },
-    });
+    navigation.navigate('CardDetailsScreen', { card_id: card_id });
   };
 
   useEffect(() => {
@@ -228,7 +226,7 @@ const CardListScreen = ({ route }: any) => {
               horizontal={true}
               showsHorizontalScrollIndicator={false}
               data={arr}
-              renderItem={({ item }) => <ShimmerComponent />}
+              renderItem={() => <ShimmerComponent />}
               keyExtractor={(item) => item.toString()}
             />
           )}
@@ -266,9 +264,6 @@ const styles = StyleSheet.create({
     color: colors['primary-text'],
     fontSize: 16,
     fontWeight: '500',
-  },
-  contactNameSetButton: {
-    top: '35%',
   },
   cardcontainer: {
     width: '100%',
@@ -332,9 +327,6 @@ const styles = StyleSheet.create({
   },
   swiperList: {
     paddingHorizontal: 15,
-  },
-  itemSeparator: {
-    width: 20,
   },
   contactName: {
     color: colors['primary-text'],
