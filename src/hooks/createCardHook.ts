@@ -33,8 +33,6 @@ export async function newCardDetails({
   let statusCode = '';
   let newCardResp: string | undefined;
 
-  console.log('newData--->', newData);
-
   try {
     const CardDetailsResponse = await api.post(
       'api/v1/createNewCard',

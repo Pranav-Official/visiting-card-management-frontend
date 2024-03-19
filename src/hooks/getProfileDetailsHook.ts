@@ -1,3 +1,4 @@
+import axios from 'axios';
 import api from './api';
 
 type UserData = {
@@ -33,11 +34,26 @@ export async function getProfile(
       const status = getProfileDetails.data.status;
       return { userData, status };
     } else {
-      console.log('\nError Getting Profile Details (getProfileDetailsHook)');
       throw new Error('Failed to fetch profile details');
     }
   } catch (error) {
-    console.log(error);
-    throw new Error('Failed to fetch profile details');
+    if (axios.isAxiosError(error)) {
+      console.log('Axios Error fetching profile details:', error);
+    } else {
+      console.log('Error while fetching profile details', error);
+    }
+    return {
+      userData: {
+        email: '',
+        fullName: '',
+        phone: '',
+        job_title: '',
+        company_name: '',
+        totalAcceptedCards: 0,
+        totalContacts: 0,
+        totalPendingCards: 0,
+      },
+      status: false,
+    };
   }
 }

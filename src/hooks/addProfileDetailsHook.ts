@@ -17,14 +17,6 @@ export async function addProfileDetails(
   };
 
   try {
-    console.log(
-      '\nReached the Profile Edit Hook',
-      userId,
-      jwtToken,
-      phone,
-      jobTitle,
-      companyName,
-    );
     const addDetailsResponse = await api.patch(
       'api/v1/addProfileDetails',
       detailsPayload,
@@ -34,8 +26,6 @@ export async function addProfileDetails(
         },
       },
     );
-
-    console.log('\nAdd Details Response: ', addDetailsResponse.data);
     statusCode = addDetailsResponse.status;
     return statusCode;
   } catch (error) {

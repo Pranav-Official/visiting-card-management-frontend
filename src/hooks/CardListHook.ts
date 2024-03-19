@@ -17,7 +17,7 @@ type CardReturn = {
 
 interface CardListResponse {
   statusCode: string;
-  cardResp: { data: CardReturn[] };
+  cardResp?: { data: CardReturn[] };
 }
 
 export async function listCards({
@@ -26,7 +26,7 @@ export async function listCards({
   jwt_token,
 }: CardListProp): Promise<CardListResponse> {
   let statusCode = '';
-  let cardResp: CardReturn[] = [];
+  let cardResp: { data: CardReturn[] };
 
   const contactParams = {
     user_id: user_id,
@@ -43,6 +43,6 @@ export async function listCards({
     return { statusCode, cardResp };
   } catch (error) {
     console.log('error while fetching card list', error);
-    return { statusCode, cardResp };
+    return { statusCode };
   }
 }

@@ -23,23 +23,9 @@ export async function addSharedCardToExistingContact(
 ) {
   let statusCode: number;
   let addToExistingContactData = null;
-  console.log(
-    '\n\nReached Add Shared Card to existing',
-    user_id,
-    jwtToken,
-    parent_card_id,
-    newData,
-  );
   const current_user_id = (await getLocalItem(Constants.USER_ID)) || '';
   newData.user_id = current_user_id;
   const shared_card_id = newData.card_id;
-  console.log('\n\nRequest Payload:', {
-    user_id,
-    shared_card_id,
-    parent_card_id,
-  });
-
-  console.log('newData--->', newData);
 
   try {
     const CardDetailsResponse = await api.post(
@@ -55,7 +41,6 @@ export async function addSharedCardToExistingContact(
     );
 
     statusCode = CardDetailsResponse.status;
-    //console.log('add to existing contact response---->',CardDetailsResponse);
     addToExistingContactData = CardDetailsResponse.data;
 
     return { addToExistingContactData, statusCode };

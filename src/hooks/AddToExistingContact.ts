@@ -25,7 +25,6 @@ export async function addToExistingContact(
     ...cardDetails,
   };
 
-  console.log('\n\nAdd to Contact API HOOK CardDetails: ', cardDetails);
   try {
     const addToExistingContactResponse = await api.post(
       '/api/v1/addToExistingContact',
@@ -35,11 +34,6 @@ export async function addToExistingContact(
           Authorization: `Bearer ${jwtToken}`,
         },
       },
-    );
-
-    console.log(
-      '\n\nAdd To Contact Response: ',
-      addToExistingContactResponse.data,
     );
 
     addToExistingContactData = addToExistingContactResponse.data;
