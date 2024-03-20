@@ -18,7 +18,7 @@ const BottomDialougeTouchable = (props: PropTypes) => {
 
   return (
     <TouchableOpacity onPress={onPress} style={styles.bottomDialog}>
-      <Text>{props.label}</Text>
+      <Text style={styles.label}>{props.label}</Text>
       <Text style={styles.MainText}>{props.mainText}</Text>
     </TouchableOpacity>
   );
@@ -32,6 +32,9 @@ const styles = StyleSheet.create({
     padding: 20,
     flexDirection: 'row',
     gap: 5,
+  },
+  label: {
+    color: colors['accent-grey'],
   },
   MainText: {
     color: colors['primary-danger'],

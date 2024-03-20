@@ -24,6 +24,7 @@ const SearchBarComponent = (props: Props) => {
         style={styles.searchBarView}
         value={props.value}
         onChangeText={onChangeText}
+        placeholderTextColor={colors['primary-text']}
       ></TextInput>
       <TouchableOpacity style={styles.icon}>
         <MaterialIcons name="search" color={'grey'} size={30} />
@@ -44,6 +45,7 @@ const styles = StyleSheet.create({
     flex: 9,
     paddingLeft: 30,
     fontSize: 18,
+    color: colors['primary-text'],
   },
   icon: {
     flex: 1,

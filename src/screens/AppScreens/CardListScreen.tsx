@@ -26,6 +26,7 @@ import NewCardComponent from '../../components/NewCardListScreenComponent';
 import Swiper from 'react-native-swiper';
 import { RootStackParamList } from '../../types/navigationTypes';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Toast from 'react-native-root-toast';
 
 const CardListScreen = ({ route }: any) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -59,6 +60,11 @@ const CardListScreen = ({ route }: any) => {
           setTemporaryContactName(temporaryContactName);
         } else {
           console.log('Error in editing contact name');
+          setChangeContactName(false);
+          Toast.show('Error in editing contact name', {
+            position: Toast.positions.BOTTOM,
+            duration: Toast.durations.SHORT,
+          });
         }
       } else {
         setChangeContactName(false);

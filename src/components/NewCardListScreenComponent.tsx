@@ -1,7 +1,13 @@
 //Card Component
 
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
 import PersonIcon from '../assets/images/jobTitle.svg';
 import PhoneIcon from '../assets/images/phone.svg';
 import MailIcon from '../assets/images/mail.svg';
@@ -49,16 +55,19 @@ const styles = StyleSheet.create({
     marginRight: 40,
     marginLeft: 10,
     width: contentWidth,
+    color: colors['primary-text'],
   },
   tr1: {
+    borderRadius: 8,
     flexDirection: 'row',
     gap: 5,
-    backgroundColor: colors['secondary-light'],
+    // backgroundColor: colors['secondary-grey'],
     height: 33,
     alignItems: 'center',
     paddingLeft: 20,
     marginLeft: 22,
     marginBottom: 15,
+    color: colors['primary-text'],
   },
   detailStyle: {
     flexDirection: 'column',
@@ -71,6 +80,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginLeft: 10,
     width: contentWidth,
+    color: colors['primary-text'],
   },
   mail_text: {
     fontSize: 18,
@@ -78,12 +88,14 @@ const styles = StyleSheet.create({
     marginRight: 40,
     marginLeft: 10,
     width: contentWidth,
+    color: colors['primary-text'],
   },
   company_name: {
     fontSize: 18,
     fontFamily: 'Roboto',
     marginLeft: 10,
     width: contentWidth,
+    color: colors['primary-text'],
   },
   card_button: {
     backgroundColor: colors['primary-accent'],
@@ -152,7 +164,9 @@ const NewCardComponent: React.FC<Prop> = ({
       <View style={styles.detailStyle}>
         <View style={styles.tr1}>
           <PersonIcon width={18} height={18} fill={'black'} />
-          <Text style={styles.job_position}>{truncateContactName(job_position)}</Text>
+          <Text style={styles.job_position}>
+            {truncateContactName(job_position)}
+          </Text>
         </View>
 
         <View style={styles.tr1}>
@@ -162,12 +176,15 @@ const NewCardComponent: React.FC<Prop> = ({
 
         <View style={styles.tr1}>
           <MailIcon width={18} height={18} fill={'white'}></MailIcon>
-          <Text style={styles.mail_text}>  {truncateContactName(email)}</Text>
+          <Text style={styles.mail_text}> {truncateContactName(email)}</Text>
         </View>
 
         <View style={styles.tr1}>
           <CompanyIcon width={18} height={18} fill={'white'}></CompanyIcon>
-          <Text style={styles.company_name}>  {truncateContactName(company_name)}</Text>
+          <Text style={styles.company_name}>
+            {' '}
+            {truncateContactName(company_name)}
+          </Text>
         </View>
       </View>
     </TouchableOpacity>
