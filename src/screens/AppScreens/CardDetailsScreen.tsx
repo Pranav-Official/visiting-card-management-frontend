@@ -195,7 +195,10 @@ const CardDetailPage = ({ route }: any) => {
     }
   };
   return (
-    <ScrollView style={{ backgroundColor: colors['secondary-light'] }}>
+    <ScrollView
+      keyboardShouldPersistTaps="handled"
+      style={{ backgroundColor: colors['secondary-light'] }}
+    >
       <View style={styles.container}>
         <TouchableOpacity
           style={styles.backButton}

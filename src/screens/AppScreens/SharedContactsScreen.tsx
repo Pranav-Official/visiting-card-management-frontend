@@ -117,14 +117,13 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 170,
     elevation: 5,
-    paddingRight: 20,
+    // paddingHorizontal: 20,
     paddingTop: 10,
   },
   flatListStyle: {
     gap: 20,
-    paddingHorizontal: 10,
+    paddingHorizontal: 25,
     paddingVertical: 20,
-    paddingLeft: 20,
   },
   headerContainer: {
     flexDirection: 'row',

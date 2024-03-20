@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
     color: colors['primary-text'],
     marginLeft: 10,
     width: 110,
+    overflow: 'hidden',
   },
   sr2: {
     flexDirection: 'row',
@@ -71,6 +72,7 @@ const styles = StyleSheet.create({
     height: 33,
     alignItems: 'center',
     paddingLeft: 10,
+    overflow: 'hidden',
   },
   tr1: {
     flexDirection: 'row',
@@ -79,6 +81,7 @@ const styles = StyleSheet.create({
     height: 33,
     alignItems: 'center',
     paddingLeft: 10,
+    overflow: 'hidden',
   },
   tr2: {
     flexDirection: 'row',
@@ -87,6 +90,7 @@ const styles = StyleSheet.create({
     height: 33,
     alignItems: 'center',
     paddingLeft: 10,
+    overflow: 'hidden',
   },
   phone_number: {
     fontFamily: 'Roboto',

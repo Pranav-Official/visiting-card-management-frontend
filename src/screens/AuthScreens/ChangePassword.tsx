@@ -84,7 +84,10 @@ const ChangePassword: React.FC<Props> = ({ route }) => {
   };
 
   return (
-    <ScrollView style={styles.main_container}>
+    <ScrollView
+      keyboardShouldPersistTaps="handled"
+      style={styles.main_container}
+    >
       <View style={styles.back_button_container}>
         <TopBackButton color="black"></TopBackButton>
       </View>

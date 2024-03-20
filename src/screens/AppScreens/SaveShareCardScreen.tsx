@@ -284,7 +284,7 @@ const SaveShareCardScreen = ({ route }: any) => {
         <TouchableOpacity onPress={handleReject}>
           <RadioButton selected={reject}></RadioButton>
         </TouchableOpacity>
-        <Text style={styles.delete_text}>Delete Unselected cards</Text>
+        <Text style={styles.delete_text}>Reject Unselected cards</Text>
       </View>
       <FlatList
         data={pendingCardList}
@@ -378,6 +378,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
     fontSize: 20,
     marginLeft: 10,
+    color: colors['primary-text'],
   },
 });
 

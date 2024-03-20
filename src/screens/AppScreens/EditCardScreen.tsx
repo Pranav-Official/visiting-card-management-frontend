@@ -244,7 +244,10 @@ const EditCardDetails = ({ route }: any) => {
   };
 
   return (
-    <ScrollView style={styles.editContainer}>
+    <ScrollView
+      keyboardShouldPersistTaps="handled"
+      style={styles.editContainer}
+    >
       <TouchableOpacity
         style={styles.backButton}
         onPress={() => {

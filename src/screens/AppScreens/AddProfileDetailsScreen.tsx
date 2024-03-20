@@ -50,7 +50,10 @@ const AddProfileDetailsScreen = ({ route }: RouteType) => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.contentContainer}>
+    <ScrollView
+      contentContainerStyle={styles.contentContainer}
+      keyboardShouldPersistTaps="handled"
+    >
       <View style={styles.mainContainer}>
         <View style={styles.inputContainer}>
           <View style={styles.headingTextContainer}>
@@ -83,16 +86,16 @@ const AddProfileDetailsScreen = ({ route }: RouteType) => {
         </View>
         <View style={styles.buttonContainer}>
           <PrimaryButtonComponent
+            title={'Save'}
+            onPressing={handleSave}
+          ></PrimaryButtonComponent>
+          <PrimaryButtonComponent
             title={'Go Back'}
             backgroundColor={colors['accent-white']}
             isHighlighted={true}
             onPressing={() => {
               navigation.dispatch(StackActions.pop(1));
             }}
-          ></PrimaryButtonComponent>
-          <PrimaryButtonComponent
-            title={'Save'}
-            onPressing={handleSave}
           ></PrimaryButtonComponent>
         </View>
       </View>
@@ -108,7 +111,8 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flexGrow: 1,
-    paddingBottom: 0, // Adjust this value according to the height of the button container
+    paddingBottom: 0,
+    backgroundColor: colors['secondary-light'], // Adjust this value according to the height of the button container
   },
   headingTextContainer: {
     alignItems: 'center',
@@ -128,7 +132,7 @@ const styles = StyleSheet.create({
     top: 220,
     left: 0,
     right: 0,
-    flexDirection: 'column',
+    flexDirection: 'row',
     gap: 10,
   },
 });
