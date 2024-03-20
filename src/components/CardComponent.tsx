@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
     fontSize: 12,
     marginRight: 40,
-    color: '#102D4A',
+    color: colors['primary-text'],
     marginLeft: 10,
     width: 110,
   },
@@ -93,6 +93,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginLeft: 10,
     width: 110,
+    color: colors['primary-text'],
   },
   mail_text: {
     fontSize: 12,
@@ -100,12 +101,14 @@ const styles = StyleSheet.create({
     marginRight: 40,
     marginLeft: 10,
     width: 110,
+    color: colors['primary-text'],
   },
   company_name: {
     fontSize: 12,
     fontFamily: 'Roboto',
     marginLeft: 10,
     width: 110,
+    color: colors['primary-text'],
   },
   card_button: {
     backgroundColor: colors['primary-accent'],
@@ -146,7 +149,11 @@ const CardComponent: React.FC<Prop> = ({
   clickFunc,
 }): JSX.Element => {
   return (
-    <TouchableOpacity style={styles.card_container} onPress={clickFunc} testID='card'>
+    <TouchableOpacity
+      style={styles.card_container}
+      onPress={clickFunc}
+      testID="card"
+    >
       <View
         style={[
           styles.first_row,

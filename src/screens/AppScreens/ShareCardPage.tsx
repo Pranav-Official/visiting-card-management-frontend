@@ -8,6 +8,7 @@ import Constants from '../../utils/Constants';
 import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import { ShareCard, ShareCardProp } from '../../hooks/ShareCardHook';
 import { shareExternally } from '../../hooks/externalShare';
+import Toast from 'react-native-root-toast';
 
 type ShareProp = {
   user_fullname: string;
@@ -71,12 +72,13 @@ const ShareCardScreen = ({
       user_id,
       jwt_token,
       card_id: card_id,
-      receiver_user_ids: selectedUserIds, 
+      receiver_user_ids: selectedUserIds,
     };
 
     try {
       const shareCardResponse = await ShareCard(shareCardProps);
       visibilitySetter && visibilitySetter();
+      Toast.show('Shared Card Successfully');
     } catch (error) {
       console.error('Error sharing card Internally:', error);
     }
@@ -129,7 +131,7 @@ const ShareCardScreen = ({
       <View style={styles.button_container}>
         <View style={styles.profile_button_container}>
           <PrimaryButtonComponent
-            title={selectedUserIds.length > 0 ? 'Share Internally' : 'Share Externally'}
+            title="Share"
             onPressing={handleShare}
           ></PrimaryButtonComponent>
         </View>
@@ -173,7 +175,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     // top:500,
   },
-  
 });
 
 export default ShareCardScreen;

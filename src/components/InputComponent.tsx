@@ -51,6 +51,7 @@ const InputComponent = ({
         <TextInput
           style={styles.input}
           placeholder={placeholder}
+          placeholderTextColor={colors['label-text']}
           value={value}
           secureTextEntry={hidden ? !showSecret : false}
           caretHidden={!isFocused}
