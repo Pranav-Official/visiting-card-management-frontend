@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     position: 'absolute',
-    marginTop: 450,
+    marginTop: 400,
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingTop: 10,
