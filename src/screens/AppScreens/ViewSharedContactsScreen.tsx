@@ -105,6 +105,8 @@ const ViewSharedContactsScreen = ({ route }: RouteType) => {
 const styles = StyleSheet.create({
   mainContainer: {
     width: '100%',
+    backgroundColor: colors['secondary-light'],
+    height: '100%',
   },
   shareContainer: {
     padding: 20,

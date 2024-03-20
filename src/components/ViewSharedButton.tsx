@@ -52,10 +52,11 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 28,
     padding: 5,
+    color: colors['primary-text'],
   },
   titleText: {
     fontSize: 30,
-    color: 'black',
+    color: colors['primary-text'],
   },
 });
 export default ViewSharedButton;
