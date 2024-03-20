@@ -4,6 +4,7 @@ import {
   Alert,
   Linking,
   Modal,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -194,250 +195,255 @@ const CardDetailPage = ({ route }: any) => {
     }
   };
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => {
-          navigation.goBack();
-        }}
-      >
-        <BackButtonIcon width={30} height={30} rotation={180} />
-      </TouchableOpacity>
-
-      <View style={styles.imageContainer}>
-        <CommonImageComponent
-          frontImageUri={cardDetail.img_front_link}
-          backImageUri={cardDetail.img_back_link}
-        />
-      </View>
-      <View style={styles.conatctHead}>
-        {isLoading ? (
-          <>
-            <View style={styles.shimmerContainer}>
-              <CardDetailsShimmer />
-            </View>
-            <View style={styles.shimmerContainer}>
-              <CardDetailsShimmer />
-            </View>
-          </>
-        ) : (
-          <>
-            <Text style={styles.cardName}>
-              {showTranslated
-                ? translatedCardDetails.card_name
-                : cardDetail.card_name}
-            </Text>
-            <Text
-              style={styles.jobTitle}
-              onPress={() => {
-                if (!cardDetail.job_title) {
-                  // Navigate to the edit screen if jobTitle is missing
-                  navigation.navigate('EditCardScreen', {
-                    cardDetails: cardDetail,
-                    card_id: route.params.card_id,
-                  });
-                }
-              }}
-            >
-              {showTranslated
-                ? translatedCardDetails.job_title
-                : cardDetail.job_title
-                ? cardDetail.job_title
-                : 'Add Job title'}
-            </Text>
-          </>
-        )}
-      </View>
-
-      <View style={styles.headerStyle}>
-        <TouchableOpacity style={styles.buttonStyle} onPress={handleTranslate}>
-          <Text style={styles.buttonText}>Translate</Text>
-        </TouchableOpacity>
+    <ScrollView style={{ backgroundColor: colors['secondary-light'] }}>
+      <View style={styles.container}>
         <TouchableOpacity
-          style={styles.buttonStyle}
+          style={styles.backButton}
           onPress={() => {
-            navigation.navigate('EditCardScreen', {
-              cardDetails: cardDetail,
-              card_id: route.params.card_id,
-            });
+            navigation.goBack();
           }}
         >
-          <Text style={styles.buttonText}>Edit</Text>
+          <BackButtonIcon width={30} height={30} rotation={180} />
         </TouchableOpacity>
-      </View>
 
-      {/* Card details display */}
-      <View style={styles.cardDetailsContainer}>
-        <CardDetailComponent
-          onLongPress={() => {
-            if (cardDetail.company_name)
-              longPressToCopy(cardDetail.company_name || '');
-          }}
-          card_detail={
-            showTranslated
-              ? translatedCardDetails.company_name || 'Add Company Name'
-              : cardDetail.company_name
-              ? cardDetail.company_name
-              : 'Add Company Name'
-          }
-          onPress={() => {
-            // Navigate to the edit screen if company name is missing
-            if (!cardDetail.company_name) {
+        <View style={styles.imageContainer}>
+          <CommonImageComponent
+            frontImageUri={cardDetail.img_front_link}
+            backImageUri={cardDetail.img_back_link}
+          />
+        </View>
+        <View style={styles.conatctHead}>
+          {isLoading ? (
+            <>
+              <View style={styles.shimmerContainer}>
+                <CardDetailsShimmer />
+              </View>
+              <View style={styles.shimmerContainer}>
+                <CardDetailsShimmer />
+              </View>
+            </>
+          ) : (
+            <>
+              <Text style={styles.cardName}>
+                {showTranslated
+                  ? translatedCardDetails.card_name
+                  : cardDetail.card_name}
+              </Text>
+              <Text
+                style={styles.jobTitle}
+                onPress={() => {
+                  if (!cardDetail.job_title) {
+                    // Navigate to the edit screen if jobTitle is missing
+                    navigation.navigate('EditCardScreen', {
+                      cardDetails: cardDetail,
+                      card_id: route.params.card_id,
+                    });
+                  }
+                }}
+              >
+                {showTranslated
+                  ? translatedCardDetails.job_title
+                  : cardDetail.job_title
+                  ? cardDetail.job_title
+                  : 'Add Job title'}
+              </Text>
+            </>
+          )}
+        </View>
+
+        <View style={styles.headerStyle}>
+          <TouchableOpacity
+            style={styles.buttonStyle}
+            onPress={handleTranslate}
+          >
+            <Text style={styles.buttonText}>Translate</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.buttonStyle}
+            onPress={() => {
               navigation.navigate('EditCardScreen', {
                 cardDetails: cardDetail,
                 card_id: route.params.card_id,
               });
-            }
-          }}
-          isPlaceholder={cardDetail.company_name ? false : true}
-          isLoading={isLoading}
-        >
-          <CompanyName width={20} height={20} color={'primary-text'} />
-        </CardDetailComponent>
-
-        <CardDetailComponent
-          onLongPress={() => {
-            if (cardDetail.phone) longPressToCopy(cardDetail.phone || '');
-          }}
-          onPress={() => {
-            if (!cardDetail.phone) {
-              // Navigate to the edit screen if phone number is missing
-              navigation.navigate('EditCardScreen', {
-                cardDetails: cardDetail,
-                card_id: route.params.card_id,
-              });
-            } else {
-              // Call phonePress function if phone number is present
-              phonePress(cardDetail.phone || '');
-            }
-          }}
-          card_detail={
-            cardDetail.phone ? cardDetail.phone : 'Add Contact Number'
-          }
-          isPlaceholder={cardDetail.phone ? false : true}
-          isLoading={isLoading}
-        >
-          <Phone width={20} height={20} color={'primary-text'} />
-        </CardDetailComponent>
-
-        <CardDetailComponent
-          onLongPress={() => {
-            if (cardDetail.email) longPressToCopy(cardDetail.email || '');
-          }}
-          onPress={() => {
-            if (!cardDetail.email) {
-              // Navigate to the edit screen if email is missing
-              navigation.navigate('EditCardScreen', {
-                cardDetails: cardDetail,
-                card_id: route.params.card_id,
-              });
-            } else {
-              // Call phonePress function if email is present
-              emailPress(cardDetail.email || '');
-            }
-          }}
-          card_detail={cardDetail.email ? cardDetail.email : 'Add Email'}
-          isPlaceholder={cardDetail.email ? false : true}
-          isLoading={isLoading}
-        >
-          <Email width={20} height={20} color={'primary-text'} />
-        </CardDetailComponent>
-
-        <CardDetailComponent
-          onLongPress={() => {
-            if (cardDetail.company_website)
-              longPressToCopy(cardDetail.company_website || '');
-          }}
-          onPress={() => {
-            if (!cardDetail.company_website) {
-              // Navigate to the edit screen if website is missing
-              navigation.navigate('EditCardScreen', {
-                cardDetails: cardDetail,
-                card_id: route.params.card_id,
-              });
-            } else {
-              // Call websitePress function if website is present
-              websitePress(cardDetail.company_website || '');
-            }
-          }}
-          card_detail={
-            cardDetail.company_website
-              ? cardDetail.company_website
-              : 'Add Company Website'
-          }
-          isPlaceholder={cardDetail.company_website ? false : true}
-          isLoading={isLoading}
-        >
-          <Website width={20} height={20} color={'primary-text'} />
-        </CardDetailComponent>
-      </View>
-
-      <View style={styles.editButtons}>
-        <View style={styles.deleteModalButton}>
-          <TouchableOpacity style={styles.delete}>
-            <PrimaryButtonComponent
-              children={<DeleteIcon width={40} height={24} />}
-              title={'Delete'}
-              textColor={colors['primary-danger']}
-              onPressing={toggleDeleteModal}
-              isHighlighted={true}
-              backgroundColor={colors['accent-white']}
-            ></PrimaryButtonComponent>
+            }}
+          >
+            <Text style={styles.buttonText}>Edit</Text>
           </TouchableOpacity>
         </View>
 
-        <View style={styles.mainButton}>
-          <PrimaryButtonComponent
-            children={<ShareIcon width={40} height={24} />}
-            title={'Share'}
-            onPressing={toggleShareModal}
-          ></PrimaryButtonComponent>
-          <BottomSheetComponent
-            visibility={ShareModalVisible}
-            visibilitySetter={setShareModalVisible}
+        {/* Card details display */}
+        <View style={styles.cardDetailsContainer}>
+          <CardDetailComponent
+            onLongPress={() => {
+              if (cardDetail.company_name)
+                longPressToCopy(cardDetail.company_name || '');
+            }}
+            card_detail={
+              showTranslated
+                ? translatedCardDetails.company_name || 'Add Company Name'
+                : cardDetail.company_name
+                ? cardDetail.company_name
+                : 'Add Company Name'
+            }
+            onPress={() => {
+              // Navigate to the edit screen if company name is missing
+              if (!cardDetail.company_name) {
+                navigation.navigate('EditCardScreen', {
+                  cardDetails: cardDetail,
+                  card_id: route.params.card_id,
+                });
+              }
+            }}
+            isPlaceholder={cardDetail.company_name ? false : true}
+            isLoading={isLoading}
           >
-            <ShareCardScreen
-              user_id={''}
-              jwt_token={''}
-              card_id={route.params.card_id}
-              receiver_user_ids={[]}
-              visibilitySetter={toggleShareModal}
-              cardDetails={cardDetail}
-            />
-          </BottomSheetComponent>
+            <CompanyName width={20} height={20} color={'primary-text'} />
+          </CardDetailComponent>
+
+          <CardDetailComponent
+            onLongPress={() => {
+              if (cardDetail.phone) longPressToCopy(cardDetail.phone || '');
+            }}
+            onPress={() => {
+              if (!cardDetail.phone) {
+                // Navigate to the edit screen if phone number is missing
+                navigation.navigate('EditCardScreen', {
+                  cardDetails: cardDetail,
+                  card_id: route.params.card_id,
+                });
+              } else {
+                // Call phonePress function if phone number is present
+                phonePress(cardDetail.phone || '');
+              }
+            }}
+            card_detail={
+              cardDetail.phone ? cardDetail.phone : 'Add Contact Number'
+            }
+            isPlaceholder={cardDetail.phone ? false : true}
+            isLoading={isLoading}
+          >
+            <Phone width={20} height={20} color={'primary-text'} />
+          </CardDetailComponent>
+
+          <CardDetailComponent
+            onLongPress={() => {
+              if (cardDetail.email) longPressToCopy(cardDetail.email || '');
+            }}
+            onPress={() => {
+              if (!cardDetail.email) {
+                // Navigate to the edit screen if email is missing
+                navigation.navigate('EditCardScreen', {
+                  cardDetails: cardDetail,
+                  card_id: route.params.card_id,
+                });
+              } else {
+                // Call phonePress function if email is present
+                emailPress(cardDetail.email || '');
+              }
+            }}
+            card_detail={cardDetail.email ? cardDetail.email : 'Add Email'}
+            isPlaceholder={cardDetail.email ? false : true}
+            isLoading={isLoading}
+          >
+            <Email width={20} height={20} color={'primary-text'} />
+          </CardDetailComponent>
+
+          <CardDetailComponent
+            onLongPress={() => {
+              if (cardDetail.company_website)
+                longPressToCopy(cardDetail.company_website || '');
+            }}
+            onPress={() => {
+              if (!cardDetail.company_website) {
+                // Navigate to the edit screen if website is missing
+                navigation.navigate('EditCardScreen', {
+                  cardDetails: cardDetail,
+                  card_id: route.params.card_id,
+                });
+              } else {
+                // Call websitePress function if website is present
+                websitePress(cardDetail.company_website || '');
+              }
+            }}
+            card_detail={
+              cardDetail.company_website
+                ? cardDetail.company_website
+                : 'Add Company Website'
+            }
+            isPlaceholder={cardDetail.company_website ? false : true}
+            isLoading={isLoading}
+          >
+            <Website width={20} height={20} color={'primary-text'} />
+          </CardDetailComponent>
         </View>
 
-        {/* Modal for delete a card confirmation */}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={isDeleteModalVisible}
-          onRequestClose={toggleDeleteModal}
-        >
-          <View style={styles.centeredDeleteView}>
-            <View style={styles.deleteModalView}>
-              <Text style={styles.deleteModalText}>
-                Are you sure you want to delete this card?
-              </Text>
-              <View style={styles.deleteButtonContainer}>
-                <PrimaryButtonComponent
-                  title={'Delete'}
-                  textColor={colors['primary-danger']}
-                  onPressing={handleDeleteCard}
-                  backgroundColor={colors['accent-white']}
-                  isHighlighted={true}
-                />
-                <PrimaryButtonComponent
-                  title={'Cancel'}
-                  onPressing={toggleDeleteModal}
-                  backgroundColor={colors['secondary-grey']}
-                ></PrimaryButtonComponent>
+        <View style={styles.editButtons}>
+          <View style={styles.deleteModalButton}>
+            <TouchableOpacity style={styles.delete}>
+              <PrimaryButtonComponent
+                children={<DeleteIcon width={40} height={24} />}
+                title={'Delete'}
+                textColor={colors['primary-danger']}
+                onPressing={toggleDeleteModal}
+                isHighlighted={true}
+                backgroundColor={colors['accent-white']}
+              ></PrimaryButtonComponent>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.mainButton}>
+            <PrimaryButtonComponent
+              children={<ShareIcon width={40} height={24} />}
+              title={'Share'}
+              onPressing={toggleShareModal}
+            ></PrimaryButtonComponent>
+            <BottomSheetComponent
+              visibility={ShareModalVisible}
+              visibilitySetter={setShareModalVisible}
+            >
+              <ShareCardScreen
+                user_id={''}
+                jwt_token={''}
+                card_id={route.params.card_id}
+                receiver_user_ids={[]}
+                visibilitySetter={toggleShareModal}
+                cardDetails={cardDetail}
+              />
+            </BottomSheetComponent>
+          </View>
+
+          {/* Modal for delete a card confirmation */}
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={isDeleteModalVisible}
+            onRequestClose={toggleDeleteModal}
+          >
+            <View style={styles.centeredDeleteView}>
+              <View style={styles.deleteModalView}>
+                <Text style={styles.deleteModalText}>
+                  Are you sure you want to delete this card?
+                </Text>
+                <View style={styles.deleteButtonContainer}>
+                  <PrimaryButtonComponent
+                    title={'Delete'}
+                    textColor={colors['primary-danger']}
+                    onPressing={handleDeleteCard}
+                    backgroundColor={colors['accent-white']}
+                    isHighlighted={true}
+                  />
+                  <PrimaryButtonComponent
+                    title={'Cancel'}
+                    onPressing={toggleDeleteModal}
+                    backgroundColor={colors['secondary-grey']}
+                  ></PrimaryButtonComponent>
+                </View>
               </View>
             </View>
-          </View>
-        </Modal>
+          </Modal>
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -446,6 +452,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors['secondary-light'],
     color: colors['primary-text'],
     flex: 1,
+    paddingBottom: 30,
   },
   imageContainer: {
     height: 250,
