@@ -132,7 +132,7 @@ const SignUp = () => {
   };
 
   return (
-    <ScrollView>
+    <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
       <SafeAreaView style={styles.safeAreaView}>
         <MainLogoComponent />
         <View style={styles.midSection}>
@@ -203,6 +203,10 @@ const SignUp = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: colors['secondary-light'],
+    flex: 1,
+  },
   safeAreaView: {
     padding: 24,
     flex: 1,

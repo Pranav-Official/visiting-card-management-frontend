@@ -121,7 +121,10 @@ const ProfileScreen = () => {
   };
 
   return (
-    <ScrollView style={styles.profileMainContainer}>
+    <ScrollView
+      keyboardShouldPersistTaps="handled"
+      style={styles.profileMainContainer}
+    >
       <View style={styles.profileContainer}>
         <View style={styles.profileDetailsContainer}>
           <View style={styles.profileImageContainer}>
@@ -225,7 +228,7 @@ const ProfileScreen = () => {
             backgroundColor={colors['accent-white']}
             textColor={colors['primary-danger']}
             isHighlighted={true}
-            onPressing={() =>handlePasswordReset()}
+            onPressing={() => handlePasswordReset()}
           />
           <PrimaryButtonComponent
             title={'Logout'}
