@@ -57,6 +57,9 @@ type UserData = {
   user_email: string;
   cards: Card[];
 };
+type ContactCardCounts = {
+  [card_id: string]: number;
+};
 
 const ContactsPage = () => {
   const [secondaryButtonVisibility, setSecondaryButtonVisibility] =
@@ -68,12 +71,17 @@ const ContactsPage = () => {
   const [pendingCardList, setPendingCardList] = React.useState<UserData[]>();
 
   const [modalVisibility, setModalVisibility] = React.useState(false);
+  const initialContactCardCounts: ContactCardCounts = {};
+  const [contactCardCounts, setContactCardCounts] = useState<ContactCardCounts>(
+    initialContactCardCounts,
+  );
 
   const dispatch = useDispatch();
   const reduxPendingCardList = useSelector(
     (state: RootState) => state.pendingCardsReducer.pendingCardList,
   );
 
+  //get the contact list
   const get = async () => {
     const user_id = (await getLocalItem(Constants.USER_ID)) || '';
     const response = await getContactList(user_id);
@@ -196,20 +204,46 @@ const ContactsPage = () => {
     }, []),
   );
 
+  useEffect(() => {
+    const initializePage = async () => {
+      for (const contact of contactList) {
+        await contactPage(contact.card_id, contact.contact_name);
+      }
+    };
+    initializePage();
+  }, []);
+
   const contactPage = async (id: string, name: string) => {
     console.log('contactPage', id, name);
     const userId = (await getLocalItem(Constants.USER_ID)) ?? '';
     const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
     const cardId = id;
-
     const result = await listCards({
       user_id: userId,
       jwt_token: jwtToken,
       card_id: cardId,
     });
+    if (result.statusCode === '200' && result.cardResp) {
+      const numberOfCards = result.cardNumber;
+      if (numberOfCards !== undefined) {
+        setContactCardCounts((prevCounts) => ({
+          ...prevCounts,
+          [id]: numberOfCards,
+        }));
+       // console.log('number of cards---------------->', contactCardCounts);
+      } else {
+        console.error('Number of cards is undefined');
+      }
+    } else {
+      console.error('Failed to fetch card list');
+    }
+  };
 
-    if (result.cardResp && result.cardResp.data.length === 1) {
-      const cardId = result.cardResp.data[0].card_id;
+  const goToCardListScreen = (id: string, name: string) => {
+    const numberOfCards = contactCardCounts[id];
+    if (numberOfCards === 1) {
+      const cardId = pendingCardList?.find((item) => item.user_id === id)
+        ?.cards[0].card_id;
       navigation.navigate('CardStack', {
         screen: 'CardDetailsScreen',
         params: { card_id: cardId },
@@ -245,7 +279,9 @@ const ContactsPage = () => {
           renderItem={({ item }) => (
             <ContactListComponent
               contactName={item.contact_name}
-              onPress={() => contactPage(item.card_id, item.contact_name)}
+              onPress={() =>
+                goToCardListScreen(item.card_id, item.contact_name)
+              }
             />
           )}
           keyExtractor={(item) => item.card_id + item.contact_name}
