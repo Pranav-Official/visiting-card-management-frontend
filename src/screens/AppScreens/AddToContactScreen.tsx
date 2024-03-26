@@ -12,7 +12,7 @@ import CardComponent from '../../components/CardComponent';
 import RadioButton from '../../components/RadioButton';
 import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import Constants from '../../utils/Constants';
-import { addToExistingContact } from '../../network/AddToExistingContactAPI';
+import { addToExistingContact } from '../../network/addToExistingContactAPI';
 import { getLocalItem } from '../../utils/Utils';
 import {
   CommonActions,

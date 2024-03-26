@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import { useCallback, useEffect, useState } from 'react';
-import { listCards } from '../../network/CardListAPI';
+import { listCards } from '../../network/cardListAPI';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import colors from '../../utils/colorPallete';

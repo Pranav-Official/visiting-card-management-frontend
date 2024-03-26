@@ -22,7 +22,7 @@ import ShareIcon from '../../assets/images/ShareIcon.svg';
 import BackButtonIcon from '../../assets/images/Arrow.svg';
 import CardDetailsShimmer from '../../components/Shimmers/CardDetailsShimmer';
 import ShareCardScreen from './ShareCardPage';
-import { listCardDetails } from '../../network/CardDetailAPI';
+import { listCardDetails } from '../../network/cardDetailAPI';
 import Constants from '../../utils/Constants';
 import { getLocalItem } from '../../utils/Utils';
 import {

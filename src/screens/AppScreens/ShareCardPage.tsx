@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 import SearchBarComponent from '../../components/SearchBarComponent';
 import ShareCardComponent from '../../components/ShareCardContactComponent';
-import { listUsers } from '../../network/GetUserAPI';
+import { listUsers } from '../../network/getUserAPI';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
-import { ShareCard, ShareCardProp } from '../../network/ShareCardAPI';
+import { ShareCard, ShareCardProp } from '../../network/shareCardAPI';
 import { shareExternally } from '../../network/externalShare';
 import Toast from 'react-native-root-toast';
 

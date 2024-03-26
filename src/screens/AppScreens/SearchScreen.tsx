@@ -14,7 +14,7 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import { TabParamList } from '../../types/navigationTypes';
-import { listCards } from '../../network/CardListAPI';
+import { listCards } from '../../network/cardListAPI';
 
 type filteredList = {
   matchIndex: number;
