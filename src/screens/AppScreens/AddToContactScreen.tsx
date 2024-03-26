@@ -12,7 +12,7 @@ import CardComponent from '../../components/CardComponent';
 import RadioButton from '../../components/RadioButton';
 import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import Constants from '../../utils/Constants';
-import { addToExistingContact } from '../../network/AddToExistingContact';
+import { addToExistingContact } from '../../network/AddToExistingContactAPI';
 import { getLocalItem } from '../../utils/Utils';
 import {
   CommonActions,
@@ -20,7 +20,7 @@ import {
   StackActions,
   useNavigation,
 } from '@react-navigation/native';
-import { addSharedCardToExistingContact } from '../../network/addSharedToExistingContact';
+import { addSharedCardToExistingContact } from '../../network/addSharedToExistingContactAPI';
 import Toast from 'react-native-root-toast';
 import cloudinaryUpload from '../../network/cloudinaryUpload';
 import { useDispatch } from 'react-redux';

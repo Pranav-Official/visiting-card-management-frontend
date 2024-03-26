@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import { useCallback, useEffect, useState } from 'react';
-import { listCards } from '../../network/CardListHook';
+import { listCards } from '../../network/CardListAPI';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import colors from '../../utils/colorPallete';
@@ -21,7 +21,7 @@ import {
   useFocusEffect,
   useNavigation,
 } from '@react-navigation/native';
-import { editCardDetails } from '../../network/editCardHook';
+import { editCardDetails } from '../../network/editCardAPI';
 import NewCardComponent from '../../components/NewCardListScreenComponent';
 import Swiper from 'react-native-swiper';
 import { RootStackParamList } from '../../types/navigationTypes';

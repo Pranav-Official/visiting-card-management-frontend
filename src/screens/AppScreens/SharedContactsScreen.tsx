@@ -11,7 +11,7 @@ import {
 } from '@react-navigation/native';
 
 import colors from '../../utils/colorPallete';
-import { acceptedCardslist } from '../../network/getAcceptedCardsHook';
+import { acceptedCardslist } from '../../network/getAcceptedCardsAPI';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 

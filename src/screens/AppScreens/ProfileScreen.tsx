@@ -12,7 +12,7 @@ import Phone from '../../assets/images/phone.svg';
 import Company from '../../assets/images/company.svg';
 import Person from '../../assets/images/person.svg';
 import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
-import { getProfile } from '../../network/getProfileDetailsHook';
+import { getProfile } from '../../network/getProfileDetailsAPI';
 import { getLocalItem, setLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import { userLogin } from '../../store/userSlice';

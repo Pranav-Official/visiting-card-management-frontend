@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 import ContactListComponent from '../../components/ContactListComponent';
-import { getContactList } from '../../network/contactListHook';
+import { getContactList } from '../../network/contactListAPI';
 import { getLocalItem, setLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -21,13 +21,13 @@ import {
 import colors from '../../utils/colorPallete';
 import SearchBarComponent from '../../components/SearchBarComponent';
 import ContactShimmer from '../../components/Shimmers/ContactShimmer';
-import { getPendingCards } from '../../network/getPendingCardsHook';
+import { getPendingCards } from '../../network/getPendingCardsAPI';
 import BottomSheetComponent from '../../components/BottomSheetComponent';
 import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import CardComponent from '../../components/CardComponent';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { listCards } from '../../network/CardListHook';
+import { listCards } from '../../network/CardListAPI';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCards } from '../../store/pendingCardsSlice';
 import { RootState } from '../../store';

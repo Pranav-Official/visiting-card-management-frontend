@@ -12,7 +12,7 @@ import ButtonComponent from '../../components/PrimaryButtonComponent';
 import InputComponent from '../../components/InputComponent';
 import MainLogoComponent from '../../components/MainLogoComponent';
 import BottomDialougeTouchable from '../../components/BottomDialougeTouchable';
-import { SignUpUser } from '../../network/AuthenticationApi';
+import { SignUpUser } from '../../network/AuthenticationAPI';
 import { setLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import { useDispatch } from 'react-redux';
