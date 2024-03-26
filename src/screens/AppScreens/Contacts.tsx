@@ -27,7 +27,6 @@ import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import CardComponent from '../../components/CardComponent';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { listCards } from '../../network/cardListAPI';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCards } from '../../store/pendingCardsSlice';
 import { RootState } from '../../store';
