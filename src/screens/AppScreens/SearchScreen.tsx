@@ -4,7 +4,7 @@ import colors from '../../utils/colorPallete';
 import SearchBarComponent from '../../components/SearchBarComponent';
 import TopBackButton from '../../components/BackButton';
 import SearchListComponent from '../../components/SearchListComponet';
-import { CardData, fetchSearchableList } from '../../hooks/searchListHook';
+import { CardData, fetchSearchableList } from '../../network/searchListHook';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import {
@@ -14,7 +14,7 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import { TabParamList } from '../../types/navigationTypes';
-import { listCards } from '../../hooks/CardListHook';
+import { listCards } from '../../network/CardListHook';
 
 type filteredList = {
   matchIndex: number;

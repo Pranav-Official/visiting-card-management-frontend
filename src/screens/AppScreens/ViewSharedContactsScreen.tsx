@@ -10,7 +10,7 @@ import TopBackButton from '../../components/BackButton';
 import colors from '../../utils/colorPallete';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
-import { getPendingCards } from '../../hooks/getPendingCardsHook';
+import { getPendingCards } from '../../network/getPendingCardsHook';
 import { setCards } from '../../context/pendingCardsSlice';
 import { useDispatch } from 'react-redux';
 

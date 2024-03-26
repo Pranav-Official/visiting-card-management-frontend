@@ -5,7 +5,7 @@ import InputComponent from '../../components/InputComponent';
 import {
   changePassword,
   changePasswordProp,
-} from '../../hooks/changePasswordHook';
+} from '../../network/changePasswordHook';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import TopBackButton from '../../components/BackButton';
 import { isValidPassword } from '../../utils/regexCheck';

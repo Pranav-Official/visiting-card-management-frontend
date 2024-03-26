@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 import SearchBarComponent from '../../components/SearchBarComponent';
 import ShareCardComponent from '../../components/ShareCardContactComponent';
-import { listUsers } from '../../hooks/GetUserHook';
+import { listUsers } from '../../network/GetUserHook';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
-import { ShareCard, ShareCardProp } from '../../hooks/ShareCardHook';
-import { shareExternally } from '../../hooks/externalShare';
+import { ShareCard, ShareCardProp } from '../../network/ShareCardHook';
+import { shareExternally } from '../../network/externalShare';
 import Toast from 'react-native-root-toast';
 
 type ShareProp = {

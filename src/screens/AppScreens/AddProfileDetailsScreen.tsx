@@ -8,7 +8,7 @@ import {
   StackActions,
   useNavigation,
 } from '@react-navigation/native';
-import { addProfileDetails } from '../../hooks/addProfileDetailsHook';
+import { addProfileDetails } from '../../network/addProfileDetailsHook';
 import Toast from 'react-native-root-toast';
 
 type RouteType = {

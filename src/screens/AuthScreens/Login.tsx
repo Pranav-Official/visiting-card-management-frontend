@@ -15,8 +15,8 @@ import InputComponent from '../../components/InputComponent';
 import MainLogoComponent from '../../components/MainLogoComponent';
 import BottomDialougeTouchable from '../../components/BottomDialougeTouchable';
 
-import api from '../../hooks/API';
-import { loginUser } from '../../hooks/AuthenticationApi';
+import api from '../../network/API';
+import { loginUser } from '../../network/AuthenticationApi';
 import { useNavigation } from '@react-navigation/native';
 import { getLocalItem, setLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';

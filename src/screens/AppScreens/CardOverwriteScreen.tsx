@@ -13,7 +13,7 @@ import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import RadioButton from '../../components/RadioButton';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
-import { overwriteExistingCard } from '../../hooks/overWriteCardHook';
+import { overwriteExistingCard } from '../../network/overWriteCardHook';
 import {
   CommonActions,
   NavigationProp,
@@ -21,8 +21,8 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import Toast from 'react-native-root-toast';
-import { overwriteSharedCard } from '../../hooks/overwriteSharedCard';
-import cloudinaryUpload from '../../hooks/cloudinaryUpload';
+import { overwriteSharedCard } from '../../network/overwriteSharedCard';
+import cloudinaryUpload from '../../network/cloudinaryUpload';
 import { useDispatch } from 'react-redux';
 import {
   removeAllSelectedCards,

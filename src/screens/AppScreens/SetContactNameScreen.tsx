@@ -16,10 +16,10 @@ import {
 } from '@react-navigation/native';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
-import { newCardDetails } from '../../hooks/createCardHook';
-import { acceptNewCard } from '../../hooks/acceptCardHook';
+import { newCardDetails } from '../../network/createCardHook';
+import { acceptNewCard } from '../../network/acceptCardHook';
 import Toast from 'react-native-root-toast';
-import cloudinaryUpload from '../../hooks/cloudinaryUpload';
+import cloudinaryUpload from '../../network/cloudinaryUpload';
 import CardComponent from '../../components/CardComponent';
 import { useDispatch } from 'react-redux';
 import {
