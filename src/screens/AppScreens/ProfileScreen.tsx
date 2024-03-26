@@ -15,7 +15,7 @@ import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import { getProfile } from '../../network/getProfileDetailsHook';
 import { getLocalItem, setLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
-import { userLogin } from '../../context/userSlice';
+import { userLogin } from '../../store/userSlice';
 import { useDispatch } from 'react-redux';
 import {
   NavigationProp,

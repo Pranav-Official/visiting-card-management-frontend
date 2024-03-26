@@ -11,7 +11,7 @@ import colors from '../../utils/colorPallete';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import { getPendingCards } from '../../network/getPendingCardsHook';
-import { setCards } from '../../context/pendingCardsSlice';
+import { setCards } from '../../store/pendingCardsSlice';
 import { useDispatch } from 'react-redux';
 
 type Card = {

@@ -27,9 +27,9 @@ import { useDispatch } from 'react-redux';
 import {
   removeAllSelectedCards,
   removeSelectedCardId,
-} from '../../context/selectedCardsSlice';
-import { removeCardById } from '../../context/pendingCardsSlice';
-import { setSharingProcess } from '../../context/sharingProcessSlice';
+} from '../../store/selectedCardsSlice';
+import { removeCardById } from '../../store/pendingCardsSlice';
+import { setSharingProcess } from '../../store/sharingProcessSlice';
 
 type Card = {
   card_id: string;

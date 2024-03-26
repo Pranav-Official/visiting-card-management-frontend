@@ -29,8 +29,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { listCards } from '../../network/CardListHook';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCards } from '../../context/pendingCardsSlice';
-import { RootState } from '../../context/store';
+import { setCards } from '../../store/pendingCardsSlice';
+import { RootState } from '../../store';
 
 type Contact = {
   card_id: string;

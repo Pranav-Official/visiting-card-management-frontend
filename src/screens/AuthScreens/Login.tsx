@@ -21,8 +21,8 @@ import { useNavigation } from '@react-navigation/native';
 import { getLocalItem, setLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import { useDispatch } from 'react-redux';
-import { userLogin } from '../../context/userSlice';
-import { userDetails } from '../../context/userDetailsSlice';
+import { userLogin } from '../../store/userSlice';
+import { userDetails } from '../../store/userDetailsSlice';
 import colors from '../../utils/colorPallete';
 import { validateEmail } from '../../utils/regexCheck';
 

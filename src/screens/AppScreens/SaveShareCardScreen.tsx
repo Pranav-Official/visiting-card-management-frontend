@@ -22,9 +22,9 @@ import BottomSheetComponent from '../../components/BottomSheetComponent';
 import SimilarCardsComponent from '../../components/SimilarCardsComponent';
 import { getSimilarCards } from '../../network/getSimilarCardsHook';
 import { useDispatch, useSelector } from 'react-redux';
-import { setSelectedCardIds } from '../../context/selectedCardsSlice';
-import { RootState } from '../../context/store';
-import { setSharingProcess } from '../../context/sharingProcessSlice';
+import { setSelectedCardIds } from '../../store/selectedCardsSlice';
+import { RootState } from '../../store';
+import { setSharingProcess } from '../../store/sharingProcessSlice';
 import { rejectCard } from '../../network/rejectCardHook';
 
 type Card = {
