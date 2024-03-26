@@ -35,6 +35,7 @@ import { RootState } from '../../context/store';
 type Contact = {
   card_id: string;
   contact_name: string;
+  cardListCount: number;
 };
 
 type Card = {
@@ -197,19 +198,10 @@ const ContactsPage = () => {
   );
 
   const contactPage = async (id: string, name: string) => {
-    console.log('contactPage', id, name);
-    const userId = (await getLocalItem(Constants.USER_ID)) ?? '';
-    const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
-    const cardId = id;
+    const contact = contactList.find((contact) => contact.card_id === id);
 
-    const result = await listCards({
-      user_id: userId,
-      jwt_token: jwtToken,
-      card_id: cardId,
-    });
-
-    if (result.cardResp && result.cardResp.data.length === 1) {
-      const cardId = result.cardResp.data[0].card_id;
+    if ( contact?.cardListCount === 1) {
+      const cardId = contact.card_id;
       navigation.navigate('CardStack', {
         screen: 'CardDetailsScreen',
         params: { card_id: cardId },
