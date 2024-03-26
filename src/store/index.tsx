@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from '../context/userSlice';
-import userDetailsReducer from '../context/userDetailsSlice';
-import pendingCardsReducer from '../context/pendingCardsSlice';
-import selectedCardReducer from '../context/selectedCardsSlice';
-import sharingProcessReducer from '../context/sharingProcessSlice';
+import userReducer from './userSlice';
+import userDetailsReducer from './userDetailsSlice';
+import pendingCardsReducer from './pendingCardsSlice';
+import selectedCardReducer from './selectedCardsSlice';
+import sharingProcessReducer from './sharingProcessSlice';
 
 export const store = configureStore({
   reducer: {

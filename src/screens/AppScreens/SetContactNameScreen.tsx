@@ -16,18 +16,18 @@ import {
 } from '@react-navigation/native';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
-import { newCardDetails } from '../../hooks/createCardHook';
-import { acceptNewCard } from '../../hooks/acceptCardHook';
+import { newCardDetails } from '../../network/createCardAPI';
+import { acceptNewCard } from '../../network/acceptCardAPI';
 import Toast from 'react-native-root-toast';
-import cloudinaryUpload from '../../hooks/cloudinaryUpload';
+import cloudinaryUpload from '../../network/cloudinaryUpload';
 import CardComponent from '../../components/CardComponent';
 import { useDispatch } from 'react-redux';
 import {
   removeAllSelectedCards,
   removeSelectedCardId,
-} from '../../context/selectedCardsSlice';
-import { removeCardById } from '../../context/pendingCardsSlice';
-import { setSharingProcess } from '../../context/sharingProcessSlice';
+} from '../../store/selectedCardsSlice';
+import { removeCardById } from '../../store/pendingCardsSlice';
+import { setSharingProcess } from '../../store/sharingProcessSlice';
 import InputComponent from '../../components/InputComponent';
 
 const SetContactNameScreen = ({ route }: any) => {

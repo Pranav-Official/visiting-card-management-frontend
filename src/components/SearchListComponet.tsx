@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import colors from '../utils/colorPallete';
-import nameToColor from '../hooks/nameToHex';
+import nameToColor from '../network/nameToHex';
 type Contact = {
   contactName: string;
   onPress?: () => void;

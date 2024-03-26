@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
-import { userLogin } from './context/userSlice';
+import { userLogin } from './store/userSlice';
 import Constants from './utils/Constants';
 import { getLocalItem, setLocalItem } from './utils/Utils';
 import { RootSiblingParent } from 'react-native-root-siblings';
 import SplashScreen from './screens/Splash_Screen';
 import AuthBasedNavigation from './navigation';
-import { RootState } from './context/store';
+import { RootState } from './store';
 
 const Main = () => {
   const [isLoading, setIsLoading] = useState(true);

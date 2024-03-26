@@ -12,7 +12,7 @@ import CardComponent from '../../components/CardComponent';
 import RadioButton from '../../components/RadioButton';
 import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import Constants from '../../utils/Constants';
-import { addToExistingContact } from '../../hooks/AddToExistingContact';
+import { addToExistingContact } from '../../network/addToExistingContactAPI';
 import { getLocalItem } from '../../utils/Utils';
 import {
   CommonActions,
@@ -20,16 +20,16 @@ import {
   StackActions,
   useNavigation,
 } from '@react-navigation/native';
-import { addSharedCardToExistingContact } from '../../hooks/addSharedToExistingContact';
+import { addSharedCardToExistingContact } from '../../network/addSharedToExistingContactAPI';
 import Toast from 'react-native-root-toast';
-import cloudinaryUpload from '../../hooks/cloudinaryUpload';
+import cloudinaryUpload from '../../network/cloudinaryUpload';
 import { useDispatch } from 'react-redux';
 import {
   removeAllSelectedCards,
   removeSelectedCardId,
-} from '../../context/selectedCardsSlice';
-import { removeCardById } from '../../context/pendingCardsSlice';
-import { setSharingProcess } from '../../context/sharingProcessSlice';
+} from '../../store/selectedCardsSlice';
+import { removeCardById } from '../../store/pendingCardsSlice';
+import { setSharingProcess } from '../../store/sharingProcessSlice';
 
 type Card = {
   card_id: string;

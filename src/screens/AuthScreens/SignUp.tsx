@@ -12,12 +12,12 @@ import ButtonComponent from '../../components/PrimaryButtonComponent';
 import InputComponent from '../../components/InputComponent';
 import MainLogoComponent from '../../components/MainLogoComponent';
 import BottomDialougeTouchable from '../../components/BottomDialougeTouchable';
-import { SignUpUser } from '../../hooks/AuthenticationApi';
+import { SignUpUser } from '../../network/AuthenticationAPI';
 import { setLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
 import { useDispatch } from 'react-redux';
-import { userLogin } from '../../context/userSlice';
-import { userDetails } from '../../context/userDetailsSlice';
+import { userLogin } from '../../store/userSlice';
+import { userDetails } from '../../store/userDetailsSlice';
 import colors from '../../utils/colorPallete';
 import { isValidPassword, validateEmail } from '../../utils/regexCheck';
 
