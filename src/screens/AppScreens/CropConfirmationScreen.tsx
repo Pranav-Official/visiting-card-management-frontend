@@ -19,7 +19,7 @@ import {
   StackActions,
 } from '@react-navigation/native';
 import ImagePicker from 'react-native-image-crop-picker';
-import { aiDetailsExtraction } from '../../hooks/aiDetailsExtraction';
+import { aiDetailsExtraction } from '../../network/aiDetailsExtraction';
 import colors from '../../utils/colorPallete';
 
 const CropConfirmationScreen = ({ route }) => {

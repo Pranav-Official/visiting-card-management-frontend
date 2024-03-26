@@ -22,7 +22,7 @@ import ShareIcon from '../../assets/images/ShareIcon.svg';
 import BackButtonIcon from '../../assets/images/Arrow.svg';
 import CardDetailsShimmer from '../../components/Shimmers/CardDetailsShimmer';
 import ShareCardScreen from './ShareCardPage';
-import { listCardDetails } from '../../hooks/CardDetailHook';
+import { listCardDetails } from '../../network/cardDetailAPI';
 import Constants from '../../utils/Constants';
 import { getLocalItem } from '../../utils/Utils';
 import {
@@ -33,7 +33,7 @@ import {
 import Clipboard from '@react-native-clipboard/clipboard';
 import { isValidWebsiteUrl } from '../../utils/regexCheck';
 import BottomSheetComponent from '../../components/BottomSheetComponent';
-import { deleteCard } from '../../hooks/deleteCardHook';
+import { deleteCard } from '../../network/deleteCardAPI';
 import Toast from 'react-native-root-toast';
 import TranslateText, {
   TranslateLanguage,

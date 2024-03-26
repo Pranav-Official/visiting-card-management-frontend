@@ -13,7 +13,7 @@ import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import RadioButton from '../../components/RadioButton';
 import { getLocalItem } from '../../utils/Utils';
 import Constants from '../../utils/Constants';
-import { overwriteExistingCard } from '../../hooks/overWriteCardHook';
+import { overwriteExistingCard } from '../../network/overWriteCardAPI';
 import {
   CommonActions,
   NavigationProp,
@@ -21,15 +21,15 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import Toast from 'react-native-root-toast';
-import { overwriteSharedCard } from '../../hooks/overwriteSharedCard';
-import cloudinaryUpload from '../../hooks/cloudinaryUpload';
+import { overwriteSharedCard } from '../../network/overwriteSharedCardAPI';
+import cloudinaryUpload from '../../network/cloudinaryUpload';
 import { useDispatch } from 'react-redux';
 import {
   removeAllSelectedCards,
   removeSelectedCardId,
-} from '../../context/selectedCardsSlice';
-import { removeCardById } from '../../context/pendingCardsSlice';
-import { setSharingProcess } from '../../context/sharingProcessSlice';
+} from '../../store/selectedCardsSlice';
+import { removeCardById } from '../../store/pendingCardsSlice';
+import { setSharingProcess } from '../../store/sharingProcessSlice';
 
 type Card = {
   card_id: string;

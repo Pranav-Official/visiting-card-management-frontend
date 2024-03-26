@@ -18,13 +18,13 @@ import CommonImageComponent from '../../components/CommonImageComponent';
 import EditInputComponent from '../../components/InputComponent';
 import EditCardNameComponent from '../../components/EditCardNameComponent';
 import BackButtonIcon from '../../assets/images/Arrow.svg';
-import { editCardDetails } from '../../hooks/editCardHook';
+import { editCardDetails } from '../../network/editCardAPI';
 import Constants from '../../utils/Constants';
 import { getLocalItem } from '../../utils/Utils';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import BottomSheetComponent from '../../components/BottomSheetComponent';
 import SimilarCardsComponent from '../../components/SimilarCardsComponent';
-import { getSimilarCards } from '../../hooks/getSimilarCardsHook';
+import { getSimilarCards } from '../../network/getSimilarCardsAPI';
 import { validateEmail, validatePhoneNumber } from '../../utils/regexCheck';
 import Toast from 'react-native-root-toast';
 
