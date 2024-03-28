@@ -27,7 +27,6 @@ import PrimaryButtonComponent from '../../components/PrimaryButtonComponent';
 import CardComponent from '../../components/CardComponent';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { listCards } from '../../network/cardListAPI';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCards } from '../../store/pendingCardsSlice';
 import { RootState } from '../../store';
@@ -35,6 +34,7 @@ import { RootState } from '../../store';
 type Contact = {
   card_id: string;
   contact_name: string;
+  cardListCount: number;
 };
 
 type Card = {
@@ -197,19 +197,10 @@ const ContactsPage = () => {
   );
 
   const contactPage = async (id: string, name: string) => {
-    console.log('contactPage', id, name);
-    const userId = (await getLocalItem(Constants.USER_ID)) ?? '';
-    const jwtToken = (await getLocalItem(Constants.USER_JWT)) ?? '';
-    const cardId = id;
+    const contact = contactList.find((contact) => contact.card_id === id);
 
-    const result = await listCards({
-      user_id: userId,
-      jwt_token: jwtToken,
-      card_id: cardId,
-    });
-
-    if (result.cardResp && result.cardResp.data.length === 1) {
-      const cardId = result.cardResp.data[0].card_id;
+    if ( contact?.cardListCount === 1) {
+      const cardId = contact.card_id;
       navigation.navigate('CardStack', {
         screen: 'CardDetailsScreen',
         params: { card_id: cardId },
