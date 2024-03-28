@@ -17,6 +17,8 @@ import { shareExternally } from '../../network/externalShare';
 import Toast from 'react-native-root-toast';
 import Contacts from 'react-native-contacts';
 import colors from '../../utils/colorPallete';
+import ShareCardContactShimmer from '../../components/Shimmers/ShareCardContactShimmer';
+import { getProfile } from '../../network/getProfileDetailsAPI';
 
 type ShareProp = {
   user_fullname: string;
@@ -46,6 +48,8 @@ const ShareCardScreen = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [grantedStatus, setGrantedStatus] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [userPhoneStatus, setUserPhoneStatus] = useState<boolean>();
 
   const requestContactsPermission = async () => {
     try {
@@ -82,30 +86,54 @@ const ShareCardScreen = ({
         const user_id = (await getLocalItem(Constants.USER_ID)) ?? '';
         const jwt_token = (await getLocalItem(Constants.USER_JWT)) ?? '';
 
-        const result = await listUsers({ user_id, jwt_token });
-        console.log('Result is : ', result);
-        console.log('\nContacts are: ', contacts);
-
-        await requestContactsPermission();
-
-        const fetchedContacts = await Contacts.getAll();
-        setContacts(fetchedContacts);
-
-        const matchedUsers = result.userResp.filter((user) =>
-          fetchedContacts.some((contact) =>
-            contact.phoneNumbers.some(
-              (phoneNumber) => phoneNumber.number === user.phone,
-            ),
-          ),
+        const profileDetails = await getProfile(user_id, jwt_token);
+        console.log(
+          '\n\nProfile Phone details:',
+          profileDetails.userData.phone,
+          'helo',
         );
-        console.log('\nMatched Users List', matchedUsers);
 
-        setShareList(matchedUsers);
+        if (
+          (profileDetails.status === true &&
+            profileDetails.userData.phone == null) ||
+          profileDetails.userData.phone == ''
+        ) {
+          setUserPhoneStatus(false);
+        } else {
+          setUserPhoneStatus(true);
+          const result = await listUsers({ user_id, jwt_token });
+          // console.log('Result is : ', result);
+          // console.log('\nContacts are: ', contacts);
+
+          await requestContactsPermission();
+
+          const fetchedContacts = await Contacts.getAll();
+          setContacts(fetchedContacts);
+
+          const matchedUsersWithNames = result.userResp
+            .filter((user) =>
+              fetchedContacts.some(
+                (contact) => contact.phoneNumbers[0].number === user.phone,
+              ),
+            )
+            .map((user) => {
+              const contact = fetchedContacts.find(
+                (contact) => contact.phoneNumbers[0].number === user.phone,
+              );
+              return {
+                ...user,
+                user_fullname: contact?.displayName ?? user.user_fullname,
+              };
+            });
+
+          setShareList(matchedUsersWithNames);
+        }
       } catch (error) {
         console.log(error);
         setShareList([]);
       }
     };
+
     fetchData();
   }, []);
 
@@ -114,6 +142,7 @@ const ShareCardScreen = ({
       item.user_fullname.toLowerCase().includes(searchQuery.toLowerCase()),
     );
     setFilteredShareList(filteredList);
+    setIsLoading(false);
   }, [searchQuery, shareList]);
 
   const handleCardPress = (user_id: string) => {
@@ -182,29 +211,40 @@ const ShareCardScreen = ({
         <SearchBarComponent value={searchQuery} setter={setSearchQuery} />
       </View>
       <View style={styles.contact_area}>
-        {grantedStatus === PermissionsAndroid.RESULTS.GRANTED ? (
-          <FlatList
-            contentContainerStyle={styles.flatListStyle}
-            showsVerticalScrollIndicator={true}
-            data={filteredShareList}
-            renderItem={({ item }) => (
-              <ShareCardComponent
-                user_fullname={item.user_fullname}
-                user_id={item.user_id}
-                onCardPress={handleCardPress}
-              />
-            )}
-            keyExtractor={(item) => item.user_id}
-          />
-        ) : grantedStatus === PermissionsAndroid.RESULTS.DENIED ? (
-          <Text>Permission Denied</Text>
+        {userPhoneStatus ? (
+          grantedStatus === PermissionsAndroid.RESULTS.GRANTED ? (
+            <FlatList
+              contentContainerStyle={styles.flatListStyle}
+              showsVerticalScrollIndicator={true}
+              data={filteredShareList}
+              renderItem={({ item }) =>
+                isLoading === true ? (
+                  <ShareCardContactShimmer />
+                ) : (
+                  <ShareCardComponent
+                    user_fullname={item.user_fullname}
+                    user_id={item.user_id}
+                    onCardPress={handleCardPress}
+                  />
+                )
+              }
+              keyExtractor={(item) => item.user_id}
+            />
+          ) : (
+            <View style={styles.allowAccessContainer}>
+              <Text style={styles.allowAccessText}>
+                Allow Contacts Access for Internal Sharing
+              </Text>
+              <Text style={styles.allowAccessText}>(OR)</Text>
+              <Text style={styles.allowAccessText}>
+                Press 'Share' Button for External Sharing
+              </Text>
+            </View>
+          )
         ) : (
-          <View
-            // onPress={requestContactsPermission}
-            style={styles.allowAccessContainer}
-          >
+          <View style={styles.allowAccessContainer}>
             <Text style={styles.allowAccessText}>
-              Allow Contacts Access for Internal Sharing
+              Add Your Phone Number for Internal Sharing
             </Text>
             <Text style={styles.allowAccessText}>(OR)</Text>
             <Text style={styles.allowAccessText}>
@@ -213,6 +253,7 @@ const ShareCardScreen = ({
           </View>
         )}
       </View>
+
       <View style={styles.button_container}>
         <View style={styles.profile_button_container}>
           <PrimaryButtonComponent
@@ -245,6 +286,7 @@ const styles = StyleSheet.create({
   allowAccessText: {
     color: colors['label-text'],
     fontSize: 18,
+    textAlign: 'center',
   },
   flatListStyle: {
     padding: 5,
